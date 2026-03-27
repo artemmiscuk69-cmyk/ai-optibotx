@@ -82,7 +82,13 @@
         }
         .register-overlay.visible { opacity: 1; visibility: visible; }
         
-        .register-glass
+        .register-glass {
+            background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border);
+            border-radius: 30px; padding: 25px 20px; width: 90%; text-align: left;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px var(--accent-glow);
+            transform: scale(0.9); animation: glassAppear 0.4s forwards; max-height: 90vh; overflow-y: auto;
+        }
+        .register-glass.small { max-width: 320px; text-align: center; }
         .register-glass.large { max-width: 420px; }
         
         .register-glass::-webkit-scrollbar { width: 4px; }
@@ -291,23 +297,26 @@
 </div>
 
 <div id="register-overlay" class="register-overlay">
-    <div id="register-overlay" class="register-overlay">
-    <div class="register-glass">
-        <button id="close-register-btn" class="close-register-btn">✖</button>
-        
-        <h3 id="register-title">🔐 Access</h3>
-        <p id="register-text">To register, contact <a id="dynamic-contact" class="contact" href="https://t.me/ZentixTrade" target="_blank">@ZentixTrade</a> and get an activation code.</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-            <a href="https://t.me/ZentixTrade" target="_blank" class="register-btn" style="text-decoration: none; display: block;">📢 Get Code / Channel</a>
-            <a href="https://t.me/ZentixTrade" target="_blank" class="register-btn" style="text-decoration: none; display: block; background: var(--secondary-bg); border: 1px solid var(--accent);">💬 Reviews</a>
+    <div class="register-glass large">
+        <h3 id="reg-title">🔐 Доступ к аналитике</h3>
+
+        <div class="step-box">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <p id="reg-step1">Регистрация аккаунта. Создайте новый профиль по ссылке ниже.</p>
+                <a href="https://u3.shortink.io/register?utm_campaign=822097&utm_source=affiliate&utm_medium=sr&a=TNOv4heF82mMb6&ac=osnova&code=EDS965" target="_blank" id="reg-btn" class="action-btn">Регистрация ➔</a>
+            </div>
         </div>
 
-        <input type="text" id="code-input" class="register-input" placeholder="Enter code">
-        <button id="activate-btn" class="register-btn">Activate</button>
-        <div id="register-message" class="register-message"></div>
-    </div>
-</div>
+        <div class="step-box">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <p id="reg-step2">Подтверждение ID. Введите ваш ID профиля PocketOption.</p>
+                <input type="text" id="pocket-id-input" class="register-input" placeholder="Введите ваш ID">
+                <button id="check-id-btn" class="action-btn">Проверить ID</button>
+                <div id="id-message" class="register-message"></div>
+            </div>
+        </div>
 
         <div class="step-box">
             <div class="step-num">3</div>
@@ -907,9 +916,6 @@
     }
     window.selectTf = selectTf;
     if (window.Telegram?.WebApp) { window.Telegram.WebApp.expand(); }
-    document.getElementById('close-register-btn').onclick = () => {
-    document.getElementById('register-overlay').classList.remove('visible');
-};
 </script>
 </body>
 </html>
