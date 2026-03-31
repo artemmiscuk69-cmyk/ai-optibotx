@@ -2,1065 +2,736 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>OptiBotX PRO | PocketOption Terminal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OptiBotX PRO | Premium Trading Terminal</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
         :root {
-            --bg-deep: #050514;
-            --bg-card: rgba(18, 22, 45, 0.75);
-            --accent-primary: #7c3aed;
-            --accent-secondary: #c084fc;
-            --accent-glow: rgba(124, 58, 237, 0.5);
-            --text-primary: #ffffff;
-            --text-secondary: #a0a3c0;
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --success: #10b981;
-            --danger: #ef4444;
-            --chart-up: #00d68f;
-            --chart-down: #ff4d6d;
+            --bg-color: #050510;
+            --app-bg: #0b0b1a;
+            --border-color: #1a1a2e;
+            --text-color: white;
+            --secondary-bg: #161625;
+            --hover-color: #2a2a3f;
+            --accent: #5b4dff;
+            --accent-glow: rgba(91, 77, 255, 0.3);
+            --glass-bg: rgba(20, 30, 50, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.15);
         }
-
-        body.light {
-            --bg-deep: #f0f2f8;
-            --bg-card: rgba(255, 255, 255, 0.85);
-            --text-primary: #1a1e2c;
-            --text-secondary: #4b5563;
-            --border-glass: rgba(0, 0, 0, 0.08);
+        body.light-theme {
+            --bg-color: #f0f2f5;
+            --app-bg: #ffffff;
+            --border-color: #ddd;
+            --text-color: #222;
+            --secondary-bg: #f5f5f5;
+            --hover-color: #e0e0e0;
+            --accent: #3f51b5;
+            --accent-glow: rgba(63, 81, 181, 0.3);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 0, 0, 0.1);
         }
-
         body {
-            margin: 0;
-            padding: 0;
-            background: var(--bg-deep);
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            color: var(--text-primary);
-            height: 100vh;
+            margin: 0; padding: 0; background: var(--bg-color); color: var(--text-color);
+            font-family: 'Segoe UI', sans-serif; height: 100vh; 
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .welcome-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            transition: background 0.4s ease;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s;
+            backdrop-filter: blur(10px);
+        }
+        .welcome-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .welcome-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 30px 20px;
+            width: 80%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            animation: glassAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes glassAppear {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .welcome-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0 0 10px;
+            background: linear-gradient(135deg, #fff, #aaccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(91,77,255,0.5);
+        }
+        .welcome-subtitle {
+            font-size: 1rem;
+            color: #aaa;
+            margin-bottom: 25px;
+        }
+        .language-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        .language-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 14px 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .language-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .language-item.selected {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+        .language-item .flag {
+            font-size: 1.8rem;
+        }
+        .start-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 16px 30px;
+            border-radius: 40px;
+            cursor: pointer;
+            box-shadow: 0 0 30px var(--accent-glow);
+            transition: all 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            width: 100%;
+        }
+        .start-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px var(--accent-glow);
+        }
+
+        .register-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .register-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .register-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 44px;
+            padding: 28px 22px;
+            width: 86%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            animation: glassAppear 0.4s forwards;
+        }
+        .register-glass h3 {
+            font-size: 1.7rem;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff, #b9aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .register-glass p {
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+        .code-hint {
+            background: rgba(91,77,255,0.12);
+            border-left: 3px solid var(--accent);
+            border-radius: 16px;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            text-align: left;
+            font-size: 0.8rem;
+            color: #ddd;
+            backdrop-filter: blur(4px);
+        }
+        .code-hint span {
+            font-weight: 600;
+            color: var(--accent);
+        }
+        .register-input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 60px;
+            color: var(--text-color);
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 15px;
+            outline: none;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+        .register-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+        .register-input.error-shake {
+            animation: shake 0.4s ease-in-out;
+            border-color: #ff4d4d;
+        }
+        .register-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 14px 20px;
+            border-radius: 60px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px var(--accent-glow);
+            margin-bottom: 12px;
+        }
+        .register-btn:hover {
+            transform: scale(1.02);
+            filter: brightness(1.05);
+        }
+        .contact-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 6px;
+        }
+        .double-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: stretch;
+        }
+        .contact-btn, .copy-btn {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 12px 0;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            flex: 1;
+            backdrop-filter: blur(8px);
+        }
+        .contact-btn:hover, .copy-btn:hover {
+            background: rgba(91,77,255,0.25);
+            border-color: var(--accent);
+            transform: scale(1.02);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .contact-info {
+            background: rgba(0,0,0,0.3);
+            border-radius: 60px;
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 5px;
+        }
+        .contact-info span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        .register-message {
+            font-size: 0.85rem;
+            min-height: 38px;
+            margin-top: 14px;
+            padding: 6px 10px;
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+        .register-message.error {
+            color: #ff6b6b;
+            background: rgba(255,59,48,0.15);
+        }
+        .register-message.success {
+            color: #69f0ae;
+            background: rgba(0,200,83,0.15);
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%,60% { transform: translateX(-5px); }
+            40%,80% { transform: translateX(5px); }
         }
 
         .app-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 400px;
             height: 100vh;
-            position: relative;
-            overflow-y: auto;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-            background: radial-gradient(ellipse at 20% 30%, rgba(124,58,237,0.08) 0%, transparent 70%);
-        }
-
-        /* ========== ВЫБОР ЯЗЫКА ========== */
-        .language-welcome {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, #0a0a1f 0%, #03030c 100%);
-            backdrop-filter: blur(30px);
-            z-index: 20000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.2), visibility 0.6s;
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .language-welcome.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .lang-glass-card {
-            background: linear-gradient(145deg, rgba(25, 30, 55, 0.9), rgba(15, 18, 38, 0.95));
-            backdrop-filter: blur(20px);
-            border-radius: 64px;
-            width: 86%;
-            max-width: 380px;
-            padding: 36px 24px 40px;
-            border: 1px solid rgba(124, 58, 237, 0.5);
-            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(124, 58, 237, 0.2) inset;
-            text-align: center;
-            animation: langCardRise 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.1) forwards;
-        }
-
-        @keyframes langCardRise {
-            0% { opacity: 0; transform: scale(0.88) translateY(40px); filter: blur(12px);}
-            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0);}
-        }
-
-        .glowing-icon {
-            font-size: 64px;
-            filter: drop-shadow(0 0 20px rgba(124,58,237,0.7));
-            animation: iconFloat 2.5s infinite ease-in-out;
-        }
-
-        @keyframes iconFloat {
-            0%, 100% { transform: translateY(0px);}
-            50% { transform: translateY(-8px);}
-        }
-
-        .lang-title {
-            font-size: 28px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #c084fc, #a855f7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin: 12px 0 6px;
-        }
-
-        .lang-sub {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-        }
-
-        .lang-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 32px;
-        }
-
-        .lang-option {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 60px;
-            padding: 14px 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-        }
-
-        .lang-option:hover {
-            background: rgba(124, 58, 237, 0.3);
-            transform: scale(1.02);
-            border-color: var(--accent-primary);
-        }
-
-        .lang-option.selected {
-            background: linear-gradient(95deg, #7c3aed, #a855f7);
-            border-color: transparent;
-            box-shadow: 0 0 20px rgba(124,58,237,0.5);
-            color: white;
-        }
-
-        .enter-btn {
-            background: linear-gradient(95deg, #7c3aed, #c084fc);
-            border: none;
-            width: 100%;
-            padding: 16px;
-            border-radius: 60px;
-            font-weight: 800;
-            font-size: 18px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            opacity: 0.5;
-            pointer-events: none;
-            transform: scale(0.96);
-        }
-
-        .enter-btn.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: scale(1);
-            box-shadow: 0 8px 28px rgba(124,58,237,0.4);
-        }
-
-        /* ========== АКТИВАЦИЯ ========== */
-        .activation-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 5, 25, 0.92);
-            backdrop-filter: blur(28px);
-            z-index: 19000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s ease, visibility 0.5s;
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .activation-overlay.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .activation-card {
-            background: linear-gradient(135deg, rgba(20, 25, 55, 0.95), rgba(12, 15, 38, 0.98));
-            backdrop-filter: blur(20px);
-            border-radius: 56px;
-            width: 88%;
-            max-width: 360px;
-            padding: 32px 24px;
-            border: 1px solid rgba(124, 58, 237, 0.5);
-            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6);
-            text-align: center;
-            animation: modalPop 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.2);
-        }
-
-        @keyframes modalPop {
-            from { opacity: 0; transform: scale(0.92) translateY(20px);}
-            to { opacity: 1; transform: scale(1) translateY(0);}
-        }
-
-        .activation-icon {
-            font-size: 56px;
-            margin-bottom: 8px;
-        }
-
-        .activation-title {
-            font-size: 26px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #c084fc);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .code-field {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1.5px solid rgba(124, 58, 237, 0.5);
-            border-radius: 60px;
-            padding: 16px 18px;
-            font-size: 18px;
-            font-weight: 600;
-            text-align: center;
-            color: white;
-            margin: 20px 0;
-            transition: all 0.2s;
-            letter-spacing: 1px;
-        }
-
-        .code-field:focus {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 25px var(--accent-glow);
-            outline: none;
-        }
-
-        .activation-btn {
-            background: linear-gradient(95deg, #7c3aed, #a855f7);
-            width: 100%;
-            padding: 14px;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 16px;
-            border: none;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-bottom: 12px;
-        }
-
-        .help-btn {
-            background: transparent;
-            border: 1px solid var(--accent-primary);
-            color: var(--accent-primary);
-            width: 100%;
-            padding: 12px;
-            border-radius: 60px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .contact-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(124,58,237,0.2);
-            padding: 8px 20px;
-            border-radius: 60px;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        /* ========== ОСНОВНОЙ ИНТЕРФЕЙС ========== */
-        .main-interface {
-            width: 100%;
-            height: 100%;
-            padding: 14px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            overflow-y: auto;
-        }
-
-        .glass-header {
-            background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            border-radius: 36px;
-            padding: 12px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid var(--border-glass);
-        }
-
-        .logo {
-            font-weight: 800;
-            font-size: 18px;
-            background: linear-gradient(135deg, #fff, #c084fc);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .pocket-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, #1e2a3a, #0f172a);
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 600;
-            border: 1px solid rgba(255,215,0,0.3);
-            box-shadow: 0 0 10px rgba(255,215,0,0.2);
-        }
-
-        .pocket-badge span:first-child {
-            font-size: 18px;
-        }
-
-        .pocket-badge span:last-child {
-            background: linear-gradient(135deg, #ffd700, #ffb347);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .header-icons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .icon-glass {
-            background: rgba(255,255,255,0.08);
-            width: 38px;
-            height: 38px;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 18px;
-        }
-
-        .search-area {
-            position: relative;
-        }
-
-        .search-box {
-            width: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--border-glass);
-            border-radius: 48px;
-            padding: 14px 18px 14px 48px;
-            color: var(--text-primary);
-            font-size: 14px;
-            backdrop-filter: blur(8px);
-        }
-
-        .search-icon-abs {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0.7;
-        }
-
-        .pairs-menu {
-            position: absolute;
-            top: 58px;
-            left: 0;
-            width: 100%;
-            background: var(--bg-card);
-            backdrop-filter: blur(24px);
-            border-radius: 28px;
-            max-height: 220px;
-            overflow-y: auto;
-            z-index: 100;
-            border: 1px solid var(--border-glass);
+            background: var(--app-bg);
             display: none;
-        }
-
-        .pair-row {
-            padding: 12px 18px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            cursor: pointer;
-            transition: 0.1s;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .pair-row:hover {
-            background: var(--accent-primary);
-        }
-
-        .pair-flag {
-            font-size: 20px;
-            min-width: 36px;
-        }
-
-        /* ГРАФИК */
-        .chart-container {
+            flex-direction: column;
+            padding: 12px 15px;
+            box-sizing: border-box;
             position: relative;
-            width: 100%;
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            border-radius: 32px;
-            padding: 12px;
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            animation: fadeInScale 0.5s ease-out;
+            transition: background 0.3s, border-color 0.3s;
+            overflow-y: auto;
         }
-
-        .chart-box {
-            position: relative;
-            width: 100%;
-            height: 220px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 24px;
-            overflow: hidden;
+        @media (max-height: 700px) {
+            .app-container { padding: 8px 12px; }
+            .chart-container { height: 180px; }
+            .tf-btn { padding: 6px 0; font-size: 10px; }
+            .analyze-btn { padding: 12px; margin: 6px 0; }
         }
-
-        canvas#mainChart {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        .chart-watermark {
-            position: absolute;
-            bottom: 8px;
-            right: 12px;
-            font-size: 9px;
-            color: rgba(255,255,255,0.3);
-            pointer-events: none;
-            font-weight: 500;
-            background: rgba(0,0,0,0.3);
-            padding: 2px 8px;
-            border-radius: 20px;
-        }
-
-        .chart-controls {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 8px;
-            z-index: 5;
-        }
-
-        .chart-controls button {
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(8px);
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-            font-size: 16px;
-        }
-
-        .indicator-btn {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(8px);
-            border: none;
-            padding: 6px 14px;
-            border-radius: 20px;
-            color: white;
-            font-size: 11px;
-            cursor: pointer;
-            z-index: 5;
-            font-weight: 500;
-        }
-
-        .tf-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .tf-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 10px 0;
-            border-radius: 44px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-secondary);
-        }
-
-        .tf-btn.active {
-            background: var(--accent-primary);
-            color: white;
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .analyze-btn-main {
-            background: linear-gradient(95deg, #7c3aed, #a855f7);
-            border: none;
-            border-radius: 60px;
-            padding: 18px;
-            font-weight: 800;
-            font-size: 17px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .result-panel {
-            background: rgba(0,0,0,0.3);
-            border-radius: 60px;
-            text-align: center;
-            padding: 14px;
-            font-weight: bold;
-            font-size: 18px;
-            backdrop-filter: blur(8px);
-            opacity: 0;
-            transition: all 0.3s;
-        }
-
-        .status-line {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            justify-content: center;
-            font-size: 12px;
-        }
-
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background: #10b981;
-            border-radius: 50%;
-            animation: livePulse 1.5s infinite;
-        }
-
-        @keyframes livePulse {
-            0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.5);}
-            70% { box-shadow: 0 0 0 6px rgba(16,185,129,0);}
-            100% { box-shadow: 0 0 0 0 rgba(16,185,129,0);}
-        }
-
-        @keyframes shake {
-            0%,100% { transform: translateX(0);}
-            20%,60% { transform: translateX(-5px);}
-            40%,80% { transform: translateX(5px);}
-        }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0; }
+        .logo h1 { font-size: clamp(16px, 4vw, 18px); margin: 0; color: var(--text-color); animation: glowPulse 2s infinite; }
+        .logo span { color: var(--accent); font-weight: 800; text-shadow: 0 0 8px var(--accent); }
+        .sub-header { font-size: 10px; color: #444; margin-top: 2px; }
+        .header-buttons { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+        .icon-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.3s; display: flex; align-items: center; gap: 4px; }
+        .icon-btn:hover { background: var(--hover-color); transform: scale(1.05); }
+        .selector-container { position: relative; margin-bottom: 8px; flex-shrink: 0; }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #8899ac; font-size: 16px; pointer-events: none; z-index: 2; }
+        #pair-search { width: 100%; background: var(--secondary-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px 10px 40px; font-size: 14px; outline: none; box-sizing: border-box; transition: all 0.3s; margin-bottom: 8px; }
+        #pair-search:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        #pair-search::placeholder { color: #8899ac; font-size: 14px; }
+        .pairs-container { max-height: 200px; overflow-y: auto; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 5px 0; scrollbar-width: thin; display: none; position: absolute; width: 100%; z-index: 100; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .pair-option { padding: 8px 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+        .pair-option:hover { background: var(--hover-color); }
+        .pair-option.selected { background: var(--accent); color: white; }
+        .pair-option .pair-flag { font-size: 1.2rem; min-width: 24px; text-align: center; }
+        .pair-option .pair-name { flex: 1; font-weight: 500; }
+        .chart-container { position: relative; width: 100%; height: 240px; margin-bottom: 8px; flex-shrink: 0; }
+        .chart-box { width: 100%; height: 100%; background: var(--app-bg); border-radius: 10px; border: 1px solid var(--border-color); position: relative; overflow: hidden; transition: box-shadow 0.3s; }
+        .chart-box:hover { box-shadow: 0 0 20px var(--accent-glow); }
+        #mainChart { width: 100%; height: 100%; display: block; }
+        .watermark { position: absolute; bottom: 5px; right: 10px; font-size: 10px; color: rgba(255,255,255,0.2); pointer-events: none; z-index: 5; }
+        .chart-controls { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; z-index: 10; }
+        .chart-controls button { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 28px; height: 28px; border-radius: 14px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .chart-controls button:hover { background: var(--accent); color: white; }
+        .tf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 5px; flex-shrink: 0; }
+        .tf-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: #666; padding: 8px 0; border-radius: 8px; font-size: 11px; cursor: pointer; transition: all 0.3s ease; font-weight: 600; }
+        .tf-btn:hover { transform: scale(1.05); background: var(--hover-color); color: var(--text-color); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        .tf-btn.active { background: var(--accent); color: white; border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); animation: pulse 1.5s infinite; }
+        .analyze-btn { width: 100%; background: var(--accent); border: none; padding: 14px; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; font-size: clamp(14px, 4vw, 16px); margin: 5px 0; transition: all 0.3s; position: relative; overflow: hidden; flex-shrink: 0; }
+        .analyze-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow); }
+        .analyze-btn.cooldown { pointer-events: none; opacity: 0.7; }
+        .timer-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+        .timer-circle { width: 36px; height: 36px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; animation: spin 1s linear infinite; position: absolute; }
+        .timer-number { position: absolute; font-size: 16px; font-weight: bold; color: white; text-shadow: 0 0 5px var(--accent); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .status-area { display: flex; justify-content: center; align-items: center; gap: 8px; height: 24px; margin: 5px 0; font-size: 13px; flex-shrink: 0; }
+        .dot { width: 10px; height: 10px; background: #2575fc; border-radius: 50%; box-shadow: 0 0 10px #2575fc; animation: pulseDot 1.2s infinite; }
+        .result-display { width: 100%; height: 36px; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 10px; text-align: center; font-weight: bold; line-height: 36px; margin-bottom: 5px; opacity: 0; visibility: hidden; transition: opacity 0.2s; font-size: 14px; flex-shrink: 0; }
+        .result-display.visible { opacity: 1; visibility: visible; }
+        #snow-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; }
+        #tooltip { position: absolute; background: rgba(0,0,0,0.8); color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; pointer-events: none; z-index: 1001; display: none; }
+        .indicator-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; transition: all 0.3s; margin-right: 5px; }
+        .indicator-btn.active { background: var(--accent); color: white; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--accent-glow); } 70% { box-shadow: 0 0 0 10px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+        @keyframes pulseDot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes glowPulse { 0% { text-shadow: 0 0 2px var(--accent); } 50% { text-shadow: 0 0 15px var(--accent); } 100% { text-shadow: 0 0 2px var(--accent); } }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 80% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
-<div class="app-container">
-    <!-- ВЫБОР ЯЗЫКА -->
-    <div id="languageWelcome" class="language-welcome">
-        <div class="lang-glass-card">
-            <div class="glowing-icon">🌍✨</div>
-            <div class="lang-title">OptiBotX PRO</div>
-            <div class="lang-sub">Choose your language / Выберите язык</div>
-            <div class="lang-grid" id="langGrid">
-                <div class="lang-option" data-lang="en">🇬🇧 English</div>
-                <div class="lang-option" data-lang="ru">🇷🇺 Русский</div>
-                <div class="lang-option" data-lang="es">🇪🇸 Español</div>
-                <div class="lang-option" data-lang="de">🇩🇪 Deutsch</div>
-                <div class="lang-option" data-lang="fr">🇫🇷 Français</div>
-                <div class="lang-option" data-lang="pl">🇵🇱 Polski</div>
-            </div>
-            <button id="enterAppBtn" class="enter-btn">➡️ ENTER PLATFORM</button>
-        </div>
-    </div>
 
-    <!-- АКТИВАЦИЯ -->
-    <div id="activationModal" class="activation-overlay">
-        <div class="activation-card">
-            <div class="activation-icon">🔐⚡</div>
-            <div class="activation-title">Quantum Access</div>
-            <div style="font-size: 13px; margin: 8px 0 12px; opacity: 0.7;">Введите лицензионный ключ</div>
-            <input type="text" id="licenseKeyInput" class="code-field" placeholder="XXXX XXXX XXXX" autocomplete="off">
-            <button id="submitActivationBtn" class="activation-btn">🎯 Активировать PRO</button>
-            <button id="showInstructionBtn" class="help-btn">📘 Как получить код?</button>
-            <div id="activationFeedback" style="font-size: 12px; margin-top: 14px; min-height: 32px;"></div>
-            <div id="copyContactBtn" class="contact-chip">🤖 Telegram: @ZentixTrade 📋</div>
+<div id="welcome-overlay" class="welcome-overlay visible">
+    <div class="welcome-glass">
+        <h1 class="welcome-title">Welcome</h1>
+        <p class="welcome-subtitle">Choose your language</p>
+        <div class="language-list">
+            <div class="language-item" data-lang="en"><span class="flag">🇬🇧</span> English</div>
+            <div class="language-item" data-lang="es"><span class="flag">🇪🇸</span> Español</div>
+            <div class="language-item" data-lang="ru"><span class="flag">🇷🇺</span> Русский</div>
+            <div class="language-item" data-lang="pl"><span class="flag">🇵🇱</span> Polski</div>
+            <div class="language-item" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</div>
+            <div class="language-item" data-lang="fr"><span class="flag">🇫🇷</span> Français</div>
         </div>
-    </div>
-
-    <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
-    <div id="mainAppInterface" class="main-interface" style="display: none;">
-        <div class="glass-header">
-            <div class="logo">⚡ OptiBotX <span style="color:#c084fc;">PRO</span></div>
-            <div class="pocket-badge">
-                <span>📈</span>
-                <span>PocketOption</span>
-                <span>⚡</span>
-            </div>
-            <div class="header-icons">
-                <div id="globalThemeBtn" class="icon-glass">🌓</div>
-                <div id="snowEffectBtn" class="icon-glass">❄️</div>
-            </div>
-        </div>
-
-        <div class="search-area">
-            <span class="search-icon-abs">🔍</span>
-            <input type="text" id="pairSearchInput" class="search-box" placeholder="Поиск валютной пары...">
-            <div id="pairsDropdown" class="pairs-menu"></div>
-        </div>
-
-        <!-- ГРАФИК -->
-        <div class="chart-container">
-            <div class="chart-box">
-                <canvas id="mainChart"></canvas>
-                <div class="chart-watermark">OptiBotX PRO | PocketOption</div>
-                <div class="chart-controls">
-                    <button id="zoomOutBtn">−</button>
-                    <button id="zoomInBtn">+</button>
-                </div>
-                <button id="smaIndicatorBtn" class="indicator-btn">📈 SMA 7</button>
-            </div>
-        </div>
-
-        <div class="tf-buttons" id="tfContainer">
-            <button class="tf-btn" data-tf="5s">5s</button><button class="tf-btn" data-tf="10s">10s</button>
-            <button class="tf-btn" data-tf="15s">15s</button><button class="tf-btn" data-tf="30s">30s</button>
-            <button class="tf-btn active" data-tf="1m">1m</button><button class="tf-btn" data-tf="2m">2m</button>
-            <button class="tf-btn" data-tf="5m">5m</button><button class="tf-btn" data-tf="15m">15m</button>
-        </div>
-
-        <button id="analyzeSignalBtn" class="analyze-btn-main">🚀 AI Анализ</button>
-
-        <div class="status-line">
-            <div class="live-dot"></div>
-            <span id="liveStatusText">Система готова</span>
-        </div>
-        <div id="signalResultBox" class="result-panel"></div>
+        <button id="start-btn" class="start-btn">Start</button>
     </div>
 </div>
 
+<div id="register-overlay" class="register-overlay">
+    <div class="register-glass">
+        <h3 id="register-title">🔐 Активация доступа</h3>
+        <p id="register-desc">Для входа в платформу <strong>OptiBotX PRO</strong> необходим лицензионный код</p>
+        <div id="code-hint" class="code-hint">
+            📌 <span id="hint-title">Как получить код?</span><br>
+            <span id="hint-step1">1️⃣ Нажмите кнопку <strong>«Написать мне»</strong> ниже</span><br>
+            <span id="hint-step2">2️⃣ Напишите слово <strong style="color:#5b4dff;">«КОД»</strong> в Telegram</span><br>
+            <span id="hint-step3">3️⃣ Менеджер выдаст вам персональный код активации ✅</span>
+        </div>
+        <input type="text" id="code-input" class="register-input" placeholder="Введите полученный код" autocomplete="off">
+        <button id="activate-btn" class="register-btn">🎯 Активировать</button>
+        <div class="contact-group">
+            <div class="double-buttons">
+                <a id="contactMeBtn" class="contact-btn" href="https://t.me/ZentixTrade" target="_blank">✍️ Написать мне</a>
+                <button id="copyNickBtn" class="copy-btn">📋 Копировать ник</button>
+            </div>
+            <div class="contact-info">
+                <span>🤖 Мой TG: <strong>@ZentixTrade</strong></span>
+                <span>📱 Ник: <strong>ZentixTrade</strong></span>
+            </div>
+        </div>
+        <div id="register-message" class="register-message"></div>
+    </div>
+</div>
+
+<div class="app-container" id="main-app" style="display: none;">
+    <canvas id="snow-layer"></canvas>
+    <div id="tooltip"></div>
+    <header>
+        <div class="logo"><h1>AI OptiBotX <span>PRO</span></h1><div id="sub-header" class="sub-header">Select currency pair</div></div>
+        <div class="header-buttons"><button id="themeBtn" class="icon-btn">🌓</button><button id="snowToggle" class="icon-btn">☃️</button><button id="langBtn" class="icon-btn">🇬🇧 EN</button></div>
+    </header>
+    <div class="selector-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="pair-search" placeholder="🔍 Search pair (EUR, USD, OTC...)" autocomplete="off">
+        <div class="pairs-container" id="pairs-container"></div>
+    </div>
+    <select id="pair" style="display: none;"></select>
+    <div class="chart-container">
+        <div class="chart-box"><canvas id="mainChart"></canvas><div id="watermark" class="watermark">OptiBotX PRO</div></div>
+        <div class="chart-controls"><button onclick="zoomOut()">−</button><button onclick="zoomIn()">+</button></div>
+        <div style="position: absolute; bottom: 5px; left: 5px;"><button id="smaBtn" class="indicator-btn" onclick="toggleSMA()">SMA 7</button></div>
+    </div>
+    <div class="tf-grid">
+        <button class="tf-btn" onclick="selectTf(this)">5s</button><button class="tf-btn" onclick="selectTf(this)">10s</button>
+        <button class="tf-btn" onclick="selectTf(this)">15s</button><button class="tf-btn" onclick="selectTf(this)">30s</button>
+        <button class="tf-btn active" onclick="selectTf(this)">1m</button><button class="tf-btn" onclick="selectTf(this)">2m</button>
+        <button class="tf-btn" onclick="selectTf(this)">5m</button><button class="tf-btn" onclick="selectTf(this)">15m</button>
+    </div>
+    <button id="anBtn" class="analyze-btn" onclick="startAnalysis(this)"><span class="btn-text">Analyze</span></button>
+    <div id="status" class="status-area"><div class="dot"></div> <span id="wait-msg">Waiting...</span></div>
+    <div id="result" class="result-display"></div>
+</div>
+
 <script>
-    (function(){
-        let currentLanguage = 'ru';
-        let isActivated = false;
-        
-        // ВАЛИДНЫЕ КОДЫ
-        const validCodesList = [
-            '10341638','20451927','30561836','40771345','50881454','60991563','70101672',
-            '80211781','90321890','10431909','11542018','12652127','13762236','14872345',
-            '15982454','16092563','17102672','18212781','19322890','20432909','21543018',
-            '22653127','23763236','24873345','25983454','26093563','27103672','28213781',
-            '29323890','30433909','31544018','32654127','33764236','34874345','35984454'
-        ];
-        let usedCodesStore = JSON.parse(localStorage.getItem('used_pro_codes')) || {};
-        
-        function checkCodeValid(code){ return validCodesList.includes(code) && !usedCodesStore[code]; }
-        function markCodeUsed(code){ usedCodesStore[code]=true; localStorage.setItem('used_pro_codes',JSON.stringify(usedCodesStore)); }
-        
-        // Элементы
-        const langWelcomeDiv = document.getElementById('languageWelcome');
-        const activationModal = document.getElementById('activationModal');
-        const mainInterface = document.getElementById('mainAppInterface');
-        const enterBtn = document.getElementById('enterAppBtn');
-        const langOptions = document.querySelectorAll('.lang-option');
-        const activateSubmit = document.getElementById('submitActivationBtn');
-        const licenseInput = document.getElementById('licenseKeyInput');
-        const activationFeedback = document.getElementById('activationFeedback');
-        const showInstrBtn = document.getElementById('showInstructionBtn');
-        const copyContact = document.getElementById('copyContactBtn');
-        
-        let selectedLang = null;
-        
-        // Мультиязычность
-        const translations = {
-            en: { searchPlace: "Search currency pair...", analyze: "🚀 AI Analysis", statusReady: "System ready", buy: "BUY", sell: "SELL" },
-            ru: { searchPlace: "Поиск валютной пары...", analyze: "🚀 AI Анализ", statusReady: "Система готова", buy: "ВВЕРХ", sell: "ВНИЗ" },
-            es: { searchPlace: "Buscar par de divisas...", analyze: "🚀 Análisis IA", statusReady: "Sistema listo", buy: "COMPRAR", sell: "VENDER" },
-            de: { searchPlace: "Währungspaar suchen...", analyze: "🚀 KI-Analyse", statusReady: "System bereit", buy: "KAUFEN", sell: "VERKAUFEN" },
-            fr: { searchPlace: "Rechercher une paire...", analyze: "🚀 Analyse IA", statusReady: "Système prêt", buy: "ACHAT", sell: "VENTE" },
-            pl: { searchPlace: "Szukaj pary walutowej...", analyze: "🚀 Analiza AI", statusReady: "System gotowy", buy: "KUPNO", sell: "SPRZEDAŻ" }
-        };
-        
-        function updateUITexts(){
-            const t = translations[currentLanguage] || translations.ru;
-            const searchInput = document.getElementById('pairSearchInput');
-            if(searchInput) searchInput.placeholder = t.searchPlace;
-            const analyzeBtn = document.getElementById('analyzeSignalBtn');
-            if(analyzeBtn) analyzeBtn.innerHTML = t.analyze;
-            const statusSpan = document.getElementById('liveStatusText');
-            if(statusSpan) statusSpan.innerText = t.statusReady;
+    // ======================== 100 ОДНОРАЗОВЫХ КОДОВ ДОСТУПА ========================
+    const ONE_TIME_CODES = [
+        "1001","1002","1003","1004","1005","1006","1007","1008","1009","1010",
+        "1011","1012","1013","1014","1015","1016","1017","1018","1019","1020",
+        "1021","1022","1023","1024","1025","1026","1027","1028","1029","1030",
+        "1031","1032","1033","1034","1035","1036","1037","1038","1039","1040",
+        "1041","1042","1043","1044","1045","1046","1047","1048","1049","1050",
+        "2001","2002","2003","2004","2005","2006","2007","2008","2009","2010",
+        "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020",
+        "3001","3002","3003","3004","3005","3006","3007","3008","3009","3010",
+        "4001","4002","4003","4004","4005","4006","4007","4008","4009","4010",
+        "5001","5002","5003","5004","5005","5006","5007","5008","5009","5010"
+    ];
+    
+    let usedCodes = JSON.parse(localStorage.getItem('optibotx_used_codes')) || {};
+    
+    function isValidCode(code) {
+        if(!code) return false;
+        const trimmed = code.trim();
+        return ONE_TIME_CODES.includes(trimmed) && !usedCodes[trimmed];
+    }
+    
+    function markCodeAsUsed(code) {
+        usedCodes[code.trim()] = true;
+        localStorage.setItem('optibotx_used_codes', JSON.stringify(usedCodes));
+    }
+    
+    let isActivated = localStorage.getItem('optibotx_activated') === 'true';
+    const registerOverlay = document.getElementById('register-overlay');
+    const codeInput = document.getElementById('code-input');
+    const activateBtn = document.getElementById('activate-btn');
+    const registerMessageDiv = document.getElementById('register-message');
+    const mainApp = document.getElementById('main-app');
+    const welcomeOverlay = document.getElementById('welcome-overlay');
+
+    function setActivated() {
+        const code = codeInput.value;
+        if(isValidCode(code)) {
+            markCodeAsUsed(code);
+            isActivated = true;
+            localStorage.setItem('optibotx_activated', 'true');
+            registerMessageDiv.innerText = getTranslation('activateSuccess');
+            registerMessageDiv.classList.add('success');
+            registerMessageDiv.classList.remove('error');
+            setTimeout(() => { registerOverlay.classList.remove('visible'); registerMessageDiv.innerText = ''; }, 1000);
+        } else {
+            registerMessageDiv.innerText = getTranslation('wrongCode');
+            registerMessageDiv.classList.add('error');
+            registerMessageDiv.classList.remove('success');
+            codeInput.classList.add('error-shake');
+            setTimeout(() => codeInput.classList.remove('error-shake'), 400);
         }
-        
-        // Выбор языка
-        langOptions.forEach(opt => {
-            opt.addEventListener('click', () => {
-                langOptions.forEach(o => o.classList.remove('selected'));
-                opt.classList.add('selected');
-                selectedLang = opt.dataset.lang;
-                currentLanguage = selectedLang;
-                enterBtn.classList.add('active');
-                enterBtn.innerText = currentLanguage === 'ru' ? '🚀 ВОЙТИ В ПЛАТФОРМУ' : '🚀 ENTER PLATFORM';
-            });
+    }
+    
+    activateBtn.addEventListener('click', setActivated);
+    function showActivationModal() { if(!isActivated){ updateRegisterLang(); registerOverlay.classList.add('visible'); } return isActivated; }
+
+    // ======================== ПОЛНАЯ ЛОКАЛИЗАЦИЯ ========================
+    const translations = {
+        en: {
+            welcomeTitle: "Welcome", welcomeSub: "Choose your language", start: "Start",
+            registerTitle: "🔐 Access Activation", registerDesc: "To access <strong>OptiBotX PRO</strong> you need a license code",
+            hintTitle: "How to get a code?", step1: "1️⃣ Click the <strong>«Write to me»</strong> button below",
+            step2: "2️⃣ Write the word <strong style='color:#5b4dff;'>«CODE»</strong> in Telegram",
+            step3: "3️⃣ The manager will give you a personal activation code ✅",
+            placeholder: "Enter the received code", btnText: "🎯 Activate", contactBtn: "✍️ Write to me",
+            activateSuccess: "✅ Activation successful! Welcome.", wrongCode: "❌ Invalid or already used activation code.",
+            copySuccess: "📋 Nickname copied!",
+            subHeader: "Select currency pair", analyze: "Analyze", waiting: "Waiting...", buy: "BUY ", sell: "SELL ",
+            searchPlaceholder: "🔍 Search pair (EUR, USD, OTC...)", nothingFound: "❌ Nothing found",
+            loadingChart: "Loading chart..."
+        },
+        ru: {
+            welcomeTitle: "Добро пожаловать", welcomeSub: "Выберите язык", start: "Старт",
+            registerTitle: "🔐 Активация доступа", registerDesc: "Для входа в платформу <strong>OptiBotX PRO</strong> необходим лицензионный код",
+            hintTitle: "Как получить код?", step1: "1️⃣ Нажмите кнопку <strong>«Написать мне»</strong> ниже",
+            step2: "2️⃣ Напишите слово <strong style='color:#5b4dff;'>«КОД»</strong> в Telegram",
+            step3: "3️⃣ Менеджер выдаст вам персональный код активации ✅",
+            placeholder: "Введите полученный код", btnText: "🎯 Активировать", contactBtn: "✍️ Написать мне",
+            activateSuccess: "✅ Активация успешна! Добро пожаловать.", wrongCode: "❌ Неверный или уже использованный код активации.",
+            copySuccess: "📋 Ник скопирован!",
+            subHeader: "Выбери валютную пару", analyze: "Анализировать", waiting: "Ожидание...", buy: "ВВЕРХ ", sell: "ВНИЗ ",
+            searchPlaceholder: "🔍 Поиск пары (EUR, USD, OTC...)", nothingFound: "❌ Ничего не найдено",
+            loadingChart: "Загрузка графика..."
+        },
+        es: {
+            welcomeTitle: "Bienvenido", welcomeSub: "Elige tu idioma", start: "Comenzar",
+            registerTitle: "🔐 Activación", registerDesc: "Para acceder a <strong>OptiBotX PRO</strong> necesitas un código de licencia",
+            hintTitle: "¿Cómo obtener un código?", step1: "1️⃣ Haz clic en el botón <strong>«Escríbeme»</strong> abajo",
+            step2: "2️⃣ Escribe la palabra <strong style='color:#5b4dff;'>«CODE»</strong> en Telegram",
+            step3: "3️⃣ El gerente te dará un código de activación personal ✅",
+            placeholder: "Ingresa el código recibido", btnText: "🎯 Activar", contactBtn: "✍️ Escríbeme",
+            activateSuccess: "✅ ¡Activación exitosa! Bienvenido.", wrongCode: "❌ Código de activación inválido o ya usado.",
+            copySuccess: "📋 ¡Nick copiado!",
+            subHeader: "Seleccione un par de divisas", analyze: "Analizar", waiting: "Esperando...", buy: "COMPRAR ", sell: "VENDER ",
+            searchPlaceholder: "🔍 Buscar par (EUR, USD, OTC...)", nothingFound: "❌ Nada encontrado",
+            loadingChart: "Cargando gráfico..."
+        },
+        pl: {
+            welcomeTitle: "Witamy", welcomeSub: "Wybierz język", start: "Start",
+            registerTitle: "🔐 Aktywacja", registerDesc: "Aby uzyskać dostęp do <strong>OptiBotX PRO</strong> potrzebny jest kod licencyjny",
+            hintTitle: "Jak uzyskać kod?", step1: "1️⃣ Kliknij przycisk <strong>«Napisz do mnie»</strong> poniżej",
+            step2: "2️⃣ Napisz słowo <strong style='color:#5b4dff;'>«KOD»</strong> w Telegramie",
+            step3: "3️⃣ Menedżer wyda Ci osobisty kod aktywacyjny ✅",
+            placeholder: "Wprowadź otrzymany kod", btnText: "🎯 Aktywuj", contactBtn: "✍️ Napisz do mnie",
+            activateSuccess: "✅ Aktywacja udana! Witamy.", wrongCode: "❌ Nieprawidłowy lub już użyty kod aktywacyjny.",
+            copySuccess: "📋 Pseudonim skopiowany!",
+            subHeader: "Wybierz parę walutową", analyze: "Analizuj", waiting: "Oczekiwanie...", buy: "W GÓRĘ ", sell: "W DÓŁ ",
+            searchPlaceholder: "🔍 Szukaj pary (EUR, USD, OTC...)", nothingFound: "❌ Nic nie znaleziono",
+            loadingChart: "Ładowanie wykresu..."
+        },
+        de: {
+            welcomeTitle: "Willkommen", welcomeSub: "Wähle deine Sprache", start: "Start",
+            registerTitle: "🔐 Aktivierung", registerDesc: "Für den Zugriff auf <strong>OptiBotX PRO</strong> benötigen Sie einen Lizenzcode",
+            hintTitle: "Wie erhalte ich einen Code?", step1: "1️⃣ Klicken Sie unten auf die Schaltfläche <strong>«Schreib mir»</strong>",
+            step2: "2️⃣ Schreiben Sie das Wort <strong style='color:#5b4dff;'>«CODE»</strong> in Telegram",
+            step3: "3️⃣ Der Manager gibt Ihnen einen persönlichen Aktivierungscode ✅",
+            placeholder: "Geben Sie den erhaltenen Code ein", btnText: "🎯 Aktivieren", contactBtn: "✍️ Schreib mir",
+            activateSuccess: "✅ Aktivierung erfolgreich! Willkommen.", wrongCode: "❌ Ungültiger oder bereits verwendeter Aktivierungscode.",
+            copySuccess: "📋 Spitzname kopiert!",
+            subHeader: "Währungspaar auswählen", analyze: "Analysieren", waiting: "Warten...", buy: "KAUFEN ", sell: "VERKAUFEN ",
+            searchPlaceholder: "🔍 Paar suchen (EUR, USD, OTC...)", nothingFound: "❌ Nichts gefunden",
+            loadingChart: "Lade Diagramm..."
+        },
+        fr: {
+            welcomeTitle: "Bienvenue", welcomeSub: "Choisissez votre langue", start: "Démarrer",
+            registerTitle: "🔐 Activation", registerDesc: "Pour accéder à <strong>OptiBotX PRO</strong> vous avez besoin d'un code de licence",
+            hintTitle: "Comment obtenir un code ?", step1: "1️⃣ Cliquez sur le bouton <strong>«Écris-moi»</strong> ci-dessous",
+            step2: "2️⃣ Écrivez le mot <strong style='color:#5b4dff;'>«CODE»</strong> dans Telegram",
+            step3: "3️⃣ Le gestionnaire vous donnera un code d'activation personnel ✅",
+            placeholder: "Entrez le code reçu", btnText: "🎯 Activer", contactBtn: "✍️ Écris-moi",
+            activateSuccess: "✅ Activation réussie ! Bienvenue.", wrongCode: "❌ Code d'activation invalide ou déjà utilisé.",
+            copySuccess: "📋 Surnom copié !",
+            subHeader: "Choisissez une paire de devises", analyze: "Analyser", waiting: "Attente...", buy: "ACHAT ", sell: "VENTE ",
+            searchPlaceholder: "🔍 Rechercher une paire (EUR, USD, OTC...)", nothingFound: "❌ Rien trouvé",
+            loadingChart: "Chargement du graphique..."
+        }
+    };
+    
+    let curLang = 'en';
+    
+    function getTranslation(key) { return translations[curLang][key] || translations.en[key]; }
+    
+    function updateRegisterLang() {
+        const t = translations[curLang];
+        document.getElementById('register-title').innerHTML = t.registerTitle;
+        document.getElementById('register-desc').innerHTML = t.registerDesc;
+        document.getElementById('hint-title').innerHTML = t.hintTitle;
+        document.getElementById('hint-step1').innerHTML = t.step1;
+        document.getElementById('hint-step2').innerHTML = t.step2;
+        document.getElementById('hint-step3').innerHTML = t.step3;
+        codeInput.placeholder = t.placeholder;
+        activateBtn.innerHTML = t.btnText;
+        contactMeBtn.innerHTML = t.contactBtn;
+    }
+    
+    function updateUILang() {
+        const t = translations[curLang];
+        document.getElementById('sub-header').innerText = t.subHeader;
+        document.querySelector('#anBtn .btn-text').innerText = t.analyze;
+        document.getElementById('wait-msg').innerText = t.waiting;
+        document.getElementById('pair-search').placeholder = t.searchPlaceholder;
+        document.getElementById('langBtn').innerHTML = `${curLang === 'en' ? '🇬🇧' : curLang === 'ru' ? '🇷🇺' : curLang === 'es' ? '🇪🇸' : curLang === 'pl' ? '🇵🇱' : curLang === 'de' ? '🇩🇪' : '🇫🇷'} ${curLang.toUpperCase()}`;
+    }
+
+    // ======================== ГРАФИК ========================
+    const canvas = document.getElementById('mainChart');
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    let candles = [], smaData = [], showSMA = false, candleCount = 14, snowEnabled = false, cooldownActive = false;
+    
+    function setupCanvas(){ const rect=canvas.parentElement.getBoundingClientRect(); if(rect.width===0||rect.height===0) return; canvas.width=rect.width*dpr; canvas.height=rect.height*dpr; ctx.setTransform(1,0,0,1,0,0); ctx.scale(dpr,dpr); canvas.style.width=rect.width+'px'; canvas.style.height=rect.height+'px'; }
+    function initChart(){ setupCanvas(); candles=[]; let price=100; for(let i=0;i<candleCount;i++){ let open=price; let close=price+(Math.random()-0.5)*15; candles.push({ open, close, high:Math.max(open,close)+Math.random()*5+3, low:Math.min(open,close)-Math.random()*5-3, progress:1 }); price=close; } calculateSMA(); render(); }
+    function calculateSMA(period=7){ smaData=[]; for(let i=period-1;i<candles.length;i++){ let sum=0; for(let j=i-period+1;j<=i;j++) sum+=candles[j].close; smaData.push({ index:i, value:sum/period }); } }
+    function drawGrid(w,h,minP,maxP){ ctx.save(); ctx.strokeStyle=document.body.classList.contains('light-theme')?"#ccc":"#1e1e2f"; ctx.lineWidth=0.5; for(let i=0;i<=5;i++){ let y=h*0.15+(h*0.7/5)*i; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); let price=maxP-(i/5)*(maxP-minP); ctx.fillStyle=document.body.classList.contains('light-theme')?"#666":"#aaa"; ctx.font="8px 'Segoe UI'"; ctx.fillText(price.toFixed(2),5,y-2); } for(let i=1;i<candles.length;i++){ let x=(i/candles.length)*w; ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); } ctx.restore(); }
+    function render(){ const w=canvas.width/dpr, h=canvas.height/dpr; if(w<=0||h<=0) return; ctx.clearRect(0,0,w,h); if(candles.length===0){ ctx.fillStyle="#888"; ctx.font="12px sans-serif"; ctx.textAlign="center"; ctx.fillText(getTranslation('loadingChart'),w/2,h/2); return; } const allPrices=candles.flatMap(c=>[c.high,c.low]); const minP=Math.min(...allPrices), maxP=Math.max(...allPrices); const range=(maxP-minP)||10; const getY=p=>h-((p-minP)/range)*(h*0.7)-(h*0.15); drawGrid(w,h,minP,maxP); const candleWidth=w/candles.length; candles.forEach((c,i)=>{ const x=i*candleWidth+(candleWidth*0.15); const isUp=c.close>=c.open; const color=isUp?'#00ff88':'#ff4d4d'; ctx.strokeStyle=color; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(x+(candleWidth*0.35),getY(c.high)); ctx.lineTo(x+(candleWidth*0.35),getY(c.low)); ctx.stroke(); let openY=getY(c.open), closeY=getY(c.close), bodyY,bodyH; if(isUp){ let currentCloseY=openY-(openY-closeY)*c.progress; bodyY=currentCloseY; bodyH=openY-currentCloseY; } else { let currentCloseY=openY+(closeY-openY)*c.progress; bodyY=openY; bodyH=currentCloseY-openY; } if(c.progress>0&&bodyH>0.5){ ctx.fillStyle=color; let rectX=x, rectY=bodyY, rectW=candleWidth*0.7, rectH=bodyH, radius=2; ctx.beginPath(); ctx.moveTo(rectX+radius,rectY); ctx.lineTo(rectX+rectW-radius,rectY); ctx.quadraticCurveTo(rectX+rectW,rectY,rectX+rectW,rectY+radius); ctx.lineTo(rectX+rectW,rectY+rectH-radius); ctx.quadraticCurveTo(rectX+rectW,rectY+rectH,rectX+rectW-radius,rectY+rectH); ctx.lineTo(rectX+radius,rectY+rectH); ctx.quadraticCurveTo(rectX,rectY+rectH,rectX,rectY+rectH-radius); ctx.lineTo(rectX,rectY+radius); ctx.quadraticCurveTo(rectX,rectY,rectX+radius,rectY); ctx.closePath(); ctx.fill(); } }); if(showSMA&&smaData.length>1){ ctx.beginPath(); ctx.strokeStyle='#ffaa00'; ctx.lineWidth=2; smaData.forEach((pt,idx)=>{ let x=(pt.index/candles.length)*w+candleWidth/2; let y=getY(pt.value); if(idx===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke(); } }
+    setInterval(()=>{ if(candles.length===0) return; candles.shift(); let last=candles[candles.length-1]; let nO=last.close; let nC=nO+(Math.random()-0.5)*8; let newCandle={ open:nO, close:nC, high:Math.max(nO,nC)+Math.random()*4+2, low:Math.min(nO,nC)-Math.random()*4-2, progress:0 }; candles.push(newCandle); calculateSMA(); let progress=0; function animateNew(){ progress+=0.05; newCandle.progress=Math.min(progress,1); render(); if(progress<1) requestAnimationFrame(animateNew); } animateNew(); },3000);
+    function zoomIn(){ if(candleCount>5) candleCount-=2; initChart(); } function zoomOut(){ if(candleCount<30) candleCount+=2; initChart(); } window.zoomIn=zoomIn; window.zoomOut=zoomOut;
+    function toggleSMA(){ showSMA=!showSMA; smaBtn.classList.toggle('active',showSMA); render(); } window.toggleSMA=toggleSMA;
+    
+    // Снег
+    const sCanvas = document.getElementById('snow-layer'), sCtx = sCanvas.getContext('2d'); let flakes = [], snowAnimation;
+    function setupSnow() { sCanvas.width = sCanvas.parentElement.clientWidth; sCanvas.height = sCanvas.parentElement.clientHeight; flakes = Array.from({length:60},()=>({ x:Math.random()*sCanvas.width, y:Math.random()*sCanvas.height, r:Math.random()*3+1, d:Math.random()*1+0.5, angle:Math.random()*360 })); if(snowAnimation) cancelAnimationFrame(snowAnimation); drawSnow(); }
+    function drawSnow() { if(!snowEnabled) { sCtx.clearRect(0,0,sCanvas.width,sCanvas.height); snowAnimation=requestAnimationFrame(drawSnow); return; } sCtx.clearRect(0,0,sCanvas.width,sCanvas.height); sCtx.fillStyle="rgba(255,255,255,0.6)"; flakes.forEach(f=>{ sCtx.save(); sCtx.translate(f.x,f.y); sCtx.rotate(f.angle*Math.PI/180); sCtx.beginPath(); sCtx.arc(0,0,f.r,0,Math.PI*2); sCtx.fill(); sCtx.restore(); f.y+=f.d; f.x+=Math.sin(f.angle)*0.2; if(f.y>sCanvas.height) { f.y=-5; f.x=Math.random()*sCanvas.width; } if(f.x>sCanvas.width) f.x=0; if(f.x<0) f.x=sCanvas.width; }); snowAnimation=requestAnimationFrame(drawSnow); }
+    function toggleSnow() { snowEnabled = !snowEnabled; snowToggle.innerText = snowEnabled ? '❄️' : '☃️'; }
+    
+    // Пары
+    const allPairs = [
+        { name:"EUR/USD", flag:"🇪🇺🇺🇸", type:"Major" },{ name:"GBP/USD", flag:"🇬🇧🇺🇸", type:"Major" },{ name:"USD/JPY", flag:"🇺🇸🇯🇵", type:"Major" },{ name:"AUD/USD", flag:"🇦🇺🇺🇸", type:"Major" },{ name:"USD/CAD", flag:"🇺🇸🇨🇦", type:"Major" },{ name:"USD/CHF", flag:"🇺🇸🇨🇭", type:"Major" },{ name:"NZD/USD", flag:"🇳🇿🇺🇸", type:"Major" },{ name:"EUR/GBP", flag:"🇪🇺🇬🇧", type:"Cross" },{ name:"EUR/JPY", flag:"🇪🇺🇯🇵", type:"Cross" },{ name:"GBP/JPY", flag:"🇬🇧🇯🇵", type:"Cross" },{ name:"AUD/JPY", flag:"🇦🇺🇯🇵", type:"Cross" },{ name:"EUR/CAD", flag:"🇪🇺🇨🇦", type:"Cross" },{ name:"USD/RUB", flag:"🇺🇸🇷🇺", type:"Exotic" },{ name:"EUR/RUB", flag:"🇪🇺🇷🇺", type:"Exotic" },{ name:"EUR/USD OTC", flag:"🇪🇺🇺🇸", type:"OTC" },{ name:"GBP/USD OTC", flag:"🇬🇧🇺🇸", type:"OTC" }
+    ];
+    function renderPairs(filter=''){ const f=filter.toLowerCase(); const filtered=allPairs.filter(p=>p.name.toLowerCase().includes(f)||p.type.toLowerCase().includes(f)); pairsContainer.innerHTML=''; filtered.forEach(pair=>{ const div=document.createElement('div'); div.className='pair-option'; if(pair.name===hiddenSelect.value) div.classList.add('selected'); div.innerHTML=`<span class="pair-flag">${pair.flag}</span><span class="pair-name">${pair.name}</span><span class="pair-type">${pair.type}</span>`; div.addEventListener('click',()=>{ document.querySelectorAll('.pair-option').forEach(el=>el.classList.remove('selected')); div.classList.add('selected'); hiddenSelect.value=pair.name; searchInput.value=pair.name; changePair(); pairsContainer.style.display='none'; }); pairsContainer.appendChild(div); }); if(filtered.length===0){ const empty=document.createElement('div'); empty.className='pair-option'; empty.style.justifyContent='center'; empty.style.padding='20px'; empty.innerText=getTranslation('nothingFound'); pairsContainer.appendChild(empty); } }
+    
+    function changePair(){ canvas.style.opacity='0.3'; setTimeout(()=>{ initChart(); canvas.style.opacity='1'; },500); } window.changePair=changePair;
+    
+    function startAnalysis(btn){ if(!isActivated){ showActivationModal(); return; } if(cooldownActive)return; cooldownActive=true; btn.classList.add('cooldown'); const timerOverlay=document.createElement('div'); timerOverlay.className='timer-overlay'; const circle=document.createElement('div'); circle.className='timer-circle'; const number=document.createElement('span'); number.className='timer-number'; number.innerText='5'; timerOverlay.appendChild(circle); timerOverlay.appendChild(number); btn.appendChild(timerOverlay); let timeLeft=5; const interval=setInterval(()=>{ timeLeft--; number.innerText=timeLeft; if(timeLeft<=0)clearInterval(interval); },1000); const res=document.getElementById('result'); const stat=document.getElementById('status'); res.classList.remove('visible'); stat.style.display='flex'; setTimeout(()=>{ stat.style.display='none'; res.classList.add('visible'); const isUp=Math.random()>0.5; res.style.color=isUp?'#00ff88':'#ff4d4d'; res.style.borderColor=isUp?'#00ff88':'#ff4d4d'; res.innerHTML=`${isUp?translations[curLang].buy:translations[curLang].sell} (${Math.floor(Math.random()*15+82)}%)`; res.style.animation='popIn 0.4s'; setTimeout(()=>res.style.animation='',400); },1500); setTimeout(()=>{ clearInterval(interval); cooldownActive=false; btn.classList.remove('cooldown'); const overlay=btn.querySelector('.timer-overlay'); if(overlay)overlay.remove(); },5000); } window.startAnalysis=startAnalysis;
+    function selectTf(btn){ if(!isActivated){ showActivationModal(); return; } document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); } window.selectTf=selectTf;
+    
+    // DOM элементы
+    const startBtnElem = document.getElementById('start-btn');
+    const langItemsElem = document.querySelectorAll('.language-item');
+    const pairsContainer = document.getElementById('pairs-container');
+    const searchInput = document.getElementById('pair-search');
+    const hiddenSelect = document.getElementById('pair');
+    const snowToggleElem = document.getElementById('snowToggle');
+    const langBtnElem = document.getElementById('langBtn');
+    const themeBtnElem = document.getElementById('themeBtn');
+    const smaBtn = document.getElementById('smaBtn');
+    const contactMeBtn = document.getElementById('contactMeBtn');
+    const copyNickBtnElem = document.getElementById('copyNickBtn');
+    
+    copyNickBtnElem.addEventListener('click', () => {
+        navigator.clipboard.writeText("ZentixTrade").then(() => {
+            const original = copyNickBtnElem.innerHTML;
+            copyNickBtnElem.innerHTML = "✅ " + (curLang === 'ru' ? "Скопировано!" : curLang === 'es' ? "¡Copiado!" : curLang === 'pl' ? "Skopiowano!" : curLang === 'de' ? "Kopiert!" : curLang === 'fr' ? "Copié !" : "Copied!");
+            setTimeout(() => { copyNickBtnElem.innerHTML = original; }, 1500);
+            if(registerMessageDiv) { registerMessageDiv.innerText = translations[curLang].copySuccess; registerMessageDiv.classList.add('success'); setTimeout(()=>registerMessageDiv.innerText='', 1800); }
         });
-        
-        enterBtn.addEventListener('click', () => {
-            if(!selectedLang){
-                activationFeedback.innerText = currentLanguage === 'ru' ? 'Выберите язык!' : 'Select language!';
-                return;
-            }
-            langWelcomeDiv.classList.add('hidden');
-            activationModal.classList.add('visible');
+    });
+    
+    function toggleTheme() { document.body.classList.toggle('light-theme'); render(); }
+    themeBtnElem.onclick = toggleTheme;
+    snowToggleElem.onclick = toggleSnow;
+    langBtnElem.onclick = function() {
+        const langs = ['en', 'es', 'ru', 'pl', 'de', 'fr'];
+        let idx = langs.indexOf(curLang);
+        idx = (idx + 1) % langs.length;
+        curLang = langs[idx];
+        updateUILang();
+        updateRegisterLang();
+        renderPairs(searchInput.value);
+        render();
+    };
+    
+    let selectedLanguage = null;
+    langItemsElem.forEach(item => {
+        item.addEventListener('click', () => {
+            langItemsElem.forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            selectedLanguage = item.dataset.lang;
+            startBtnElem.classList.add('visible');
         });
-        
-        function showInstructionPopup(){
-            const modalDiv = document.createElement('div');
-            modalDiv.style.position='fixed'; modalDiv.style.top='0'; modalDiv.style.left='0';
-            modalDiv.style.width='100%'; modalDiv.style.height='100%'; modalDiv.style.background='rgba(0,0,0,0.85)';
-            modalDiv.style.backdropFilter='blur(24px)'; modalDiv.style.zIndex='30000';
-            modalDiv.style.display='flex'; modalDiv.style.alignItems='center'; modalDiv.style.justifyContent='center';
-            const inner = document.createElement('div');
-            inner.style.background='linear-gradient(145deg,#1a1f35,#0c0f28)'; inner.style.borderRadius='56px';
-            inner.style.padding='28px 24px'; inner.style.maxWidth='340px'; inner.style.width='85%';
-            inner.style.border='1px solid #7c3aed'; inner.style.textAlign='center';
-            inner.innerHTML = `
-                <div style="font-size:48px;">📘🔑</div>
-                <h3 style="margin:12px 0; font-size:24px; background:linear-gradient(135deg,#fff,#c084fc); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">${currentLanguage === 'ru' ? 'Как получить код' : 'How to get code'}</h3>
-                <div style="text-align:left; margin:20px 0; display:flex; flex-direction:column; gap:16px;">
-                    <div><span style="background:#7c3aed; display:inline-block; width:26px; height:26px; border-radius:30px; text-align:center; margin-right:12px;">1</span> ${currentLanguage === 'ru' ? 'Напишите в Telegram:' : 'Message in Telegram:'} <strong style="color:#c084fc;">@ZentixTrade</strong></div>
-                    <div><span style="background:#7c3aed; display:inline-block; width:26px; height:26px; border-radius:30px; text-align:center; margin-right:12px;">2</span> ${currentLanguage === 'ru' ? 'Отправьте слово "КОД PRO"' : 'Send word "CODE PRO"'}</div>
-                    <div><span style="background:#7c3aed; display:inline-block; width:26px; height:26px; border-radius:30px; text-align:center; margin-right:12px;">3</span> ${currentLanguage === 'ru' ? 'Получите уникальный ключ' : 'Get unique key'}</div>
-                </div>
-                <button id="closeInstrModal" style="background:#7c3aed; border:none; padding:12px 20px; border-radius:60px; color:white; font-weight:bold; width:100%; cursor:pointer;">${currentLanguage === 'ru' ? 'Понятно' : 'Got it'}</button>
-            `;
-            modalDiv.appendChild(inner);
-            document.body.appendChild(modalDiv);
-            document.getElementById('closeInstrModal').onclick = () => modalDiv.remove();
-            modalDiv.onclick = (e) => { if(e.target === modalDiv) modalDiv.remove(); };
-        }
-        showInstrBtn.onclick = showInstructionPopup;
-        
-        copyContact.onclick = () => {
-            navigator.clipboard.writeText('@ZentixTrade');
-            const toast = document.createElement('div');
-            toast.innerText = '✅ Copied!';
-            toast.style.position='fixed'; toast.style.bottom='30px'; toast.style.left='50%'; toast.style.transform='translateX(-50%)';
-            toast.style.background='#000000aa'; toast.style.backdropFilter='blur(12px)'; toast.style.padding='8px 24px'; toast.style.borderRadius='60px'; toast.style.color='white'; toast.style.zIndex='99999';
-            document.body.appendChild(toast);
-            setTimeout(()=>toast.remove(),1500);
-        };
-        
-        activateSubmit.onclick = () => {
-            const code = licenseInput.value.trim();
-            if(checkCodeValid(code)){
-                markCodeUsed(code);
-                isActivated = true;
-                activationFeedback.innerHTML = currentLanguage === 'ru' ? '✅ Доступ открыт! Загрузка...' : '✅ Access granted! Loading...';
-                activationFeedback.style.color = '#10b981';
-                setTimeout(() => {
-                    activationModal.classList.remove('visible');
-                    mainInterface.style.display = 'flex';
-                    initCoreApp();
-                }, 800);
-            } else {
-                activationFeedback.innerHTML = currentLanguage === 'ru' ? '❌ Неверный или использованный код' : '❌ Invalid or used code';
-                activationFeedback.style.color = '#ef4444';
-                licenseInput.style.animation = 'shake 0.3s';
-                setTimeout(()=> licenseInput.style.animation='',400);
-            }
-        };
-        
-        // ОСНОВНОЙ ГРАФИК С ФЛАГАМИ
-        function initCoreApp(){
-            updateUITexts();
-            
-            const pairsList = [
-                { name: "EUR/USD", flag: "🇪🇺🇺🇸" }, { name: "GBP/USD", flag: "🇬🇧🇺🇸" }, { name: "USD/JPY", flag: "🇺🇸🇯🇵" },
-                { name: "AUD/USD", flag: "🇦🇺🇺🇸" }, { name: "USD/CAD", flag: "🇺🇸🇨🇦" }, { name: "EUR/GBP", flag: "🇪🇺🇬🇧" },
-                { name: "GBP/JPY", flag: "🇬🇧🇯🇵" }, { name: "EUR/JPY", flag: "🇪🇺🇯🇵" }, { name: "USD/RUB", flag: "🇺🇸🇷🇺" },
-                { name: "EUR/RUB", flag: "🇪🇺🇷🇺" }, { name: "BTC/USD", flag: "₿🇺🇸" }, { name: "ETH/USD", flag: "⟠🇺🇸" }
-            ];
-            let currentPair = "EUR/USD";
-            let candles = [];
-            let candleCount = 18;
-            let showSMA = false;
-            let smaData = [];
-            let cooldownActive = false;
-            let snowActive = false;
-            let snowCanvasRef = null;
-            let animationInterval;
-            
-            const chartCanvas = document.getElementById('mainChart');
-            const ctx = chartCanvas.getContext('2d');
-            let dpr = window.devicePixelRatio || 1;
-            
-            const searchField = document.getElementById('pairSearchInput');
-            const dropdownDiv = document.getElementById('pairsDropdown');
-            const smaBtn = document.getElementById('smaIndicatorBtn');
-            const analyzeMainBtn = document.getElementById('analyzeSignalBtn');
-            const resultDiv = document.getElementById('signalResultBox');
-            const statusSpan = document.getElementById('liveStatusText');
-            const themeBtn = document.getElementById('globalThemeBtn');
-            const snowBtn = document.getElementById('snowEffectBtn');
-            const zoomInBtn = document.getElementById('zoomInBtn');
-            const zoomOutBtn = document.getElementById('zoomOutBtn');
-            const tfBtns = document.querySelectorAll('.tf-btn');
-            
-            function generateCandles(){
-                let price = 100;
-                candles = [];
-                for(let i=0; i<candleCount; i++){
-                    let open = price;
-                    let close = open + (Math.random() - 0.5) * 12;
-                    candles.push({
-                        open, close,
-                        high: Math.max(open, close) + Math.random() * 5 + 2,
-                        low: Math.min(open, close) - Math.random() * 5 - 2,
-                        progress: 1
-                    });
-                    price = close;
-                }
-                calculateSMA();
-            }
-            
-            function calculateSMA(period = 7){
-                smaData = [];
-                for(let i = period-1; i < candles.length; i++){
-                    let sum = 0;
-                    for(let j = i-period+1; j <= i; j++) sum += candles[j].close;
-                    smaData.push({ index: i, value: sum/period });
-                }
-            }
-            
-            function drawChart(){
-                if(!chartCanvas || !ctx) return;
-                const rect = chartCanvas.parentElement.getBoundingClientRect();
-                const w = rect.width;
-                const h = rect.height;
-                chartCanvas.width = w * dpr;
-                chartCanvas.height = h * dpr;
-                chartCanvas.style.width = w + 'px';
-                chartCanvas.style.height = h + 'px';
-                ctx.setTransform(1,0,0,1,0,0);
-                ctx.scale(dpr, dpr);
-                ctx.clearRect(0,0,w,h);
-                
-                if(!candles.length) return;
-                
-                const allPrices = candles.flatMap(c => [c.high, c.low]);
-                const minP = Math.min(...allPrices);
-                const maxP = Math.max(...allPrices);
-                const range = (maxP - minP) || 10;
-                const getY = (p) => h - ((p - minP) / range) * (h * 0.7) - (h * 0.12);
-                
-                // Сетка
-                ctx.strokeStyle = document.body.classList.contains('light') ? "#ccc" : "#2a2a3a";
-                ctx.lineWidth = 0.5;
-                for(let i=0; i<=5; i++){
-                    let y = h * 0.12 + (h * 0.76 / 5) * i;
-                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y);
-                    ctx.stroke();
-                    let price = maxP - (i / 5) * (maxP - minP);
-                    ctx.fillStyle = "#888";
-                    ctx.font = "8px 'Segoe UI'";
-                    ctx.fillText(price.toFixed(2), 5, y-2);
-                }
-                
-                const candleWidth = w / candles.length;
-                candles.forEach((c, i) => {
-                    const x = i * candleWidth;
-                    const isUp = c.close >= c.open;
-                    const color = isUp ? '#00d68f' : '#ff4d6d';
-                    
-                    ctx.beginPath();
-                    ctx.strokeStyle = color;
-                    ctx.lineWidth = 1.2;
-                    ctx.moveTo(x + candleWidth/2, getY(c.high));
-                    ctx.lineTo(x + candleWidth/2, getY(c.low));
-                    ctx.stroke();
-                    
-                    let openY = getY(c.open);
-                    let closeY = getY(c.close);
-                    let bodyY = Math.min(openY, closeY);
-                    let bodyH = Math.abs(openY - closeY);
-                    if(bodyH > 0.5){
-                        ctx.fillStyle = color;
-                        ctx.fillRect(x + candleWidth*0.2, bodyY, candleWidth*0.6, bodyH);
-                    }
-                });
-                
-                if(showSMA && smaData.length > 1){
-                    ctx.beginPath();
-                    ctx.strokeStyle = '#ffaa44';
-                    ctx.lineWidth = 2;
-                    smaData.forEach((pt, idx) => {
-                        let x = (pt.index / candles.length) * w + candleWidth/2;
-                        let y = getY(pt.value);
-                        if(idx === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    });
-                    ctx.stroke();
-                }
-            }
-            
-            function startCandleAnimation(){
-                if(animationInterval) clearInterval(animationInterval);
-                animationInterval = setInterval(() => {
-                    if(candles.length === 0) return;
-                    candles.shift();
-                    let last = candles[candles.length-1];
-                    let newOpen = last.close;
-                    let newClose = newOpen + (Math.random() - 0.5) * 9;
-                    let newCandle = {
-                        open: newOpen, close: newClose,
-                        high: Math.max(newOpen, newClose) + Math.random() * 4 + 1,
-                        low: Math.min(newOpen, newClose) - Math.random() * 4 - 1,
-                        progress: 0
-                    };
-                    candles.push(newCandle);
-                    calculateSMA();
-                    let progress = 0;
-                    function animateNew(){
-                        progress += 0.05;
-                        newCandle.progress = Math.min(progress, 1);
-                        drawChart();
-                        if(progress < 1) requestAnimationFrame(animateNew);
-                    }
-                    animateNew();
-                }, 2800);
-            }
-            
-            function regenerateChartData(){
-                generateCandles();
-                drawChart();
-            }
-            
-            function zoomIn(){
-                if(candleCount > 6) candleCount -= 2;
-                generateCandles();
-                drawChart();
-            }
-            function zoomOut(){
-                if(candleCount < 28) candleCount += 2;
-                generateCandles();
-                drawChart();
-            }
-            
-            // Поиск пар с флагами
-            function renderPairsDropdown(filter=""){
-                const filtered = pairsList.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
-                dropdownDiv.innerHTML = filtered.map(p => `<div class="pair-row" data-pair="${p.name}"><span class="pair-flag">${p.flag}</span> <strong>${p.name}</strong></div>`).join('');
-                document.querySelectorAll('.pair-row').forEach(el => {
-                    el.addEventListener('click',()=>{
-                        currentPair = el.dataset.pair;
-                        searchField.value = currentPair;
-                        dropdownDiv.style.display = 'none';
-                        regenerateChartData();
-                    });
-                });
-            }
-            
-            searchField.addEventListener('input',(e)=>{ renderPairsDropdown(e.target.value); dropdownDiv.style.display='block'; });
-            searchField.addEventListener('focus',()=>{ renderPairsDropdown(searchField.value); dropdownDiv.style.display='block'; });
-            document.addEventListener('click',(e)=>{ if(!searchField.contains(e.target) && !dropdownDiv.contains(e.target)) dropdownDiv.style.display='none'; });
-            renderPairsDropdown("");
-            
-            smaBtn.onclick = () => { showSMA = !showSMA; smaBtn.style.background = showSMA ? '#7c3aed' : 'rgba(0,0,0,0.6)'; drawChart(); };
-            zoomInBtn.onclick = zoomIn;
-            zoomOutBtn.onclick = zoomOut;
-            
-            themeBtn.onclick = () => { document.body.classList.toggle('light'); drawChart(); };
-            
-            snowBtn.onclick = () => {
-                snowActive = !snowActive;
-                if(snowActive && !snowCanvasRef){
-                    snowCanvasRef = document.createElement('canvas');
-                    snowCanvasRef.style.position='fixed'; snowCanvasRef.style.top='0'; snowCanvasRef.style.left='0';
-                    snowCanvasRef.style.width='100%'; snowCanvasRef.style.height='100%'; snowCanvasRef.style.pointerEvents='none'; snowCanvasRef.style.zIndex='1000';
-                    document.body.appendChild(snowCanvasRef);
-                    let flakes=[];
-                    function resizeAndInit(){
-                        snowCanvasRef.width=window.innerWidth; snowCanvasRef.height=window.innerHeight;
-                        flakes = Array(70).fill().map(()=>({x:Math.random()*snowCanvasRef.width, y:Math.random()*snowCanvasRef.height, r:Math.random()*3+1, speed:Math.random()*0.8+0.4}));
-                    }
-                    function drawSnowLoop(){
-                        if(!snowActive || !snowCanvasRef) return;
-                        const sCtx = snowCanvasRef.getContext('2d');
-                        sCtx.clearRect(0,0,snowCanvasRef.width,snowCanvasRef.height);
-                        sCtx.fillStyle='rgba(255,255,255,0.7)';
-                        flakes.forEach(f=>{ sCtx.beginPath(); sCtx.arc(f.x,f.y,f.r,0,Math.PI*2); sCtx.fill(); f.y+=f.speed; if(f.y>snowCanvasRef.height){ f.y=0; f.x=Math.random()*snowCanvasRef.width; } });
-                        requestAnimationFrame(drawSnowLoop);
-                    }
-                    resizeAndInit(); window.addEventListener('resize',resizeAndInit);
-                    drawSnowLoop();
-                } else if(!snowActive && snowCanvasRef){ snowCanvasRef.remove(); snowCanvasRef=null; }
-            };
-            
-            tfBtns.forEach(btn=>{
-                btn.addEventListener('click',()=>{
-                    tfBtns.forEach(b=>b.classList.remove('active'));
-                    btn.classList.add('active');
-                    statusSpan.innerText = `⏱ ${btn.innerText}`;
-                });
-            });
-            
-            analyzeMainBtn.onclick = () => {
-                if(cooldownActive) return;
-                cooldownActive = true;
-                analyzeMainBtn.style.opacity='0.6';
-                statusSpan.innerText = translations[currentLanguage]?.statusReady === 'System ready' ? '🧠 AI Analyzing...' : '🧠 Анализ...';
-                resultDiv.style.opacity='0';
-                setTimeout(()=>{
-                    const isBuy = Math.random() > 0.5;
-                    const percent = Math.floor(Math.random()*30+70);
-                    const signalText = isBuy ? `📈 ${translations[currentLanguage]?.buy || 'BUY'} ${percent}%` : `📉 ${translations[currentLanguage]?.sell || 'SELL'} ${percent}%`;
-                    resultDiv.innerHTML = signalText;
-                    resultDiv.style.background = isBuy ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)';
-                    resultDiv.style.border = `1px solid ${isBuy ? '#10b981' : '#ef4444'}`;
-                    resultDiv.style.opacity = '1';
-                    statusSpan.innerText = translations[currentLanguage]?.statusReady || 'System ready';
-                    cooldownActive = false;
-                    analyzeMainBtn.style.opacity='1';
-                }, 1500);
-            };
-            
-            generateCandles();
-            drawChart();
-            startCandleAnimation();
-            window.addEventListener('resize', () => drawChart());
-        }
-    })();
+    });
+    
+    startBtnElem.addEventListener('click', () => {
+        if(!selectedLanguage) { selectedLanguage = 'en'; const def = document.querySelector('.language-item[data-lang="en"]'); if(def) def.classList.add('selected'); }
+        curLang = selectedLanguage;
+        updateUILang();
+        updateRegisterLang();
+        welcomeOverlay.classList.remove('visible');
+        mainApp.style.display = 'flex';
+        initChart();
+        setupSnow();
+        allPairs.forEach(p => { const opt = document.createElement('option'); opt.value = p.name; opt.text = p.name; hiddenSelect.appendChild(opt); });
+        if(allPairs.length > 0){ hiddenSelect.value = allPairs[0].name; searchInput.value = allPairs[0].name; }
+        renderPairs();
+        render();
+    });
+    
+    searchInput.addEventListener('focus', () => { pairsContainer.style.display = 'block'; });
+    document.addEventListener('click', (e) => { if(!searchInput.contains(e.target) && !pairsContainer.contains(e.target)) pairsContainer.style.display = 'none'; });
+    searchInput.addEventListener('input', (e) => { renderPairs(e.target.value); if(!pairsContainer.style.display || pairsContainer.style.display === 'none') pairsContainer.style.display = 'block'; });
+    
+    if(window.Telegram?.WebApp) window.Telegram.WebApp.expand();
 </script>
 </body>
 </html>
