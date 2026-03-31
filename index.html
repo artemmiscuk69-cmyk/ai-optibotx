@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>OptiBotX PRO | Quantum Terminal</title>
+    <title>OptiBotX PRO | Quantum Trading Terminal</title>
     <style>
         * {
             margin: 0;
@@ -14,7 +14,7 @@
 
         :root {
             --bg-deep: #050514;
-            --bg-card: rgba(18, 22, 40, 0.75);
+            --bg-card: rgba(18, 22, 45, 0.75);
             --accent-primary: #7c3aed;
             --accent-secondary: #c084fc;
             --accent-glow: rgba(124, 58, 237, 0.5);
@@ -23,7 +23,8 @@
             --border-glass: rgba(255, 255, 255, 0.08);
             --success: #10b981;
             --danger: #ef4444;
-            --warning: #f59e0b;
+            --chart-up: #00d68f;
+            --chart-down: #ff4d6d;
         }
 
         body.light {
@@ -48,7 +49,6 @@
             transition: background 0.4s ease;
         }
 
-        /* Глобальный контейнер */
         .app-container {
             width: 100%;
             max-width: 480px;
@@ -60,7 +60,7 @@
             background: radial-gradient(ellipse at 20% 30%, rgba(124,58,237,0.08) 0%, transparent 70%);
         }
 
-        /* ========== ВЕЛКОМ С ВЫБОРОМ ЯЗЫКА (КРАСИВЕЙШИЙ) ========== */
+        /* ========== ВЫБОР ЯЗЫКА (РОСКОШНЫЙ) ========== */
         .language-welcome {
             position: fixed;
             top: 0;
@@ -94,7 +94,6 @@
             border: 1px solid rgba(124, 58, 237, 0.5);
             box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(124, 58, 237, 0.2) inset;
             text-align: center;
-            transform: scale(0.92);
             animation: langCardRise 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.1) forwards;
         }
 
@@ -128,7 +127,6 @@
             font-size: 13px;
             color: var(--text-secondary);
             margin-bottom: 32px;
-            letter-spacing: 0.5px;
         }
 
         .lang-grid {
@@ -151,7 +149,6 @@
             font-size: 16px;
             cursor: pointer;
             transition: all 0.25s ease;
-            backdrop-filter: blur(4px);
         }
 
         .lang-option:hover {
@@ -190,12 +187,7 @@
             box-shadow: 0 8px 28px rgba(124,58,237,0.4);
         }
 
-        .enter-btn.active:hover {
-            transform: scale(1.02);
-            box-shadow: 0 12px 32px rgba(124,58,237,0.6);
-        }
-
-        /* ========== АКТИВАЦИОННОЕ ОКНО (шикарное) ========== */
+        /* ========== АКТИВАЦИЯ (ПАРОЛЬ) ========== */
         .activation-overlay {
             position: fixed;
             top: 0;
@@ -309,7 +301,7 @@
             transition: 0.2s;
         }
 
-        /* ========== ОСНОВНОЙ ИНТЕРФЕЙС ========== */
+        /* ========== ОСНОВНОЙ ИНТЕРФЕЙС (ТОТ САМЫЙ ГРАФИК) ========== */
         .main-interface {
             width: 100%;
             height: 100%;
@@ -340,9 +332,21 @@
             color: transparent;
         }
 
+        .pocket-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(124,58,237,0.2);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+        }
+
         .header-icons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .icon-glass {
@@ -410,18 +414,77 @@
             background: var(--accent-primary);
         }
 
-        .chart-card {
+        /* КОНТЕЙНЕР ГРАФИКА - ТОТ САМЫЙ СТИЛЬ */
+        .chart-container {
+            position: relative;
+            width: 100%;
             background: var(--bg-card);
             backdrop-filter: blur(12px);
             border-radius: 32px;
-            padding: 8px;
+            padding: 12px;
             border: 1px solid var(--border-glass);
         }
 
-        canvas#mainChartCanvas {
+        .chart-box {
+            position: relative;
             width: 100%;
-            height: 200px;
+            height: 220px;
+            background: rgba(0,0,0,0.2);
             border-radius: 24px;
+            overflow: hidden;
+        }
+
+        canvas#mainChart {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .chart-watermark {
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-size: 9px;
+            color: rgba(255,255,255,0.25);
+            pointer-events: none;
+            font-weight: 500;
+        }
+
+        .chart-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 5;
+        }
+
+        .chart-controls button {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .indicator-btn {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 10px;
+            cursor: pointer;
+            z-index: 5;
         }
 
         .tf-buttons {
@@ -493,11 +556,17 @@
             70% { box-shadow: 0 0 0 6px rgba(16,185,129,0);}
             100% { box-shadow: 0 0 0 0 rgba(16,185,129,0);}
         }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0);}
+            20%,60% { transform: translateX(-5px);}
+            40%,80% { transform: translateX(5px);}
+        }
     </style>
 </head>
 <body>
 <div class="app-container">
-    <!-- КРАСИВЫЙ ВЫБОР ЯЗЫКА (появляется первым и блокирует всё) -->
+    <!-- ВЫБОР ЯЗЫКА (ВСЕГДА ПРИ ЗАХОДЕ) -->
     <div id="languageWelcome" class="language-welcome">
         <div class="lang-glass-card">
             <div class="glowing-icon">🌍✨</div>
@@ -515,7 +584,7 @@
         </div>
     </div>
 
-    <!-- АКТИВАЦИОННОЕ ОКНО (доступ после языка) -->
+    <!-- АКТИВАЦИЯ (ПАРОЛЬ/КОД) -->
     <div id="activationModal" class="activation-overlay">
         <div class="activation-card">
             <div class="activation-icon">🔐⚡</div>
@@ -529,10 +598,13 @@
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+    <!-- ОСНОВНОЙ ИНТЕРФЕЙС (ТОТ САМЫЙ ГРАФИК) -->
     <div id="mainAppInterface" class="main-interface" style="display: none;">
         <div class="glass-header">
             <div class="logo">⚡ OptiBotX <span style="color:#c084fc;">PRO</span></div>
+            <div class="pocket-badge">
+                <span>📊</span> PocketOption
+            </div>
             <div class="header-icons">
                 <div id="globalThemeBtn" class="icon-glass">🌓</div>
                 <div id="snowEffectBtn" class="icon-glass">❄️</div>
@@ -545,10 +617,16 @@
             <div id="pairsDropdown" class="pairs-menu"></div>
         </div>
 
-        <div class="chart-card">
-            <canvas id="mainChartCanvas" width="400" height="200"></canvas>
-            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px;">
-                <button id="smaToggleBtn" class="icon-glass" style="width: 34px; height: 34px;">📈</button>
+        <!-- ТОТ САМЫЙ ГРАФИК С АНИМАЦИЕЙ СВЕЧЕЙ -->
+        <div class="chart-container">
+            <div class="chart-box">
+                <canvas id="mainChart"></canvas>
+                <div class="chart-watermark">OptiBotX PRO | Powered by AI</div>
+                <div class="chart-controls">
+                    <button id="zoomOutBtn">−</button>
+                    <button id="zoomInBtn">+</button>
+                </div>
+                <button id="smaIndicatorBtn" class="indicator-btn">📈 SMA 7</button>
             </div>
         </div>
 
@@ -571,45 +649,25 @@
 
 <script>
     (function(){
-        // ---------- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ----------
-        let currentLanguage = 'en';
-        let isActivated = localStorage.getItem('optibotx_pro_activated') === 'true';
-        let languageSelected = localStorage.getItem('lang_selected') === 'true';
+        // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+        let currentLanguage = 'ru';
+        let isActivated = false;
         
-        // Словарь для мультиязычности интерфейса (основные элементы)
-        const translations = {
-            en: { searchPlace: "Search currency pair...", analyze: "🚀 AI Analysis", statusReady: "System ready", buy: "BUY", sell: "SELL", analysisText: "Analysis complete" },
-            ru: { searchPlace: "Поиск валютной пары...", analyze: "🚀 AI Анализ", statusReady: "Система готова", buy: "ВВЕРХ", sell: "ВНИЗ", analysisText: "Анализ завершен" },
-            es: { searchPlace: "Buscar par de divisas...", analyze: "🚀 Análisis IA", statusReady: "Sistema listo", buy: "COMPRAR", sell: "VENDER", analysisText: "Análisis completo" },
-            de: { searchPlace: "Währungspaar suchen...", analyze: "🚀 KI-Analyse", statusReady: "System bereit", buy: "KAUFEN", sell: "VERKAUFEN", analysisText: "Analyse abgeschlossen" },
-            fr: { searchPlace: "Rechercher une paire...", analyze: "🚀 Analyse IA", statusReady: "Système prêt", buy: "ACHAT", sell: "VENTE", analysisText: "Analyse terminée" },
-            pl: { searchPlace: "Szukaj pary walutowej...", analyze: "🚀 Analiza AI", statusReady: "System gotowy", buy: "KUPNO", sell: "SPRZEDAŻ", analysisText: "Analiza zakończona" }
-        };
-        
-        function updateUITexts(){
-            const t = translations[currentLanguage] || translations.en;
-            const searchInput = document.getElementById('pairSearchInput');
-            if(searchInput) searchInput.placeholder = t.searchPlace;
-            const analyzeBtn = document.getElementById('analyzeSignalBtn');
-            if(analyzeBtn) analyzeBtn.innerHTML = t.analyze;
-            const statusSpan = document.getElementById('liveStatusText');
-            if(statusSpan) statusSpan.innerText = t.statusReady;
-        }
-        
-        // ---------- ВАЛИДНЫЕ КОДЫ ----------
+        // ВАЛИДНЫЕ КОДЫ (ПАРОЛИ)
         const validCodesList = [
             '10341638','20451927','30561836','40771345','50881454','60991563','70101672',
             '80211781','90321890','10431909','11542018','12652127','13762236','14872345',
             '15982454','16092563','17102672','18212781','19322890','20432909','21543018',
             '22653127','23763236','24873345','25983454','26093563','27103672','28213781',
-            '29323890','30433909','31544018','32654127','33764236','34874345','35984454'
+            '29323890','30433909','31544018','32654127','33764236','34874345','35984454',
+            '36094563','37104672','38214781','39324890','40434909','41545018','42655127'
         ];
         let usedCodesStore = JSON.parse(localStorage.getItem('used_pro_codes')) || {};
         
         function checkCodeValid(code){ return validCodesList.includes(code) && !usedCodesStore[code]; }
         function markCodeUsed(code){ usedCodesStore[code]=true; localStorage.setItem('used_pro_codes',JSON.stringify(usedCodesStore)); }
         
-        // ---------- ЭЛЕМЕНТЫ ----------
+        // Элементы
         const langWelcomeDiv = document.getElementById('languageWelcome');
         const activationModal = document.getElementById('activationModal');
         const mainInterface = document.getElementById('mainAppInterface');
@@ -623,7 +681,27 @@
         
         let selectedLang = null;
         
-        // Выбор языка (красивый)
+        // Мультиязычность
+        const translations = {
+            en: { searchPlace: "Search currency pair...", analyze: "🚀 AI Analysis", statusReady: "System ready", buy: "BUY", sell: "SELL" },
+            ru: { searchPlace: "Поиск валютной пары...", analyze: "🚀 AI Анализ", statusReady: "Система готова", buy: "ВВЕРХ", sell: "ВНИЗ" },
+            es: { searchPlace: "Buscar par de divisas...", analyze: "🚀 Análisis IA", statusReady: "Sistema listo", buy: "COMPRAR", sell: "VENDER" },
+            de: { searchPlace: "Währungspaar suchen...", analyze: "🚀 KI-Analyse", statusReady: "System bereit", buy: "KAUFEN", sell: "VERKAUFEN" },
+            fr: { searchPlace: "Rechercher une paire...", analyze: "🚀 Analyse IA", statusReady: "Système prêt", buy: "ACHAT", sell: "VENTE" },
+            pl: { searchPlace: "Szukaj pary walutowej...", analyze: "🚀 Analiza AI", statusReady: "System gotowy", buy: "KUPNO", sell: "SPRZEDAŻ" }
+        };
+        
+        function updateUITexts(){
+            const t = translations[currentLanguage] || translations.ru;
+            const searchInput = document.getElementById('pairSearchInput');
+            if(searchInput) searchInput.placeholder = t.searchPlace;
+            const analyzeBtn = document.getElementById('analyzeSignalBtn');
+            if(analyzeBtn) analyzeBtn.innerHTML = t.analyze;
+            const statusSpan = document.getElementById('liveStatusText');
+            if(statusSpan) statusSpan.innerText = t.statusReady;
+        }
+        
+        // Выбор языка
         langOptions.forEach(opt => {
             opt.addEventListener('click', () => {
                 langOptions.forEach(o => o.classList.remove('selected'));
@@ -631,7 +709,7 @@
                 selectedLang = opt.dataset.lang;
                 currentLanguage = selectedLang;
                 enterBtn.classList.add('active');
-                enterBtn.innerText = currentLanguage === 'ru' ? '🚀 ВОЙТИ В ПЛАТФОРМУ' : (currentLanguage === 'es' ? '🚀 ENTRAR' : '🚀 ENTER PLATFORM');
+                enterBtn.innerText = currentLanguage === 'ru' ? '🚀 ВОЙТИ В ПЛАТФОРМУ' : '🚀 ENTER PLATFORM';
             });
         });
         
@@ -641,12 +719,11 @@
                 activationFeedback.innerText = currentLanguage === 'ru' ? 'Выберите язык!' : 'Select language!';
                 return;
             }
-            localStorage.setItem('lang_selected', 'true');
             langWelcomeDiv.classList.add('hidden');
             activationModal.classList.add('visible');
         });
         
-        // Инструкция (красивый попап)
+        // Инструкция
         function showInstructionPopup(){
             const modalDiv = document.createElement('div');
             modalDiv.style.position='fixed'; modalDiv.style.top='0'; modalDiv.style.left='0';
@@ -674,7 +751,7 @@
         }
         showInstrBtn.onclick = showInstructionPopup;
         
-        // Копирование контакта
+        // Копирование
         copyContact.onclick = () => {
             navigator.clipboard.writeText('@ZentixTrade');
             const toast = document.createElement('div');
@@ -691,7 +768,6 @@
             if(checkCodeValid(code)){
                 markCodeUsed(code);
                 isActivated = true;
-                localStorage.setItem('optibotx_pro_activated', 'true');
                 activationFeedback.innerHTML = currentLanguage === 'ru' ? '✅ Доступ открыт! Загрузка...' : '✅ Access granted! Loading...';
                 activationFeedback.style.color = '#10b981';
                 setTimeout(() => {
@@ -707,39 +783,182 @@
             }
         };
         
-        if(isActivated && languageSelected){
-            langWelcomeDiv.classList.add('hidden');
-            activationModal.classList.remove('visible');
-            mainInterface.style.display = 'flex';
-            initCoreApp();
-        } else if(languageSelected && !isActivated){
-            langWelcomeDiv.classList.add('hidden');
-            activationModal.classList.add('visible');
-        }
-        
-        // ========== ОСНОВНОЕ ПРИЛОЖЕНИЕ (оптимизированное) ==========
+        // ========== ТОТ САМЫЙ ГРАФИК С АНИМАЦИЕЙ ==========
         function initCoreApp(){
             updateUITexts();
-            const pairsList = ["EUR/USD","GBP/USD","USD/JPY","AUD/USD","USD/CAD","EUR/GBP","BTC/USD","ETH/USD","EUR/RUB","USD/RUB","EUR/USD OTC"];
+            
+            const pairsList = ["EUR/USD","GBP/USD","USD/JPY","AUD/USD","USD/CAD","EUR/GBP","GBP/JPY","EUR/JPY","USD/RUB","EUR/RUB","BTC/USD","ETH/USD","EUR/USD OTC","GBP/USD OTC"];
             let currentPair = "EUR/USD";
-            let candlesArr = [];
-            let showSMAflag = false;
+            let candles = [];
+            let candleCount = 18;
+            let showSMA = false;
+            let smaData = [];
             let cooldownActive = false;
             let snowActive = false;
             let snowCanvasRef = null;
+            let animationInterval;
             
-            const chartCanvas = document.getElementById('mainChartCanvas');
+            const chartCanvas = document.getElementById('mainChart');
             const ctx = chartCanvas.getContext('2d');
+            let dpr = window.devicePixelRatio || 1;
+            
             const searchField = document.getElementById('pairSearchInput');
             const dropdownDiv = document.getElementById('pairsDropdown');
-            const smaBtn = document.getElementById('smaToggleBtn');
+            const smaBtn = document.getElementById('smaIndicatorBtn');
             const analyzeMainBtn = document.getElementById('analyzeSignalBtn');
             const resultDiv = document.getElementById('signalResultBox');
             const statusSpan = document.getElementById('liveStatusText');
             const themeBtn = document.getElementById('globalThemeBtn');
             const snowBtn = document.getElementById('snowEffectBtn');
+            const zoomInBtn = document.getElementById('zoomInBtn');
+            const zoomOutBtn = document.getElementById('zoomOutBtn');
             const tfBtns = document.querySelectorAll('.tf-btn');
             
+            // Генерация свечей
+            function generateCandles(){
+                let price = 100;
+                candles = [];
+                for(let i=0; i<candleCount; i++){
+                    let open = price;
+                    let close = open + (Math.random() - 0.5) * 12;
+                    candles.push({
+                        open, close,
+                        high: Math.max(open, close) + Math.random() * 5 + 2,
+                        low: Math.min(open, close) - Math.random() * 5 - 2,
+                        progress: 1
+                    });
+                    price = close;
+                }
+                calculateSMA();
+            }
+            
+            function calculateSMA(period = 7){
+                smaData = [];
+                for(let i = period-1; i < candles.length; i++){
+                    let sum = 0;
+                    for(let j = i-period+1; j <= i; j++) sum += candles[j].close;
+                    smaData.push({ index: i, value: sum/period });
+                }
+            }
+            
+            function drawChart(){
+                if(!chartCanvas || !ctx) return;
+                const rect = chartCanvas.parentElement.getBoundingClientRect();
+                const w = rect.width;
+                const h = rect.height;
+                chartCanvas.width = w * dpr;
+                chartCanvas.height = h * dpr;
+                chartCanvas.style.width = w + 'px';
+                chartCanvas.style.height = h + 'px';
+                ctx.setTransform(1,0,0,1,0,0);
+                ctx.scale(dpr, dpr);
+                ctx.clearRect(0,0,w,h);
+                
+                if(!candles.length) return;
+                
+                const allPrices = candles.flatMap(c => [c.high, c.low]);
+                const minP = Math.min(...allPrices);
+                const maxP = Math.max(...allPrices);
+                const range = (maxP - minP) || 10;
+                const getY = (p) => h - ((p - minP) / range) * (h * 0.7) - (h * 0.12);
+                
+                // Сетка
+                ctx.strokeStyle = document.body.classList.contains('light') ? "#ddd" : "#2a2a3a";
+                ctx.lineWidth = 0.5;
+                for(let i=0; i<=5; i++){
+                    let y = h * 0.12 + (h * 0.76 / 5) * i;
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y);
+                    ctx.stroke();
+                    let price = maxP - (i / 5) * (maxP - minP);
+                    ctx.fillStyle = "#888";
+                    ctx.font = "8px 'Segoe UI'";
+                    ctx.fillText(price.toFixed(2), 5, y-2);
+                }
+                
+                const candleWidth = w / candles.length;
+                candles.forEach((c, i) => {
+                    const x = i * candleWidth;
+                    const isUp = c.close >= c.open;
+                    const color = isUp ? '#00d68f' : '#ff4d6d';
+                    
+                    // Тень
+                    ctx.beginPath();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 1.2;
+                    ctx.moveTo(x + candleWidth/2, getY(c.high));
+                    ctx.lineTo(x + candleWidth/2, getY(c.low));
+                    ctx.stroke();
+                    
+                    // Тело свечи
+                    let openY = getY(c.open);
+                    let closeY = getY(c.close);
+                    let bodyY = Math.min(openY, closeY);
+                    let bodyH = Math.abs(openY - closeY);
+                    if(bodyH > 0.5){
+                        ctx.fillStyle = color;
+                        ctx.fillRect(x + candleWidth*0.2, bodyY, candleWidth*0.6, bodyH);
+                    }
+                });
+                
+                if(showSMA && smaData.length > 1){
+                    ctx.beginPath();
+                    ctx.strokeStyle = '#ffaa44';
+                    ctx.lineWidth = 2;
+                    smaData.forEach((pt, idx) => {
+                        let x = (pt.index / candles.length) * w + candleWidth/2;
+                        let y = getY(pt.value);
+                        if(idx === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    });
+                    ctx.stroke();
+                }
+            }
+            
+            // Обновление свечей с анимацией
+            function startCandleAnimation(){
+                if(animationInterval) clearInterval(animationInterval);
+                animationInterval = setInterval(() => {
+                    if(candles.length === 0) return;
+                    candles.shift();
+                    let last = candles[candles.length-1];
+                    let newOpen = last.close;
+                    let newClose = newOpen + (Math.random() - 0.5) * 9;
+                    let newCandle = {
+                        open: newOpen, close: newClose,
+                        high: Math.max(newOpen, newClose) + Math.random() * 4 + 1,
+                        low: Math.min(newOpen, newClose) - Math.random() * 4 - 1,
+                        progress: 0
+                    };
+                    candles.push(newCandle);
+                    calculateSMA();
+                    let progress = 0;
+                    function animateNew(){
+                        progress += 0.05;
+                        newCandle.progress = Math.min(progress, 1);
+                        drawChart();
+                        if(progress < 1) requestAnimationFrame(animateNew);
+                    }
+                    animateNew();
+                }, 2800);
+            }
+            
+            function regenerateChartData(){
+                generateCandles();
+                drawChart();
+            }
+            
+            function zoomIn(){
+                if(candleCount > 6) candleCount -= 2;
+                generateCandles();
+                drawChart();
+            }
+            function zoomOut(){
+                if(candleCount < 28) candleCount += 2;
+                generateCandles();
+                drawChart();
+            }
+            
+            // Поиск пар
             function renderPairsDropdown(filter=""){
                 const filtered = pairsList.filter(p => p.toLowerCase().includes(filter.toLowerCase()));
                 dropdownDiv.innerHTML = filtered.map(p => `<div class="pair-row" data-pair="${p}"><span>💱</span> ${p}</div>`).join('');
@@ -749,91 +968,23 @@
                         searchField.value = currentPair;
                         dropdownDiv.style.display = 'none';
                         regenerateChartData();
-                        drawFullChart();
                     });
                 });
             }
+            
             searchField.addEventListener('input',(e)=>{ renderPairsDropdown(e.target.value); dropdownDiv.style.display='block'; });
             searchField.addEventListener('focus',()=>{ renderPairsDropdown(searchField.value); dropdownDiv.style.display='block'; });
             document.addEventListener('click',(e)=>{ if(!searchField.contains(e.target) && !dropdownDiv.contains(e.target)) dropdownDiv.style.display='none'; });
+            renderPairsDropdown("");
             
-            function regenerateChartData(){
-                let price = 100;
-                candlesArr = [];
-                for(let i=0;i<24;i++){
-                    let open = price;
-                    let close = open + (Math.random()-0.5)*10;
-                    candlesArr.push({open, close, high: Math.max(open,close)+Math.random()*4, low: Math.min(open,close)-Math.random()*4});
-                    price = close;
-                }
-            }
-            function drawFullChart(){
-                if(!chartCanvas || !ctx) return;
-                const rect = chartCanvas.parentElement.getBoundingClientRect();
-                const w = rect.width;
-                const h = 200;
-                chartCanvas.width = w * devicePixelRatio;
-                chartCanvas.height = h * devicePixelRatio;
-                chartCanvas.style.width = `${w}px`;
-                chartCanvas.style.height = `${h}px`;
-                ctx.setTransform(1,0,0,1,0,0);
-                ctx.scale(devicePixelRatio, devicePixelRatio);
-                ctx.clearRect(0,0,w,h);
-                if(!candlesArr.length) return;
-                const allPrices = candlesArr.flatMap(c=>[c.high,c.low]);
-                const minP = Math.min(...allPrices);
-                const maxP = Math.max(...allPrices);
-                const range = maxP-minP||1;
-                const getY = (p)=> h - ((p-minP)/range)*(h*0.7) - 12;
-                const candleW = w / candlesArr.length;
-                candlesArr.forEach((c,i)=>{
-                    const x = i*candleW;
-                    const isUp = c.close >= c.open;
-                    const color = isUp ? '#10b981' : '#ef4444';
-                    ctx.fillStyle = color;
-                    const bodyH = Math.abs(getY(c.open)-getY(c.close));
-                    ctx.fillRect(x+2, getY(Math.max(c.open,c.close)), candleW-4, bodyH||1);
-                    ctx.beginPath();
-                    ctx.strokeStyle = color;
-                    ctx.lineWidth = 1;
-                    ctx.moveTo(x+candleW/2, getY(c.high));
-                    ctx.lineTo(x+candleW/2, getY(c.low));
-                    ctx.stroke();
-                });
-                if(showSMAflag){
-                    let smaPoints=[];
-                    for(let i=6;i<candlesArr.length;i++){
-                        let sum=0;
-                        for(let j=i-6;j<=i;j++) sum+=candlesArr[j].close;
-                        smaPoints.push({idx:i, val:sum/7});
-                    }
-                    ctx.beginPath();
-                    ctx.strokeStyle = '#fbbf24';
-                    ctx.lineWidth = 2;
-                    smaPoints.forEach((pt,idx)=>{
-                        let x = (pt.idx / candlesArr.length)*w;
-                        let y = getY(pt.val);
-                        if(idx===0) ctx.moveTo(x,y);
-                        else ctx.lineTo(x,y);
-                    });
-                    ctx.stroke();
-                }
-            }
-            regenerateChartData();
-            drawFullChart();
-            setInterval(()=>{
-                if(candlesArr.length){
-                    candlesArr.shift();
-                    let last = candlesArr[candlesArr.length-1];
-                    let newClose = last.close + (Math.random()-0.5)*7;
-                    candlesArr.push({open:last.close, close:newClose, high:Math.max(last.close,newClose)+Math.random()*3, low:Math.min(last.close,newClose)-Math.random()*3});
-                    drawFullChart();
-                }
-            }, 2800);
+            // События
+            smaBtn.onclick = () => { showSMA = !showSMA; smaBtn.style.background = showSMA ? '#7c3aed' : 'rgba(0,0,0,0.5)'; drawChart(); };
+            zoomInBtn.onclick = zoomIn;
+            zoomOutBtn.onclick = zoomOut;
             
-            smaBtn.onclick = () => { showSMAflag = !showSMAflag; smaBtn.style.background = showSMAflag ? '#7c3aed' : 'rgba(255,255,255,0.08)'; drawFullChart(); };
-            themeBtn.onclick = () => { document.body.classList.toggle('light'); drawFullChart(); };
+            themeBtn.onclick = () => { document.body.classList.toggle('light'); drawChart(); };
             
+            // Снег
             snowBtn.onclick = () => {
                 snowActive = !snowActive;
                 if(snowActive && !snowCanvasRef){
@@ -844,7 +995,7 @@
                     let flakes=[];
                     function resizeAndInit(){
                         snowCanvasRef.width=window.innerWidth; snowCanvasRef.height=window.innerHeight;
-                        flakes = Array(80).fill().map(()=>({x:Math.random()*snowCanvasRef.width, y:Math.random()*snowCanvasRef.height, r:Math.random()*3+1, speed:Math.random()*1+0.6}));
+                        flakes = Array(70).fill().map(()=>({x:Math.random()*snowCanvasRef.width, y:Math.random()*snowCanvasRef.height, r:Math.random()*3+1, speed:Math.random()*0.8+0.4}));
                     }
                     function drawSnowLoop(){
                         if(!snowActive || !snowCanvasRef) return;
@@ -867,6 +1018,7 @@
                 });
             });
             
+            // Анализ
             analyzeMainBtn.onclick = () => {
                 if(cooldownActive) return;
                 cooldownActive = true;
@@ -884,9 +1036,28 @@
                     statusSpan.innerText = translations[currentLanguage]?.statusReady || 'System ready';
                     cooldownActive = false;
                     analyzeMainBtn.style.opacity='1';
+                    
+                    if(window.Telegram?.WebApp?.HapticFeedback){
+                        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+                    }
                 }, 1500);
             };
-            window.addEventListener('resize',()=>drawFullChart());
+            
+            generateCandles();
+            drawChart();
+            startCandleAnimation();
+            window.addEventListener('resize', () => drawChart());
+        }
+        
+        // Если уже активирован — сразу показываем выбор языка (всегда при заходе)
+        // Очищаем флаг активации при загрузке, чтобы язык вылетал каждый раз
+        // НО активация сохраняется отдельно. При каждом заходе: сначала язык, потом пароль (если не активирован)
+        // Если активирован, после языка сразу открывается приложение
+        if(isActivated){
+            // Все равно показываем выбор языка
+            langWelcomeDiv.classList.remove('hidden');
+            activationModal.classList.remove('visible');
+            mainInterface.style.display = 'none';
         }
     })();
 </script>
