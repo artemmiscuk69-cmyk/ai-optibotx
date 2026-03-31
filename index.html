@@ -1127,17 +1127,6 @@
             } else {
                 idMessage.innerText = "❌ ID not found / register first";
                 idMessage.className = 'register-message error';
-            }
-        } catch(e) {
-            // если сервер недоступен, используем заглушку для демо (имитация успеха)
-            console.warn("API error, using fallback", e);
-            isIdVerified = true;
-            idMessage.innerText = dict[curLang].idSuccess + " (demo)";
-            idMessage.className = 'register-message success';
-            checkIdBtn.style.display = 'none';
-            pocketIdInput.disabled = true;
-            checkDepBtn.disabled = false;
-        } finally { checkIdBtn.disabled = false; }
     });
 
     checkDepBtn.addEventListener('click', async () => {
@@ -1162,13 +1151,7 @@
                 depMessage.className = 'register-message error';
             }
         } catch(e) {
-            // демо заглушка
-            depMessage.innerText = dict[curLang].depSuccess + " (demo)";
-            depMessage.className = 'register-message success';
-            registered = true; localStorage.setItem('optibotx_registered', 'true');
-            setTimeout(() => registerOverlay.classList.remove('visible'), 1500);
-        } finally { checkDepBtn.disabled = false; }
-    });
+
 
     // ========== АНАЛИЗ ==========
     window.startAnalysis = function(btn) {
