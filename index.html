@@ -69,10 +69,8 @@
             animation: glassAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         @keyframes glassAppear {
-            from { transform: scale(0.9);
-            opacity: 0; }
-            to { transform: scale(1); opacity: 1;
-            }
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
         .welcome-title {
             font-size: 2.2rem;
@@ -321,12 +319,9 @@
             background: rgba(0,200,83,0.15);
         }
         @keyframes shake {
-            0%,100% { transform: translateX(0);
-            }
-            20%,60% { transform: translateX(-5px);
-            }
-            40%,80% { transform: translateX(5px);
-            }
+            0%,100% { transform: translateX(0); }
+            20%,60% { transform: translateX(-5px); }
+            40%,80% { transform: translateX(5px); }
         }
 
         .app-container {
@@ -346,77 +341,53 @@
             overflow-y: auto;
         }
         @media (max-height: 700px) {
-            .app-container { padding: 8px 12px;
-            }
-            .chart-container { height: 180px;
-            }
-            .tf-btn { padding: 6px 0; font-size: 10px;
-            }
-            .analyze-btn { padding: 12px; margin: 6px 0;
-            }
+            .app-container { padding: 8px 12px; }
+            .chart-container { height: 180px; }
+            .tf-btn { padding: 6px 0; font-size: 10px; }
+            .analyze-btn { padding: 12px; margin: 6px 0; }
         }
-        header { display: flex;
-            justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0; }
-        .logo h1 { font-size: clamp(16px, 4vw, 18px);
-            margin: 0; color: var(--text-color); animation: glowPulse 2s infinite; }
-        .logo span { color: var(--accent);
-            font-weight: 800; text-shadow: 0 0 8px var(--accent); }
-        .sub-header { font-size: 10px;
-            color: #444; margin-top: 2px; }
-        .header-buttons { display: flex; gap: 4px; flex-wrap: wrap;
-            justify-content: flex-end; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0; }
+        .logo h1 { font-size: clamp(16px, 4vw, 18px); margin: 0; color: var(--text-color); animation: glowPulse 2s infinite; }
+        .logo span { color: var(--accent); font-weight: 800; text-shadow: 0 0 8px var(--accent); }
+        .sub-header { font-size: 10px; color: #444; margin-top: 2px; }
+        .header-buttons { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
         .icon-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color);
             padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.3s; display: flex; align-items: center; gap: 4px;
         }
-        .icon-btn:hover { background: var(--hover-color); transform: scale(1.05);
-        }
-        .selector-container { position: relative; margin-bottom: 8px; flex-shrink: 0;
-        }
+        .icon-btn:hover { background: var(--hover-color); transform: scale(1.05); }
+        .selector-container { position: relative; margin-bottom: 8px; flex-shrink: 0; }
         .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #8899ac;
             font-size: 16px; pointer-events: none; z-index: 2; }
         #pair-search { width: 100%; background: var(--secondary-bg);
             color: var(--text-color); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px 10px 40px; font-size: 14px; outline: none; box-sizing: border-box;
             transition: all 0.3s; margin-bottom: 8px; }
-        #pair-search:focus { border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow); }
-        #pair-search::placeholder { color: #8899ac; font-size: 14px;
-        }
+        #pair-search:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        #pair-search::placeholder { color: #8899ac; font-size: 14px; }
         .pairs-container { max-height: 200px; overflow-y: auto; background: var(--secondary-bg); border: 1px solid var(--border-color);
             border-radius: 10px; padding: 5px 0; scrollbar-width: thin; display: none; position: absolute; width: 100%; z-index: 100; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
         .pair-option { padding: 8px 12px; cursor: pointer; transition: all 0.2s; display: flex;
             align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px;
         }
-        .pair-option:hover { background: var(--hover-color);
-        }
-        .pair-option.selected { background: var(--accent); color: white;
-        }
-        .pair-option .pair-flag { font-size: 1.2rem; min-width: 24px; text-align: center;
-        }
-        .pair-option .pair-name { flex: 1; font-weight: 500;
-        }
-        .chart-container { position: relative; width: 100%; height: 240px; margin-bottom: 8px; flex-shrink: 0;
-        }
+        .pair-option:hover { background: var(--hover-color); }
+        .pair-option.selected { background: var(--accent); color: white; }
+        .pair-option .pair-flag { font-size: 1.2rem; min-width: 24px; text-align: center; }
+        .pair-option .pair-name { flex: 1; font-weight: 500; }
+        .chart-container { position: relative; width: 100%; height: 240px; margin-bottom: 8px; flex-shrink: 0; }
         .chart-box { width: 100%; height: 100%; background: var(--app-bg); border-radius: 10px;
             border: 1px solid var(--border-color); position: relative; overflow: hidden; transition: box-shadow 0.3s;
         }
-        .chart-box:hover { box-shadow: 0 0 20px var(--accent-glow);
-        }
+        .chart-box:hover { box-shadow: 0 0 20px var(--accent-glow); }
         
-        .watermark { position: absolute;
-            bottom: 5px; right: 10px; font-size: 10px; color: rgba(150,150,150,0.4);
-            pointer-events: none; z-index: 5;
-            font-weight: bold;}
+        .watermark { position: absolute; bottom: 5px; right: 10px; font-size: 10px; color: rgba(150,150,150,0.4);
+            pointer-events: none; z-index: 5; font-weight: bold;}
         .chart-controls { position: absolute; top: 5px; right: 5px;
-            display: flex;
-            gap: 5px; z-index: 10; }
+            display: flex; gap: 5px; z-index: 10; }
         .chart-controls button { background: var(--secondary-bg);
             border: 1px solid var(--border-color); color: var(--text-color); width: 28px; height: 28px; border-radius: 14px; cursor: pointer; font-weight: bold; transition: all 0.3s;
         }
-        .chart-controls button:hover { background: var(--accent); color: white;
-        }
-        .tf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 5px;
-            flex-shrink: 0; }
+        .chart-controls button:hover { background: var(--accent); color: white; }
+        .tf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 5px; flex-shrink: 0; }
         .tf-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: #666;
             padding: 8px 0; border-radius: 8px; font-size: 11px; cursor: pointer; transition: all 0.3s ease; font-weight: 600;
         }
@@ -428,10 +399,8 @@
         .analyze-btn { width: 100%; background: var(--accent); border: none; padding: 14px; border-radius: 12px;
             color: white; font-weight: bold; cursor: pointer; font-size: clamp(14px, 4vw, 16px); margin: 5px 0; transition: all 0.3s; position: relative; overflow: hidden;
             flex-shrink: 0; }
-        .analyze-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow);
-        }
-        .analyze-btn.cooldown { pointer-events: none; opacity: 0.7;
-        }
+        .analyze-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow); }
+        .analyze-btn.cooldown { pointer-events: none; opacity: 0.7; }
         .timer-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center; pointer-events: none; }
         .timer-circle { width: 36px;
@@ -439,40 +408,26 @@
         }
         .timer-number { position: absolute; font-size: 16px; font-weight: bold; color: white;
             text-shadow: 0 0 5px var(--accent); }
-        @keyframes spin { 0% { transform: rotate(0deg);
-        } 100% { transform: rotate(360deg); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .status-area { display: flex; justify-content: center;
-            align-items: center; gap: 8px; height: 24px; margin: 5px 0; font-size: 13px; flex-shrink: 0;
-        }
+            align-items: center; gap: 8px; height: 24px; margin: 5px 0; font-size: 13px; flex-shrink: 0; }
         .dot { width: 10px; height: 10px; background: #2575fc; border-radius: 50%;
-            box-shadow: 0 0 10px #2575fc; transition: all 0.3s; animation: pulseDot 1.2s infinite; }
+            box-shadow: 0 0 10px #2575fc; animation: pulseDot 1.2s infinite; }
         .result-display { width: 100%;
             height: 36px; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 10px; text-align: center; font-weight: bold; line-height: 36px; margin-bottom: 5px; opacity: 0;
             visibility: hidden; transition: opacity 0.2s; font-size: 14px; flex-shrink: 0; }
-        .result-display.visible { opacity: 1;
-            visibility: visible; }
+        .result-display.visible { opacity: 1; visibility: visible; }
         #snow-layer { position: absolute; top: 0; left: 0; width: 100%;
             height: 100%; pointer-events: none; z-index: 1000; }
         #tooltip { position: absolute; background: rgba(0,0,0,0.8);
-            color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; pointer-events: none; z-index: 1001; display: none;
-        }
+            color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; pointer-events: none; z-index: 1001; display: none; }
         .indicator-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color);
-            padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; transition: all 0.3s; margin-right: 5px;
-        }
-        .indicator-btn.active { background: var(--accent); color: white;
-        }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--accent-glow);
-        } 70% { box-shadow: 0 0 0 10px transparent; } 100% { box-shadow: 0 0 0 0 transparent;
-        } }
-        @keyframes pulseDot { 0% { transform: scale(1); opacity: 1;
-        } 50% { transform: scale(1.3); opacity: 0.7; } 100% { transform: scale(1); opacity: 1;
-        } }
-        @keyframes glowPulse { 0% { text-shadow: 0 0 2px var(--accent);
-        } 50% { text-shadow: 0 0 15px var(--accent); } 100% { text-shadow: 0 0 2px var(--accent);
-        } }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0;
-        } 80% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1;
-        } }
+            padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; transition: all 0.3s; margin-right: 5px; }
+        .indicator-btn.active { background: var(--accent); color: white; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--accent-glow); } 70% { box-shadow: 0 0 0 10px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+        @keyframes pulseDot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes glowPulse { 0% { text-shadow: 0 0 2px var(--accent); } 50% { text-shadow: 0 0 15px var(--accent); } 100% { text-shadow: 0 0 2px var(--accent); } }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 80% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -485,7 +440,6 @@
             <div class="language-item" data-lang="en"><span class="flag">🇬🇧</span> English</div>
             <div class="language-item" data-lang="es"><span class="flag">🇪🇸</span> Español</div>
             <div class="language-item" data-lang="ru"><span class="flag">🇷🇺</span> Русский</div>
-          
             <div class="language-item" data-lang="pl"><span class="flag">🇵🇱</span> Polski</div>
             <div class="language-item" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</div>
             <div class="language-item" data-lang="fr"><span class="flag">🇫🇷</span> Français</div>
@@ -498,7 +452,6 @@
     <div class="register-glass">
         <h3 id="register-title">🔐 Активация доступа</h3>
         <p id="register-desc">Для входа в платформу <strong>OptiBotX PRO</strong> необходим лицензионный код</p>
-     
         <div id="code-hint" class="code-hint">
             📌 <span id="hint-title">Как получить код?</span><br>
             <span id="hint-step1">1️⃣ Нажмите кнопку <strong>«Написать мне»</strong> ниже</span><br>
@@ -512,7 +465,6 @@
                 <a id="contactMeBtn" class="contact-btn" href="https://t.me/ZentixTrade" target="_blank">✍️ Написать мне</a>
                 <button id="copyNickBtn" class="copy-btn">📋 Копировать ник</button>
             </div>
-            
             <div class="contact-info">
                 <span>🤖 Мой TG: <strong>@ZentixTrade</strong></span>
                 <span>📱 Ник: <strong>ZentixTrade</strong></span>
@@ -536,53 +488,50 @@
     </div>
     <select id="pair" style="display: none;"></select>
     
-    <div class="tf-grid">
-        <button class="tf-btn" onclick="selectTf(this)">5s</button><button class="tf-btn" onclick="selectTf(this)">10s</button>
-        <button class="tf-btn" onclick="selectTf(this)">15s</button><button class="tf-btn" onclick="selectTf(this)">30s</button>
-        <button class="tf-btn active" onclick="selectTf(this)">1m</button><button class="tf-btn" onclick="selectTf(this)">2m</button>
-        <button class="tf-btn" onclick="selectTf(this)">5m</button><button class="tf-btn" onclick="selectTf(this)">15m</button>
-    </div>
-
     <div class="chart-container">
         <div class="chart-box" id="tv_chart_container">
-    
-        </div>
+            </div>
         <div id="watermark" class="watermark">OptiBotX PRO</div>
         
         <div class="chart-controls"><button onclick="zoomOut()">−</button><button onclick="zoomIn()">+</button></div>
         <div style="position: absolute; bottom: 5px; left: 5px;"><button id="smaBtn" class="indicator-btn" onclick="toggleSMA()">SMA 7</button></div>
     </div>
     
+    <div class="tf-grid">
+        <button class="tf-btn" onclick="selectTf(this)">5s</button><button class="tf-btn" onclick="selectTf(this)">10s</button>
+        <button class="tf-btn" onclick="selectTf(this)">15s</button><button class="tf-btn" onclick="selectTf(this)">30s</button>
+        <button class="tf-btn active" onclick="selectTf(this)">1m</button><button class="tf-btn" onclick="selectTf(this)">2m</button>
+        <button class="tf-btn" onclick="selectTf(this)">5m</button><button class="tf-btn" onclick="selectTf(this)">15m</button>
+    </div>
     <button id="anBtn" class="analyze-btn" onclick="startAnalysis(this)"><span class="btn-text">Analyze</span></button>
     <div id="status" class="status-area"><div class="dot"></div> <span id="wait-msg">Waiting...</span></div>
     <div id="result" class="result-display"></div>
 </div>
 
 <script>
-    
-    // ======================== 100 ОДНОРАЗОВЫХ КОДОВ ДОСТУПА (7 СИМВОЛОВ, РАНДОМ) ========================
+    // ======================== 100 ОДНОРАЗОВЫХ КОДОВ ДОСТУПА ========================
     const ONE_TIME_CODES = [
-        "X7K9M2P", "R4Q1W8V", "N5H3T6J", "B9C2X1L", "F8D7S4A", "Z3V5N9M", "Q1W2E3R", "T4Y5U6I", "O7P8A9S", "D0F1G2H",
-        "J3K4L5Z", "X6C7V8B", "N9M0Q1W", "E2R3T4Y", "U5I6O7P", "A8S9D0F", "G1H2J3K", "L4Z5X6C", "V7B8N9M", "Q0W9E8R",
-        "T7Y6U5I", "O4P3A2S", "D1F0G9H", "J8K7L6Z", "X5C4V3B", "N2M1Q0W", "E9R8T7Y", "U6I5O4P", "A3S2D1F", "G0H9J8K",
-        "L7Z6X5C", "V4B3N2M", "Q1A2Z3W", "S4X5E6D", "C7R8F9V", "T0G1B2Y", "H3N4U5J", "M6I7K8O", "P9L0Q1A", "Z2W3S4X",
-        "E5D6C7R", "F8V9T0G", "B1Y2H3N", "U4J5M6I", "K7O8P9L", "A1B2C3D", "E4F5G6H", "I7J8K9L", "M0N1O2P", "Q3R4S5T",
-        "U6V7W8X", "Y9Z0A1B", "C2D3E4F", "G5H6I7J", "K8L9M0N", "O1P2Q3R", "S4T5U6V", "W7X8Y9Z", "B2A1Z0Y", "X9W8V7U",
-        "T6S5R4Q", "P3O2N1M", "L0K9J8I", "H7G6F5E", "D4C3B2A", "M1N2B3V", "C4X5Z6A", "S7D8F9G", "H0J1K2L", "P3O4I5U",
-        "Y6T7R8E", "W9Q0M1N", "B2V3C4X", "Z5A6S7D", "F8G9H0J", "K1L2P3O", "I4U5Y6T", "R7E8W9Q", "A0B9C8D", "E7F6G5H",
-        "I4J3K2L", "M1N0O9P", "Q8R7S6T", "U5V4W3X", "Y2Z1A0B", "C9D8E7F", "G6H5I4J", "K3L2M1N", "O0P9Q8R", "S7T6U5V",
-        "W4X3Y2Z", "P0O9I8U", "Y7T6R5E", "W4Q3A2S", "D1F0G9H", "J8K7L6Z", "X5C4V3B", "N2M1Z0A", "Q9W8E7R", "T6Y5U4I"
+        "1001","1002","1003","1004","1005","1006","1007","1008","1009","1010",
+        "1011","1012","1013","1014","1015","1016","1017","1018","1019","1020",
+        "1021","1022","1023","1024","1025","1026","1027","1028","1029","1030",
+        "1031","1032","1033","1034","1035","1036","1037","1038","1039","1040",
+        "1041","1042","1043","1044","1045","1046","1047","1048","1049","1050",
+        "2001","2002","2003","2004","2005","2006","2007","2008","2009","2010",
+        "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020",
+        "3001","3002","3003","3004","3005","3006","3007","3008","3009","3010",
+        "4001","4002","4003","4004","4005","4006","4007","4008","4009","4010",
+        "5001","5002","5003","5004","5005","5006","5007","5008","5009","5010"
     ];
     let usedCodes = JSON.parse(localStorage.getItem('optibotx_used_codes')) || {};
     
     function isValidCode(code) {
         if(!code) return false;
-        const trimmed = code.trim().toUpperCase();
+        const trimmed = code.trim();
         return ONE_TIME_CODES.includes(trimmed) && !usedCodes[trimmed];
     }
     
     function markCodeAsUsed(code) {
-        usedCodes[code.trim().toUpperCase()] = true;
+        usedCodes[code.trim()] = true;
         localStorage.setItem('optibotx_used_codes', JSON.stringify(usedCodes));
     }
     
@@ -593,7 +542,7 @@
     const registerMessageDiv = document.getElementById('register-message');
     const mainApp = document.getElementById('main-app');
     const welcomeOverlay = document.getElementById('welcome-overlay');
-    
+
     function setActivated() {
         const code = codeInput.value;
         if(isValidCode(code)) {
@@ -721,24 +670,28 @@
         document.querySelector('#anBtn .btn-text').innerText = t.analyze;
         document.getElementById('wait-msg').innerText = t.waiting;
         document.getElementById('pair-search').placeholder = t.searchPlaceholder;
-        document.getElementById('langBtn').innerHTML = `${curLang === 'en' ?
-        '🇬🇧' : curLang === 'ru' ? '🇷🇺' : curLang === 'es' ? '🇪🇸' : curLang === 'pl' ?
-        '🇵🇱' : curLang === 'de' ? '🇩🇪' : '🇫🇷'} ${curLang.toUpperCase()}`;
+        document.getElementById('langBtn').innerHTML = `${curLang === 'en' ? '🇬🇧' : curLang === 'ru' ? '🇷🇺' : curLang === 'es' ? '🇪🇸' : curLang === 'pl' ? '🇵🇱' : curLang === 'de' ? '🇩🇪' : '🇫🇷'} ${curLang.toUpperCase()}`;
+        
         // Перерисовываем график, чтобы язык TradingView тоже обновился
         if(isActivated) initChart();
     }
 
     // ======================== ГРАФИК TRADINGVIEW ========================
     let tvWidget = null;
+    
     function initChart() {
         const container = document.getElementById('tv_chart_container');
         if(!container) return;
+        
         // Очищаем контейнер перед созданием нового
         container.innerHTML = '';
+        
         // Получаем пару (например, "EUR/USD OTC")
         let pairName = document.getElementById('pair').value || "EUR/USD";
+        
         // Преобразуем для TradingView: убираем слэш и "OTC"
         let tvSymbol = "FX:" + pairName.replace("/", "").replace(" OTC", "");
+        
         const isLight = document.body.classList.contains('light-theme');
         
         // Создаем виджет
@@ -748,8 +701,7 @@
             "interval": "1",
             "timezone": "Etc/UTC",
             "theme": isLight ? "light" : "dark",
-            "style": "1", 
-            // Японские свечи
+            "style": "1", // Японские свечи
             "locale": curLang || "ru",
             "enable_publishing": false,
             "backgroundColor": "rgba(0, 0, 0, 0)", // Прозрачный фон
@@ -770,6 +722,7 @@
     }
     
     window.zoomIn = zoomIn; window.zoomOut = zoomOut; window.toggleSMA = toggleSMA;
+    
     // Снег
     const sCanvas = document.getElementById('snow-layer'), sCtx = sCanvas.getContext('2d'); let flakes = [], snowAnimation;
     function setupSnow() { sCanvas.width = sCanvas.parentElement.clientWidth; sCanvas.height = sCanvas.parentElement.clientHeight; flakes = Array.from({length:60},()=>({ x:Math.random()*sCanvas.width, y:Math.random()*sCanvas.height, r:Math.random()*3+1, d:Math.random()*1+0.5, angle:Math.random()*360 })); if(snowAnimation) cancelAnimationFrame(snowAnimation);
@@ -793,63 +746,13 @@
         setTimeout(()=>{ 
             initChart(); 
             tvContainer.style.opacity='1'; 
-        },500);
+        },500); 
     } window.changePair=changePair;
     
-    let cooldownActive = false;
-    let snowEnabled = true;
-
-    function startAnalysis(btn){ 
-        if(!isActivated){ showActivationModal(); return; } 
-        if(cooldownActive)return; 
-        cooldownActive=true; 
-        btn.classList.add('cooldown'); 
-        
-        const timerOverlay=document.createElement('div'); timerOverlay.className='timer-overlay'; 
-        const circle=document.createElement('div'); circle.className='timer-circle'; 
-        const number=document.createElement('span'); number.className='timer-number';
-        number.innerText='5'; 
-        timerOverlay.appendChild(circle); timerOverlay.appendChild(number); 
-        btn.appendChild(timerOverlay); 
-        
-        let timeLeft=5; 
-        const interval=setInterval(()=>{ 
-            timeLeft--; number.innerText=timeLeft; 
-            if(timeLeft<=0)clearInterval(interval); 
-        },1000); 
-        
-        const res=document.getElementById('result'); 
-        const stat=document.getElementById('status');
-        const dot = stat.querySelector('.dot');
-        
-        // Сбрасываем цвет шарика на стандартный синий при запуске ожидания
-        dot.style.background = '#2575fc';
-        dot.style.boxShadow = '0 0 10px #2575fc';
-        
-        res.classList.remove('visible'); 
-        stat.style.display='flex';
-        
-        setTimeout(()=>{ 
-            res.classList.add('visible'); 
-            const isUp=Math.random()>0.5; 
-            
-            // Меняем цвет шарика (Зеленый = Покупка, Красный = Продажа)
-            dot.style.background = isUp ? '#00ff88' : '#ff4d4d';
-            dot.style.boxShadow = isUp ? '0 0 10px #00ff88' : '0 0 10px #ff4d4d';
-            
-            res.style.color=isUp?'#00ff88':'#ff4d4d'; 
-            res.style.borderColor=isUp?'#00ff88':'#ff4d4d'; 
-            res.innerHTML=`${isUp?translations[curLang].buy:translations[curLang].sell} (${Math.floor(Math.random()*15+82)}%)`; 
-            res.style.animation='popIn 0.4s'; 
-            setTimeout(()=>res.style.animation='',400); 
-        },1500);
-        
-        setTimeout(()=>{ 
-            clearInterval(interval); cooldownActive=false; btn.classList.remove('cooldown'); 
-            const overlay=btn.querySelector('.timer-overlay'); if(overlay)overlay.remove(); 
-        },5000); 
-    } window.startAnalysis=startAnalysis;
-    
+    function startAnalysis(btn){ if(!isActivated){ showActivationModal(); return; } if(cooldownActive)return; cooldownActive=true; btn.classList.add('cooldown'); const timerOverlay=document.createElement('div'); timerOverlay.className='timer-overlay'; const circle=document.createElement('div');
+    circle.className='timer-circle'; const number=document.createElement('span'); number.className='timer-number'; number.innerText='5'; timerOverlay.appendChild(circle); timerOverlay.appendChild(number); btn.appendChild(timerOverlay); let timeLeft=5; const interval=setInterval(()=>{ timeLeft--; number.innerText=timeLeft; if(timeLeft<=0)clearInterval(interval); },1000); const res=document.getElementById('result'); const stat=document.getElementById('status');
+    res.classList.remove('visible'); stat.style.display='flex'; setTimeout(()=>{ stat.style.display='none'; res.classList.add('visible'); const isUp=Math.random()>0.5; res.style.color=isUp?'#00ff88':'#ff4d4d'; res.style.borderColor=isUp?'#00ff88':'#ff4d4d'; res.innerHTML=`${isUp?translations[curLang].buy:translations[curLang].sell} (${Math.floor(Math.random()*15+82)}%)`; res.style.animation='popIn 0.4s'; setTimeout(()=>res.style.animation='',400); },1500);
+    setTimeout(()=>{ clearInterval(interval); cooldownActive=false; btn.classList.remove('cooldown'); const overlay=btn.querySelector('.timer-overlay'); if(overlay)overlay.remove(); },5000); } window.startAnalysis=startAnalysis;
     function selectTf(btn){ if(!isActivated){ showActivationModal(); return; } document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); } window.selectTf=selectTf;
     
     // DOM элементы
@@ -870,15 +773,14 @@
             const original = copyNickBtnElem.innerHTML;
             copyNickBtnElem.innerHTML = "✅ " + (curLang === 'ru' ? "Скопировано!" : curLang === 'es' ? "¡Copiado!" : curLang === 'pl' ? "Skopiowano!" : curLang === 'de' ? "Kopiert!" : curLang === 'fr' ? "Copié !" : "Copied!");
             setTimeout(() => { copyNickBtnElem.innerHTML = original; }, 1500);
-     
             if(registerMessageDiv) { registerMessageDiv.innerText = translations[curLang].copySuccess; registerMessageDiv.classList.add('success'); setTimeout(()=>registerMessageDiv.innerText='', 1800); }
         });
     });
     
     function toggleTheme() { 
-        document.body.classList.toggle('light-theme');
+        document.body.classList.toggle('light-theme'); 
         // Пересобираем график чтобы он сменил тему TradingView
-        if(isActivated) initChart();
+        if(isActivated) initChart(); 
     }
     themeBtnElem.onclick = toggleTheme;
     snowToggleElem.onclick = toggleSnow;
@@ -912,7 +814,6 @@
         mainApp.style.display = 'flex';
         
         allPairs.forEach(p => { const opt = document.createElement('option'); opt.value = p.name; opt.text = p.name; hiddenSelect.appendChild(opt); });
-    
         if(allPairs.length > 0){ hiddenSelect.value = allPairs[0].name; searchInput.value = allPairs[0].name; }
         
         initChart(); // Запускаем TradingView
