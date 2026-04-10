@@ -3,23 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OptiBotX PRO</title>
+    <title>OptiBotX PRO | Premium Trading Terminal</title>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
         :root {
             --bg-color: #050510;
             --app-bg: #0b0b1a;
             --border-color: #1a1a2e;
-            --text-color: #ffffff;
+            --text-color: white;
             --secondary-bg: #161625;
             --hover-color: #2a2a3f;
             --accent: #5b4dff;
-            --accent-glow: rgba(91, 77, 255, 0.4);
+            --accent-glow: rgba(91, 77, 255, 0.3);
             --glass-bg: rgba(20, 30, 50, 0.6);
             --glass-border: rgba(255, 255, 255, 0.15);
-            --success: #00ff88;
-            --danger: #ff3366;
-            --neutral: #5b4dff;
         }
         body.light-theme {
             --bg-color: #f0f2f5;
@@ -28,255 +25,906 @@
             --text-color: #222;
             --secondary-bg: #f5f5f5;
             --hover-color: #e0e0e0;
-            --accent: #4a3aff;
+            --accent: #3f51b5;
+            --accent-glow: rgba(63, 81, 181, 0.3);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 0, 0, 0.1);
         }
         body {
-            margin: 0; padding: 0; background: var(--bg-color); color: var(--text-color);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif; height: 100vh; 
+            margin: 0;
+            padding: 0; background: var(--bg-color); color: var(--text-color);
+            font-family: 'Segoe UI', sans-serif; height: 100vh; 
             display: flex; justify-content: center; align-items: center; overflow: hidden;
+            transition: background 0.3s, color 0.3s;
         }
 
-        /* --- ПАНЕЛИ ВХОДА (СТАРЫЙ ДИЗАЙН) --- */
-        .welcome-overlay, .register-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #1a1a3a 0%, #050510 100%);
-            display: flex; justify-content: center; align-items: center; z-index: 2000;
-            opacity: 0; visibility: hidden; transition: 0.4s;
+        .welcome-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s;
+            backdrop-filter: blur(10px);
         }
-        .visible { opacity: 1; visibility: visible; }
-        
-        .glass-card {
-            background: var(--glass-bg); backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border); border-radius: 24px;
-            padding: 30px; width: 85%; max-width: 350px; text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        .welcome-overlay.visible {
+            opacity: 1;
+            visibility: visible;
         }
-
+        .welcome-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 30px 20px;
+            width: 80%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            animation: glassAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes glassAppear {
+            from { transform: scale(0.9);
+            opacity: 0; }
+            to { transform: scale(1); opacity: 1;
+            }
+        }
+        .welcome-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0 0 10px;
+            background: linear-gradient(135deg, #fff, #aaccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(91,77,255,0.5);
+        }
+        .welcome-subtitle {
+            font-size: 1rem;
+            color: #aaa;
+            margin-bottom: 25px;
+        }
+        .language-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
         .language-item {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-            border-radius: 12px; padding: 12px; margin-bottom: 8px; cursor: pointer; transition: 0.2s;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 14px 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
         }
-        .language-item:hover { background: var(--accent); }
-        .language-item.selected { background: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-
-        .main-btn {
-            background: linear-gradient(135deg, var(--accent), #8a4fff);
-            border: none; color: white; padding: 14px; border-radius: 12px;
-            width: 100%; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.3s;
+        .language-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .language-item.selected {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+        .language-item .flag {
+            font-size: 1.8rem;
+        }
+        .start-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 16px 30px;
+            border-radius: 40px;
+            cursor: pointer;
+            box-shadow: 0 0 30px var(--accent-glow);
+            transition: all 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            width: 100%;
+        }
+        .start-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px var(--accent-glow);
         }
 
-        /* --- ОСНОВНОЙ ТЕРМИНАЛ --- */
+        .register-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .register-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .register-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 44px;
+            padding: 28px 22px;
+            width: 86%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            animation: glassAppear 0.4s forwards;
+        }
+        .register-glass h3 {
+            font-size: 1.7rem;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff, #b9aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .register-glass p {
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+        .code-hint {
+            background: rgba(91,77,255,0.12);
+            border-left: 3px solid var(--accent);
+            border-radius: 16px;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            text-align: left;
+            font-size: 0.8rem;
+            color: #ddd;
+            backdrop-filter: blur(4px);
+        }
+        .code-hint span {
+            font-weight: 600;
+            color: var(--accent);
+        }
+        .register-input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 60px;
+            color: var(--text-color);
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 15px;
+            outline: none;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+        .register-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+        .register-input.error-shake {
+            animation: shake 0.4s ease-in-out;
+            border-color: #ff4d4d;
+        }
+        .register-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 14px 20px;
+            border-radius: 60px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px var(--accent-glow);
+            margin-bottom: 12px;
+        }
+        .register-btn:hover {
+            transform: scale(1.02);
+            filter: brightness(1.05);
+        }
+        .contact-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 6px;
+        }
+        .double-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: stretch;
+        }
+        .contact-btn, .copy-btn {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 12px 0;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            flex: 1;
+            backdrop-filter: blur(8px);
+        }
+        .contact-btn:hover, .copy-btn:hover {
+            background: rgba(91,77,255,0.25);
+            border-color: var(--accent);
+            transform: scale(1.02);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .contact-info {
+            background: rgba(0,0,0,0.3);
+            border-radius: 60px;
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 5px;
+        }
+        .contact-info span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        .register-message {
+            font-size: 0.85rem;
+            min-height: 38px;
+            margin-top: 14px;
+            padding: 6px 10px;
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+        .register-message.error {
+            color: #ff6b6b;
+            background: rgba(255,59,48,0.15);
+        }
+        .register-message.success {
+            color: #69f0ae;
+            background: rgba(0,200,83,0.15);
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0);
+            }
+            20%,60% { transform: translateX(-5px);
+            }
+            40%,80% { transform: translateX(5px);
+            }
+        }
+
         .app-container {
-            width: 100%; max-width: 420px; height: 100vh; background: var(--app-bg);
-            display: none; flex-direction: column; padding: 15px; box-sizing: border-box;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: var(--app-bg);
+            display: none;
+            flex-direction: column;
+            padding: 12px 15px;
+            box-sizing: border-box;
+            position: relative;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            animation: fadeInScale 0.5s ease-out;
+            transition: background 0.3s, border-color 0.3s;
+            overflow-y: auto;
         }
-
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .logo { font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; }
-        .logo span { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
-
-        /* Кнопки в хедере */
-        .header-tools { display: flex; gap: 8px; }
-        .tool-btn { 
-            background: var(--secondary-bg); border: 1px solid var(--border-color);
-            color: white; padding: 8px; border-radius: 10px; cursor: pointer;
+        @media (max-height: 700px) {
+            .app-container { padding: 8px 12px;
+            }
+            .chart-container { height: 180px;
+            }
+            .tf-btn { padding: 6px 0; font-size: 10px;
+            }
+            .analyze-btn { padding: 12px; margin: 6px 0;
+            }
         }
-
-        /* Поиск и список пар */
-        .search-box { position: relative; margin-bottom: 15px; }
-        #pair-search {
-            width: 100%; background: var(--secondary-bg); border: 1px solid var(--border-color);
-            color: white; padding: 12px 15px; border-radius: 12px; box-sizing: border-box; outline: none;
+        header { display: flex;
+            justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0; }
+        .logo h1 { font-size: clamp(16px, 4vw, 18px);
+            margin: 0; color: var(--text-color); animation: glowPulse 2s infinite; }
+        .logo span { color: var(--accent);
+            font-weight: 800; text-shadow: 0 0 8px var(--accent); }
+        .sub-header { font-size: 10px;
+            color: #444; margin-top: 2px; }
+        .header-buttons { display: flex; gap: 4px; flex-wrap: wrap;
+            justify-content: flex-end; }
+        .icon-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color);
+            padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.3s; display: flex; align-items: center; gap: 4px;
         }
-        .pairs-dropdown {
-            position: absolute; top: 110%; left: 0; width: 100%; max-height: 200px;
-            background: #161625; border: 1px solid var(--border-color); border-radius: 12px;
-            overflow-y: auto; z-index: 100; display: none;
+        .icon-btn:hover { background: var(--hover-color); transform: scale(1.05);
         }
-        .pair-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #1f1f35; display: flex; gap: 10px; }
-        .pair-item:hover { background: var(--hover-color); }
-
-        /* ТФ и Кнопка */
-        .tf-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px; }
-        .tf-item {
-            background: var(--secondary-bg); border: 1px solid var(--border-color);
-            padding: 8px 0; border-radius: 8px; text-align: center; cursor: pointer; font-size: 0.8rem;
+        .selector-container { position: relative; margin-bottom: 8px; flex-shrink: 0;
         }
-        .tf-item.active { background: var(--accent); border-color: var(--accent); }
-
-        .analyze-trigger {
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
-            border: none; color: white; padding: 16px; border-radius: 14px;
-            font-weight: 800; width: 100%; cursor: pointer; text-transform: uppercase;
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #8899ac;
+            font-size: 16px; pointer-events: none; z-index: 2; }
+        #pair-search { width: 100%; background: var(--secondary-bg);
+            color: var(--text-color); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px 10px 40px; font-size: 14px; outline: none; box-sizing: border-box;
+            transition: all 0.3s; margin-bottom: 8px; }
+        #pair-search:focus { border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow); }
+        #pair-search::placeholder { color: #8899ac; font-size: 14px;
         }
-
-        /* Логика шариков */
-        .status-box { 
-            height: 50px; display: flex; align-items: center; justify-content: center; 
-            margin-top: 10px; border-radius: 12px; font-weight: bold;
+        .pairs-container { max-height: 200px; overflow-y: auto; background: var(--secondary-bg); border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 5px 0; scrollbar-width: thin; display: none; position: absolute; width: 100%; z-index: 100; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
-        .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
-        .dot-blue { background: #0072ff; box-shadow: 0 0 10px #0072ff; animation: pulse 1s infinite; }
-        .dot-green { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        .dot-red { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
-
-        /* УМЕНЬШЕННЫЙ ГРАФИК */
-        .chart-wrap {
-            margin-top: auto; width: 100%; height: 280px; /* Сделали меньше */
-            border-radius: 16px; overflow: hidden; border: 1px solid var(--border-color);
-            background: #000; position: relative;
+        .pair-option { padding: 8px 12px; cursor: pointer; transition: all 0.2s; display: flex;
+            align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px;
         }
-        #tv_chart { width: 100%; height: 100%; }
-
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        .pair-option:hover { background: var(--hover-color);
+        }
+        .pair-option.selected { background: var(--accent); color: white;
+        }
+        .pair-option .pair-flag { font-size: 1.2rem; min-width: 24px; text-align: center;
+        }
+        .pair-option .pair-name { flex: 1; font-weight: 500;
+        }
+        .chart-container { position: relative; width: 100%; height: 240px; margin-bottom: 8px; flex-shrink: 0;
+        }
+        .chart-box { width: 100%; height: 100%; background: var(--app-bg); border-radius: 10px;
+            border: 1px solid var(--border-color); position: relative; overflow: hidden; transition: box-shadow 0.3s;
+        }
+        .chart-box:hover { box-shadow: 0 0 20px var(--accent-glow);
+        }
+        
+        .watermark { position: absolute;
+            bottom: 5px; right: 10px; font-size: 10px; color: rgba(150,150,150,0.4);
+            pointer-events: none; z-index: 5;
+            font-weight: bold;}
+        .chart-controls { position: absolute; top: 5px; right: 5px;
+            display: flex;
+            gap: 5px; z-index: 10; }
+        .chart-controls button { background: var(--secondary-bg);
+            border: 1px solid var(--border-color); color: var(--text-color); width: 28px; height: 28px; border-radius: 14px; cursor: pointer; font-weight: bold; transition: all 0.3s;
+        }
+        .chart-controls button:hover { background: var(--accent); color: white;
+        }
+        .tf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 5px;
+            flex-shrink: 0; }
+        .tf-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: #666;
+            padding: 8px 0; border-radius: 8px; font-size: 11px; cursor: pointer; transition: all 0.3s ease; font-weight: 600;
+        }
+        .tf-btn:hover { transform: scale(1.05); background: var(--hover-color); color: var(--text-color); border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow); }
+        .tf-btn.active { background: var(--accent); color: white;
+            border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); animation: pulse 1.5s infinite;
+        }
+        .analyze-btn { width: 100%; background: var(--accent); border: none; padding: 14px; border-radius: 12px;
+            color: white; font-weight: bold; cursor: pointer; font-size: clamp(14px, 4vw, 16px); margin: 5px 0; transition: all 0.3s; position: relative; overflow: hidden;
+            flex-shrink: 0; }
+        .analyze-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow);
+        }
+        .analyze-btn.cooldown { pointer-events: none; opacity: 0.7;
+        }
+        .timer-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center; pointer-events: none; }
+        .timer-circle { width: 36px;
+            height: 36px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; animation: spin 1s linear infinite; position: absolute;
+        }
+        .timer-number { position: absolute; font-size: 16px; font-weight: bold; color: white;
+            text-shadow: 0 0 5px var(--accent); }
+        @keyframes spin { 0% { transform: rotate(0deg);
+        } 100% { transform: rotate(360deg); } }
+        .status-area { display: flex; justify-content: center;
+            align-items: center; gap: 8px; height: 24px; margin: 5px 0; font-size: 13px; flex-shrink: 0;
+        }
+        .dot { width: 10px; height: 10px; background: #2575fc; border-radius: 50%;
+            box-shadow: 0 0 10px #2575fc; transition: all 0.3s; animation: pulseDot 1.2s infinite; }
+        .result-display { width: 100%;
+            height: 36px; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 10px; text-align: center; font-weight: bold; line-height: 36px; margin-bottom: 5px; opacity: 0;
+            visibility: hidden; transition: opacity 0.2s; font-size: 14px; flex-shrink: 0; }
+        .result-display.visible { opacity: 1;
+            visibility: visible; }
+        #snow-layer { position: absolute; top: 0; left: 0; width: 100%;
+            height: 100%; pointer-events: none; z-index: 1000; }
+        #tooltip { position: absolute; background: rgba(0,0,0,0.8);
+            color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; pointer-events: none; z-index: 1001; display: none;
+        }
+        .indicator-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color);
+            padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; transition: all 0.3s; margin-right: 5px;
+        }
+        .indicator-btn.active { background: var(--accent); color: white;
+        }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--accent-glow);
+        } 70% { box-shadow: 0 0 0 10px transparent; } 100% { box-shadow: 0 0 0 0 transparent;
+        } }
+        @keyframes pulseDot { 0% { transform: scale(1); opacity: 1;
+        } 50% { transform: scale(1.3); opacity: 0.7; } 100% { transform: scale(1); opacity: 1;
+        } }
+        @keyframes glowPulse { 0% { text-shadow: 0 0 2px var(--accent);
+        } 50% { text-shadow: 0 0 15px var(--accent); } 100% { text-shadow: 0 0 2px var(--accent);
+        } }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0;
+        } 80% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1;
+        } }
     </style>
 </head>
 <body>
 
-<div id="welcome" class="welcome-overlay visible">
-    <div class="glass-card">
-        <h2 style="margin-top:0">OptiBotX</h2>
-        <div class="language-item" onclick="selLang('en', this)">🇬🇧 English</div>
-        <div class="language-item" onclick="selLang('ru', this)">🇷🇺 Русский</div>
-        <button class="main-btn" onclick="goToReg()">Continue</button>
-    </div>
-</div>
-
-<div id="register" class="register-overlay">
-    <div class="glass-card">
-        <h3>Activation</h3>
-        <p style="font-size: 0.8rem; opacity: 0.7;">Enter license code to continue</p>
-        <input type="text" id="code-in" placeholder="XXXXXXX" style="width:100%; padding:12px; border-radius:10px; border:1px solid #333; background:#000; color:white; text-align:center;">
-        <button class="main-btn" onclick="checkCode()">Activate</button>
-        <a href="https://t.me/ZentixTrade" style="color:var(--accent); display:block; margin-top:15px; text-decoration:none; font-size:0.8rem;">Get code here</a>
-    </div>
-</div>
-
-<div id="app" class="app-container">
-    <header>
-        <div class="logo">OptiBotX <span>PRO</span></div>
-        <div class="header-tools">
-            <button class="tool-btn" onclick="toggleTheme()">🌓</button>
-            <button class="tool-btn">⚙️</button>
+<div id="welcome-overlay" class="welcome-overlay visible">
+    <div class="welcome-glass">
+        <h1 class="welcome-title">Welcome</h1>
+        <p class="welcome-subtitle">Choose your language</p>
+        <div class="language-list">
+            <div class="language-item" data-lang="en"><span class="flag">🇬🇧</span> English</div>
+            <div class="language-item" data-lang="es"><span class="flag">🇪🇸</span> Español</div>
+            <div class="language-item" data-lang="ru"><span class="flag">🇷🇺</span> Русский</div>
+          
+            <div class="language-item" data-lang="pl"><span class="flag">🇵🇱</span> Polski</div>
+            <div class="language-item" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</div>
+            <div class="language-item" data-lang="fr"><span class="flag">🇫🇷</span> Français</div>
         </div>
+        <button id="start-btn" class="start-btn">Start</button>
+    </div>
+</div>
+
+<div id="register-overlay" class="register-overlay">
+    <div class="register-glass">
+        <h3 id="register-title">🔐 Активация доступа</h3>
+        <p id="register-desc">Для входа в платформу <strong>OptiBotX PRO</strong> необходим лицензионный код</p>
+     
+        <div id="code-hint" class="code-hint">
+            📌 <span id="hint-title">Как получить код?</span><br>
+            <span id="hint-step1">1️⃣ Нажмите кнопку <strong>«Написать мне»</strong> ниже</span><br>
+            <span id="hint-step2">2️⃣ Напишите слово <strong style="color:#5b4dff;">«КОД»</strong> в Telegram</span><br>
+            <span id="hint-step3">3️⃣ Менеджер выдаст вам персональный код активации ✅</span>
+        </div>
+        <input type="text" id="code-input" class="register-input" placeholder="Введите полученный код" autocomplete="off">
+        <button id="activate-btn" class="register-btn">🎯 Активировать</button>
+        <div class="contact-group">
+            <div class="double-buttons">
+                <a id="contactMeBtn" class="contact-btn" href="https://t.me/ZentixTrade" target="_blank">✍️ Написать мне</a>
+                <button id="copyNickBtn" class="copy-btn">📋 Копировать ник</button>
+            </div>
+            
+            <div class="contact-info">
+                <span>🤖 Мой TG: <strong>@ZentixTrade</strong></span>
+                <span>📱 Ник: <strong>ZentixTrade</strong></span>
+            </div>
+        </div>
+        <div id="register-message" class="register-message"></div>
+    </div>
+</div>
+
+<div class="app-container" id="main-app" style="display: none;">
+    <canvas id="snow-layer"></canvas>
+    <div id="tooltip"></div>
+    <header>
+        <div class="logo"><h1>AI OptiBotX <span>PRO</span></h1><div id="sub-header" class="sub-header">Select currency pair</div></div>
+        <div class="header-buttons"><button id="themeBtn" class="icon-btn">🌓</button><button id="snowToggle" class="icon-btn">☃️</button><button id="langBtn" class="icon-btn">🇬🇧 EN</button></div>
     </header>
-
-    <div class="search-box">
-        <input type="text" id="pair-search" placeholder="Search pair..." onfocus="showPairs()" oninput="filterPairs()">
-        <div id="pairs-list" class="pairs-dropdown"></div>
+    <div class="selector-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="pair-search" placeholder="🔍 Search pair (EUR, USD, OTC...)" autocomplete="off">
+        <div class="pairs-container" id="pairs-container"></div>
+    </div>
+    <select id="pair" style="display: none;"></select>
+    
+    <div class="tf-grid">
+        <button class="tf-btn" onclick="selectTf(this)">5s</button><button class="tf-btn" onclick="selectTf(this)">10s</button>
+        <button class="tf-btn" onclick="selectTf(this)">15s</button><button class="tf-btn" onclick="selectTf(this)">30s</button>
+        <button class="tf-btn active" onclick="selectTf(this)">1m</button><button class="tf-btn" onclick="selectTf(this)">2m</button>
+        <button class="tf-btn" onclick="selectTf(this)">5m</button><button class="tf-btn" onclick="selectTf(this)">15m</button>
     </div>
 
-    <div class="tf-container">
-        <div class="tf-item active" onclick="setTf('1m', this)">1M</div>
-        <div class="tf-item" onclick="setTf('5m', this)">5M</div>
-        <div class="tf-item" onclick="setTf('15m', this)">15M</div>
-        <div class="tf-item" onclick="setTf('30m', this)">30M</div>
+    <div class="chart-container">
+        <div class="chart-box" id="tv_chart_container">
+    
+        </div>
+        <div id="watermark" class="watermark">OptiBotX PRO</div>
+        
+        <div class="chart-controls"><button onclick="zoomOut()">−</button><button onclick="zoomIn()">+</button></div>
+        <div style="position: absolute; bottom: 5px; left: 5px;"><button id="smaBtn" class="indicator-btn" onclick="toggleSMA()">SMA 7</button></div>
     </div>
-
-    <button id="an-btn" class="analyze-trigger" onclick="runAnalysis()">Analyze Market</button>
-
-    <div id="status-display" class="status-box" style="display:none;"></div>
-
-    <div class="chart-wrap">
-        <div id="tv_chart"></div>
-    </div>
+    
+    <button id="anBtn" class="analyze-btn" onclick="startAnalysis(this)"><span class="btn-text">Analyze</span></button>
+    <div id="status" class="status-area"><div class="dot"></div> <span id="wait-msg">Waiting...</span></div>
+    <div id="result" class="result-display"></div>
 </div>
 
 <script>
-    let currentPair = "EURUSD";
-    let selectedLang = 'en';
-
-    // Список всех пар
-    const pairs = [
-        {n: "EUR/USD", s: "FX:EURUSD", f: "🇪🇺"}, {n: "GBP/USD", s: "FX:GBPUSD", f: "🇬🇧"},
-        {n: "USD/JPY", s: "FX:USDJPY", f: "🇯🇵"}, {n: "BTC/USD", s: "BINANCE:BTCUSDT", f: "₿"},
-        {n: "ETH/USD", s: "BINANCE:ETHUSDT", f: "♦"}, {n: "GOLD", s: "OANDA:XAUUSD", f: "🪙"},
-        {n: "AUD/USD", s: "FX:AUDUSD", f: "🇦🇺"}, {n: "USD/CAD", s: "FX:USDCAD", f: "🇨🇦"}
+    
+    // ======================== 100 ОДНОРАЗОВЫХ КОДОВ ДОСТУПА (7 СИМВОЛОВ, РАНДОМ) ========================
+    const ONE_TIME_CODES = [
+        "X7K9M2P", "R4Q1W8V", "N5H3T6J", "B9C2X1L", "F8D7S4A", "Z3V5N9M", "Q1W2E3R", "T4Y5U6I", "O7P8A9S", "D0F1G2H",
+        "J3K4L5Z", "X6C7V8B", "N9M0Q1W", "E2R3T4Y", "U5I6O7P", "A8S9D0F", "G1H2J3K", "L4Z5X6C", "V7B8N9M", "Q0W9E8R",
+        "T7Y6U5I", "O4P3A2S", "D1F0G9H", "J8K7L6Z", "X5C4V3B", "N2M1Q0W", "E9R8T7Y", "U6I5O4P", "A3S2D1F", "G0H9J8K",
+        "L7Z6X5C", "V4B3N2M", "Q1A2Z3W", "S4X5E6D", "C7R8F9V", "T0G1B2Y", "H3N4U5J", "M6I7K8O", "P9L0Q1A", "Z2W3S4X",
+        "E5D6C7R", "F8V9T0G", "B1Y2H3N", "U4J5M6I", "K7O8P9L", "A1B2C3D", "E4F5G6H", "I7J8K9L", "M0N1O2P", "Q3R4S5T",
+        "U6V7W8X", "Y9Z0A1B", "C2D3E4F", "G5H6I7J", "K8L9M0N", "O1P2Q3R", "S4T5U6V", "W7X8Y9Z", "B2A1Z0Y", "X9W8V7U",
+        "T6S5R4Q", "P3O2N1M", "L0K9J8I", "H7G6F5E", "D4C3B2A", "M1N2B3V", "C4X5Z6A", "S7D8F9G", "H0J1K2L", "P3O4I5U",
+        "Y6T7R8E", "W9Q0M1N", "B2V3C4X", "Z5A6S7D", "F8G9H0J", "K1L2P3O", "I4U5Y6T", "R7E8W9Q", "A0B9C8D", "E7F6G5H",
+        "I4J3K2L", "M1N0O9P", "Q8R7S6T", "U5V4W3X", "Y2Z1A0B", "C9D8E7F", "G6H5I4J", "K3L2M1N", "O0P9Q8R", "S7T6U5V",
+        "W4X3Y2Z", "P0O9I8U", "Y7T6R5E", "W4Q3A2S", "D1F0G9H", "J8K7L6Z", "X5C4V3B", "N2M1Z0A", "Q9W8E7R", "T6Y5U4I"
     ];
+    let usedCodes = JSON.parse(localStorage.getItem('optibotx_used_codes')) || {};
+    
+    function isValidCode(code) {
+        if(!code) return false;
+        const trimmed = code.trim().toUpperCase();
+        return ONE_TIME_CODES.includes(trimmed) && !usedCodes[trimmed];
+    }
+    
+    function markCodeAsUsed(code) {
+        usedCodes[code.trim().toUpperCase()] = true;
+        localStorage.setItem('optibotx_used_codes', JSON.stringify(usedCodes));
+    }
+    
+    let isActivated = localStorage.getItem('optibotx_activated') === 'true';
+    const registerOverlay = document.getElementById('register-overlay');
+    const codeInput = document.getElementById('code-input');
+    const activateBtn = document.getElementById('activate-btn');
+    const registerMessageDiv = document.getElementById('register-message');
+    const mainApp = document.getElementById('main-app');
+    const welcomeOverlay = document.getElementById('welcome-overlay');
+    
+    function setActivated() {
+        const code = codeInput.value;
+        if(isValidCode(code)) {
+            markCodeAsUsed(code);
+            isActivated = true;
+            localStorage.setItem('optibotx_activated', 'true');
+            registerMessageDiv.innerText = getTranslation('activateSuccess');
+            registerMessageDiv.classList.add('success');
+            registerMessageDiv.classList.remove('error');
+            setTimeout(() => { registerOverlay.classList.remove('visible'); registerMessageDiv.innerText = ''; }, 1000);
+        } else {
+            registerMessageDiv.innerText = getTranslation('wrongCode');
+            registerMessageDiv.classList.add('error');
+            registerMessageDiv.classList.remove('success');
+            codeInput.classList.add('error-shake');
+            setTimeout(() => codeInput.classList.remove('error-shake'), 400);
+        }
+    }
+    
+    activateBtn.addEventListener('click', setActivated);
+    function showActivationModal() { if(!isActivated){ updateRegisterLang(); registerOverlay.classList.add('visible'); } return isActivated; }
 
-    function selLang(l, el) {
-        selectedLang = l;
-        document.querySelectorAll('.language-item').forEach(i => i.classList.remove('selected'));
-        el.classList.add('selected');
+    // ======================== ПОЛНАЯ ЛОКАЛИЗАЦИЯ ========================
+    const translations = {
+        en: {
+            welcomeTitle: "Welcome", welcomeSub: "Choose your language", start: "Start",
+            registerTitle: "🔐 Access Activation", registerDesc: "To access <strong>OptiBotX PRO</strong> you need a license code",
+            hintTitle: "How to get a code?", step1: "1️⃣ Click the <strong>«Write to me»</strong> button below",
+            step2: "2️⃣ Write the word <strong style='color:#5b4dff;'>«CODE»</strong> in Telegram",
+            step3: "3️⃣ The manager will give you a personal activation code ✅",
+            placeholder: "Enter the received code", btnText: "🎯 Activate", contactBtn: "✍️ Write to me",
+            activateSuccess: "✅ Activation successful! Welcome.", wrongCode: "❌ Invalid or already used activation code.",
+            copySuccess: "📋 Nickname copied!",
+            subHeader: "Select currency pair", analyze: "Analyze", waiting: "Waiting...", buy: "BUY ", sell: "SELL ",
+            searchPlaceholder: "🔍 Search pair (EUR, USD, OTC...)", nothingFound: "❌ Nothing found",
+            loadingChart: "Loading chart..."
+        },
+        ru: {
+            welcomeTitle: "Добро пожаловать", welcomeSub: "Выберите язык", start: "Старт",
+            registerTitle: "🔐 Активация доступа", registerDesc: "Для входа в платформу <strong>OptiBotX PRO</strong> необходим лицензионный код",
+            hintTitle: "Как получить код?", step1: "1️⃣ Нажмите кнопку <strong>«Написать мне»</strong> ниже",
+            step2: "2️⃣ Напишите слово <strong style='color:#5b4dff;'>«КОД»</strong> в Telegram",
+            step3: "3️⃣ Менеджер выдаст вам персональный код активации ✅",
+            placeholder: "Введите полученный код", btnText: "🎯 Активировать", contactBtn: "✍️ Написать мне",
+            activateSuccess: "✅ Активация успешна! Добро пожаловать.", wrongCode: "❌ Неверный или уже использованный код активации.",
+            copySuccess: "📋 Ник скопирован!",
+            subHeader: "Выбери валютную пару", analyze: "Анализировать", waiting: "Ожидание...", buy: "ВВЕРХ ", sell: "ВНИЗ ",
+            searchPlaceholder: "🔍 Поиск пары (EUR, USD, OTC...)", nothingFound: "❌ Ничего не найдено",
+            loadingChart: "Загрузка графика..."
+        },
+        es: {
+            welcomeTitle: "Bienvenido", welcomeSub: "Elige tu idioma", start: "Comenzar",
+            registerTitle: "🔐 Activación", registerDesc: "Para acceder a <strong>OptiBotX PRO</strong> necesitas un código de licencia",
+            hintTitle: "¿Cómo obtener un código?", step1: "1️⃣ Haz clic en el botón <strong>«Escríbeme»</strong> abajo",
+            step2: "2️⃣ Escribe la palabra <strong style='color:#5b4dff;'>«CODE»</strong> en Telegram",
+            step3: "3️⃣ El gerente te dará un código de activación personal ✅",
+            placeholder: "Ingresa el código recibido", btnText: "🎯 Activar", contactBtn: "✍️ Escríbeme",
+            activateSuccess: "✅ ¡Activación exitosa! Bienvenido.", wrongCode: "❌ Código de activación inválido o ya usado.",
+            copySuccess: "📋 ¡Nick copiado!",
+            subHeader: "Seleccione un par de divisas", analyze: "Analizar", waiting: "Esperando...", buy: "COMPRAR ", sell: "VENDER ",
+            searchPlaceholder: "🔍 Buscar par (EUR, USD, OTC...)", nothingFound: "❌ Nada encontrado",
+            loadingChart: "Cargando gráfico..."
+        },
+        pl: {
+            welcomeTitle: "Witamy", welcomeSub: "Wybierz język", start: "Start",
+            registerTitle: "🔐 Aktywacja", registerDesc: "Aby uzyskać dostęp do <strong>OptiBotX PRO</strong> potrzebny jest kod licencyjny",
+            hintTitle: "Jak uzyskać kod?", step1: "1️⃣ Kliknij przycisk <strong>«Napisz do mnie»</strong> poniżej",
+            step2: "2️⃣ Napisz słowo <strong style='color:#5b4dff;'>«KOD»</strong> w Telegramie",
+            step3: "3️⃣ Menedżer wyda Ci osobisty kod aktywacyjny ✅",
+            placeholder: "Wprowadź otrzymany kod", btnText: "🎯 Aktywuj", contactBtn: "✍️ Napisz do mnie",
+            activateSuccess: "✅ Aktywacja udana! Witamy.", wrongCode: "❌ Nieprawidłowy lub już użyty kod aktywacyjny.",
+            copySuccess: "📋 Pseudonim skopiowany!",
+            subHeader: "Wybierz parę walutową", analyze: "Analizuj", waiting: "Oczekiwanie...", buy: "W GÓRĘ ", sell: "W DÓŁ ",
+            searchPlaceholder: "🔍 Szukaj pary (EUR, USD, OTC...)", nothingFound: "❌ Nic nie znaleziono",
+            loadingChart: "Ładowanie wykresu..."
+        },
+        de: {
+            welcomeTitle: "Willkommen", welcomeSub: "Wähle deine Sprache", start: "Start",
+            registerTitle: "🔐 Aktivierung", registerDesc: "Für den Zugriff auf <strong>OptiBotX PRO</strong> benötigen Sie einen Lizenzcode",
+            hintTitle: "Wie erhalte ich einen Code?", step1: "1️⃣ Klicken Sie unten auf die Schaltfläche <strong>«Schreib mir»</strong>",
+            step2: "2️⃣ Schreiben Sie das Wort <strong style='color:#5b4dff;'>«CODE»</strong> in Telegram",
+            step3: "3️⃣ Der Manager gibt Ihnen einen persönlichen Aktivierungscode ✅",
+            placeholder: "Geben Sie den erhaltenen Code ein", btnText: "🎯 Aktivieren", contactBtn: "✍️ Schreib mir",
+            activateSuccess: "✅ Aktivierung erfolgreich! Willkommen.", wrongCode: "❌ Ungültiger oder bereits verwendeter Aktivierungscode.",
+            copySuccess: "📋 Spitzname kopiert!",
+            subHeader: "Währungspaar auswählen", analyze: "Analysieren", waiting: "Warten...", buy: "KAUFEN ", sell: "VERKAUFEN ",
+            searchPlaceholder: "🔍 Paar suchen (EUR, USD, OTC...)", nothingFound: "❌ Nichts gefunden",
+            loadingChart: "Lade Diagramm..."
+        },
+        fr: {
+            welcomeTitle: "Bienvenue", welcomeSub: "Choisissez votre langue", start: "Démarrer",
+            registerTitle: "🔐 Activation", registerDesc: "Pour accéder à <strong>OptiBotX PRO</strong> vous avez besoin d'un code de licence",
+            hintTitle: "Comment obtenir un code ?", step1: "1️⃣ Cliquez sur le bouton <strong>«Écris-moi»</strong> ci-dessous",
+            step2: "2️⃣ Écrivez le mot <strong style='color:#5b4dff;'>«CODE»</strong> dans Telegram",
+            step3: "3️⃣ Le gestionnaire vous donnera un code d'activation personnel ✅",
+            placeholder: "Entrez le code reçu", btnText: "🎯 Activer", contactBtn: "✍️ Écris-moi",
+            activateSuccess: "✅ Activation réussie ! Bienvenue.", wrongCode: "❌ Code d'activation invalide ou déjà utilisé.",
+            copySuccess: "📋 Surnom copié !",
+            subHeader: "Choisissez une paire de devises", analyze: "Analyser", waiting: "Attente...", buy: "ACHAT ", sell: "VENTE ",
+            searchPlaceholder: "🔍 Rechercher une paire (EUR, USD, OTC...)", nothingFound: "❌ Rien trouvé",
+            loadingChart: "Chargement du graphique..."
+        }
+    };
+    
+    let curLang = 'en';
+    
+    function getTranslation(key) { return translations[curLang][key] || translations.en[key]; }
+    
+    function updateRegisterLang() {
+        const t = translations[curLang];
+        document.getElementById('register-title').innerHTML = t.registerTitle;
+        document.getElementById('register-desc').innerHTML = t.registerDesc;
+        document.getElementById('hint-title').innerHTML = t.hintTitle;
+        document.getElementById('hint-step1').innerHTML = t.step1;
+        document.getElementById('hint-step2').innerHTML = t.step2;
+        document.getElementById('hint-step3').innerHTML = t.step3;
+        codeInput.placeholder = t.placeholder;
+        activateBtn.innerHTML = t.btnText;
+        contactMeBtn.innerHTML = t.contactBtn;
+    }
+    
+    function updateUILang() {
+        const t = translations[curLang];
+        document.getElementById('sub-header').innerText = t.subHeader;
+        document.querySelector('#anBtn .btn-text').innerText = t.analyze;
+        document.getElementById('wait-msg').innerText = t.waiting;
+        document.getElementById('pair-search').placeholder = t.searchPlaceholder;
+        document.getElementById('langBtn').innerHTML = `${curLang === 'en' ?
+        '🇬🇧' : curLang === 'ru' ? '🇷🇺' : curLang === 'es' ? '🇪🇸' : curLang === 'pl' ?
+        '🇵🇱' : curLang === 'de' ? '🇩🇪' : '🇫🇷'} ${curLang.toUpperCase()}`;
+        // Перерисовываем график, чтобы язык TradingView тоже обновился
+        if(isActivated) initChart();
     }
 
-    function goToReg() {
-        document.getElementById('welcome').classList.remove('visible');
-        document.getElementById('register').classList.add('visible');
-    }
-
-    function checkCode() {
-        // Упрощенная проверка для демо
-        document.getElementById('register').classList.remove('visible');
-        document.getElementById('app').style.display = 'flex';
-        initChart();
-        renderPairs();
-    }
-
+    // ======================== ГРАФИК TRADINGVIEW ========================
+    let tvWidget = null;
     function initChart() {
-        new TradingView.widget({
-            "autosize": true, "symbol": currentPair, "interval": "1",
-            "timezone": "Etc/UTC", "theme": "dark", "style": "1",
-            "locale": "ru", "toolbar_bg": "#f1f3f6", "enable_publishing": false,
-            "hide_top_toolbar": true, "save_image": false, "container_id": "tv_chart"
+        const container = document.getElementById('tv_chart_container');
+        if(!container) return;
+        // Очищаем контейнер перед созданием нового
+        container.innerHTML = '';
+        // Получаем пару (например, "EUR/USD OTC")
+        let pairName = document.getElementById('pair').value || "EUR/USD";
+        // Преобразуем для TradingView: убираем слэш и "OTC"
+        let tvSymbol = "FX:" + pairName.replace("/", "").replace(" OTC", "");
+        const isLight = document.body.classList.contains('light-theme');
+        
+        // Создаем виджет
+        tvWidget = new TradingView.widget({
+            "autosize": true,
+            "symbol": tvSymbol,
+            "interval": "1",
+            "timezone": "Etc/UTC",
+            "theme": isLight ? "light" : "dark",
+            "style": "1", 
+            // Японские свечи
+            "locale": curLang || "ru",
+            "enable_publishing": false,
+            "backgroundColor": "rgba(0, 0, 0, 0)", // Прозрачный фон
+            "gridColor": isLight ? "rgba(0, 0, 0, 0.05)" : "rgba(255, 255, 255, 0.05)",
+            "hide_top_toolbar": true,
+            "hide_legend": true,
+            "save_image": false,
+            "container_id": "tv_chart_container"
         });
     }
 
-    function renderPairs() {
-        const list = document.getElementById('pairs-list');
-        list.innerHTML = pairs.map(p => `
-            <div class="pair-item" onclick="selectPair('${p.s}', '${p.n}')">
-                <span>${p.f}</span> <span>${p.n}</span>
-            </div>
-        `).join('');
+    // Пустые функции-заглушки для твоих старых кнопок (чтобы в консоли не было ошибок)
+    function zoomIn() {}
+    function zoomOut() {}
+    function toggleSMA() {
+        const btn = document.getElementById('smaBtn');
+        if(btn) btn.classList.toggle('active');
     }
-
-    function showPairs() { document.getElementById('pairs-list').style.display = 'block'; }
-    function selectPair(s, n) {
-        currentPair = s;
-        document.getElementById('pair-search').value = n;
-        document.getElementById('pairs-list').style.display = 'none';
-        initChart();
+    
+    window.zoomIn = zoomIn; window.zoomOut = zoomOut; window.toggleSMA = toggleSMA;
+    // Снег
+    const sCanvas = document.getElementById('snow-layer'), sCtx = sCanvas.getContext('2d'); let flakes = [], snowAnimation;
+    function setupSnow() { sCanvas.width = sCanvas.parentElement.clientWidth; sCanvas.height = sCanvas.parentElement.clientHeight; flakes = Array.from({length:60},()=>({ x:Math.random()*sCanvas.width, y:Math.random()*sCanvas.height, r:Math.random()*3+1, d:Math.random()*1+0.5, angle:Math.random()*360 })); if(snowAnimation) cancelAnimationFrame(snowAnimation);
+    drawSnow(); }
+    function drawSnow() { if(!snowEnabled) { sCtx.clearRect(0,0,sCanvas.width,sCanvas.height); snowAnimation=requestAnimationFrame(drawSnow); return; } sCtx.clearRect(0,0,sCanvas.width,sCanvas.height); sCtx.fillStyle="rgba(255,255,255,0.6)";
+    flakes.forEach(f=>{ sCtx.save(); sCtx.translate(f.x,f.y); sCtx.rotate(f.angle*Math.PI/180); sCtx.beginPath(); sCtx.arc(0,0,f.r,0,Math.PI*2); sCtx.fill(); sCtx.restore(); f.y+=f.d; f.x+=Math.sin(f.angle)*0.2; if(f.y>sCanvas.height) { f.y=-5; f.x=Math.random()*sCanvas.width; } if(f.x>sCanvas.width) f.x=0; if(f.x<0) f.x=sCanvas.width; });
+    snowAnimation=requestAnimationFrame(drawSnow); }
+    function toggleSnow() { snowEnabled = !snowEnabled; snowToggle.innerText = snowEnabled ? '❄️' : '☃️';
     }
+    
+    // Пары
+    const allPairs = [
+        { name:"EUR/USD", flag:"🇪🇺🇺🇸", type:"Major" },{ name:"GBP/USD", flag:"🇬🇧🇺🇸", type:"Major" },{ name:"USD/JPY", flag:"🇺🇸🇯🇵", type:"Major" },{ name:"AUD/USD", flag:"🇦🇺🇺🇸", type:"Major" },{ name:"USD/CAD", flag:"🇺🇸🇨🇦", type:"Major" },{ name:"USD/CHF", flag:"🇺🇸🇨🇭", type:"Major" },{ name:"NZD/USD", flag:"🇳🇿🇺🇸", type:"Major" },{ name:"EUR/GBP", flag:"🇪🇺🇬🇧", type:"Cross" },{ name:"EUR/JPY", flag:"🇪🇺🇯🇵", type:"Cross" },{ name:"GBP/JPY", flag:"🇬🇧🇯🇵", type:"Cross" },{ name:"AUD/JPY", flag:"🇦🇺🇯🇵", type:"Cross" },{ name:"EUR/CAD", flag:"🇪🇺🇨🇦", type:"Cross" },{ name:"USD/RUB", flag:"🇺🇸🇷🇺", type:"Exotic" },{ name:"EUR/RUB", flag:"🇪🇺🇷🇺", type:"Exotic" },{ name:"EUR/USD OTC", flag:"🇪🇺🇺🇸", type:"OTC" },{ name:"GBP/USD OTC", flag:"🇬🇧🇺🇸", type:"OTC" }
+    ];
+    function renderPairs(filter=''){ const f=filter.toLowerCase(); const filtered=allPairs.filter(p=>p.name.toLowerCase().includes(f)||p.type.toLowerCase().includes(f)); pairsContainer.innerHTML=''; filtered.forEach(pair=>{ const div=document.createElement('div'); div.className='pair-option'; if(pair.name===hiddenSelect.value) div.classList.add('selected'); div.innerHTML=`<span class="pair-flag">${pair.flag}</span><span class="pair-name">${pair.name}</span><span class="pair-type">${pair.type}</span>`; div.addEventListener('click',()=>{ document.querySelectorAll('.pair-option').forEach(el=>el.classList.remove('selected')); div.classList.add('selected'); hiddenSelect.value=pair.name; searchInput.value=pair.name; changePair(); pairsContainer.style.display='none'; }); pairsContainer.appendChild(div); });
+    if(filtered.length===0){ const empty=document.createElement('div'); empty.className='pair-option'; empty.style.justifyContent='center'; empty.style.padding='20px'; empty.innerText=getTranslation('nothingFound'); pairsContainer.appendChild(empty); } }
+    
+    function changePair(){ 
+        const tvContainer = document.getElementById('tv_chart_container');
+        tvContainer.style.opacity='0.3';
+        setTimeout(()=>{ 
+            initChart(); 
+            tvContainer.style.opacity='1'; 
+        },500);
+    } window.changePair=changePair;
+    
+    let cooldownActive = false;
+    let snowEnabled = true;
 
-    function setTf(tf, el) {
-        document.querySelectorAll('.tf-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    function runAnalysis() {
-        const btn = document.getElementById('an-btn');
-        const status = document.getElementById('status-display');
+    function startAnalysis(btn){ 
+        if(!isActivated){ showActivationModal(); return; } 
+        if(cooldownActive)return; 
+        cooldownActive=true; 
+        btn.classList.add('cooldown'); 
         
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-        status.style.display = 'flex';
-        status.innerHTML = '<div class="dot dot-blue"></div> Analyzing...';
-
-        setTimeout(() => {
-            const isUp = Math.random() > 0.5;
-            const signal = isUp ? 'UP' : 'DOWN';
-            const dotClass = isUp ? 'dot-green' : 'dot-red';
-            const color = isUp ? 'var(--success)' : 'var(--danger)';
+        const timerOverlay=document.createElement('div'); timerOverlay.className='timer-overlay'; 
+        const circle=document.createElement('div'); circle.className='timer-circle'; 
+        const number=document.createElement('span'); number.className='timer-number';
+        number.innerText='5'; 
+        timerOverlay.appendChild(circle); timerOverlay.appendChild(number); 
+        btn.appendChild(timerOverlay); 
+        
+        let timeLeft=5; 
+        const interval=setInterval(()=>{ 
+            timeLeft--; number.innerText=timeLeft; 
+            if(timeLeft<=0)clearInterval(interval); 
+        },1000); 
+        
+        const res=document.getElementById('result'); 
+        const stat=document.getElementById('status');
+        const dot = stat.querySelector('.dot');
+        
+        // Сбрасываем цвет шарика на стандартный синий при запуске ожидания
+        dot.style.background = '#2575fc';
+        dot.style.boxShadow = '0 0 10px #2575fc';
+        
+        res.classList.remove('visible'); 
+        stat.style.display='flex';
+        
+        setTimeout(()=>{ 
+            res.classList.add('visible'); 
+            const isUp=Math.random()>0.5; 
             
-            status.innerHTML = `<div class="dot ${dotClass}"></div> <span style="color:${color}">${signal} (${Math.floor(Math.random()*15+82)}%)</span>`;
+            // Меняем цвет шарика (Зеленый = Покупка, Красный = Продажа)
+            dot.style.background = isUp ? '#00ff88' : '#ff4d4d';
+            dot.style.boxShadow = isUp ? '0 0 10px #00ff88' : '0 0 10px #ff4d4d';
             
-            setTimeout(() => {
-                btn.disabled = false;
-                btn.style.opacity = '1';
-            }, 3000);
-        }, 2000);
-    }
-
-    function toggleTheme() {
-        document.body.classList.toggle('light-theme');
-        initChart();
-    }
-
-    // Закрытие списка при клике вне
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.search-box')) document.getElementById('pairs-list').style.display = 'none';
+            res.style.color=isUp?'#00ff88':'#ff4d4d'; 
+            res.style.borderColor=isUp?'#00ff88':'#ff4d4d'; 
+            res.innerHTML=`${isUp?translations[curLang].buy:translations[curLang].sell} (${Math.floor(Math.random()*15+82)}%)`; 
+            res.style.animation='popIn 0.4s'; 
+            setTimeout(()=>res.style.animation='',400); 
+        },1500);
+        
+        setTimeout(()=>{ 
+            clearInterval(interval); cooldownActive=false; btn.classList.remove('cooldown'); 
+            const overlay=btn.querySelector('.timer-overlay'); if(overlay)overlay.remove(); 
+        },5000); 
+    } window.startAnalysis=startAnalysis;
+    
+    function selectTf(btn){ if(!isActivated){ showActivationModal(); return; } document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); } window.selectTf=selectTf;
+    
+    // DOM элементы
+    const startBtnElem = document.getElementById('start-btn');
+    const langItemsElem = document.querySelectorAll('.language-item');
+    const pairsContainer = document.getElementById('pairs-container');
+    const searchInput = document.getElementById('pair-search');
+    const hiddenSelect = document.getElementById('pair');
+    const snowToggleElem = document.getElementById('snowToggle');
+    const langBtnElem = document.getElementById('langBtn');
+    const themeBtnElem = document.getElementById('themeBtn');
+    const smaBtn = document.getElementById('smaBtn');
+    const contactMeBtn = document.getElementById('contactMeBtn');
+    const copyNickBtnElem = document.getElementById('copyNickBtn');
+    
+    copyNickBtnElem.addEventListener('click', () => {
+        navigator.clipboard.writeText("ZentixTrade").then(() => {
+            const original = copyNickBtnElem.innerHTML;
+            copyNickBtnElem.innerHTML = "✅ " + (curLang === 'ru' ? "Скопировано!" : curLang === 'es' ? "¡Copiado!" : curLang === 'pl' ? "Skopiowano!" : curLang === 'de' ? "Kopiert!" : curLang === 'fr' ? "Copié !" : "Copied!");
+            setTimeout(() => { copyNickBtnElem.innerHTML = original; }, 1500);
+     
+            if(registerMessageDiv) { registerMessageDiv.innerText = translations[curLang].copySuccess; registerMessageDiv.classList.add('success'); setTimeout(()=>registerMessageDiv.innerText='', 1800); }
+        });
     });
+    
+    function toggleTheme() { 
+        document.body.classList.toggle('light-theme');
+        // Пересобираем график чтобы он сменил тему TradingView
+        if(isActivated) initChart();
+    }
+    themeBtnElem.onclick = toggleTheme;
+    snowToggleElem.onclick = toggleSnow;
+    
+    langBtnElem.onclick = function() {
+        const langs = ['en', 'es', 'ru', 'pl', 'de', 'fr'];
+        let idx = langs.indexOf(curLang);
+        idx = (idx + 1) % langs.length;
+        curLang = langs[idx];
+        updateUILang();
+        updateRegisterLang();
+        renderPairs(searchInput.value);
+    };
+    
+    let selectedLanguage = null;
+    langItemsElem.forEach(item => {
+        item.addEventListener('click', () => {
+            langItemsElem.forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            selectedLanguage = item.dataset.lang;
+            startBtnElem.classList.add('visible');
+        });
+    });
+    
+    startBtnElem.addEventListener('click', () => {
+        if(!selectedLanguage) { selectedLanguage = 'en'; const def = document.querySelector('.language-item[data-lang="en"]'); if(def) def.classList.add('selected'); }
+        curLang = selectedLanguage;
+        updateUILang();
+        updateRegisterLang();
+        welcomeOverlay.classList.remove('visible');
+        mainApp.style.display = 'flex';
+        
+        allPairs.forEach(p => { const opt = document.createElement('option'); opt.value = p.name; opt.text = p.name; hiddenSelect.appendChild(opt); });
+    
+        if(allPairs.length > 0){ hiddenSelect.value = allPairs[0].name; searchInput.value = allPairs[0].name; }
+        
+        initChart(); // Запускаем TradingView
+        setupSnow();
+        renderPairs();
+    });
+    
+    searchInput.addEventListener('focus', () => { pairsContainer.style.display = 'block'; });
+    document.addEventListener('click', (e) => { if(!searchInput.contains(e.target) && !pairsContainer.contains(e.target)) pairsContainer.style.display = 'none'; });
+    searchInput.addEventListener('input', (e) => { renderPairs(e.target.value); if(!pairsContainer.style.display || pairsContainer.style.display === 'none') pairsContainer.style.display = 'block'; });
+    
+    if(window.Telegram?.WebApp) window.Telegram.WebApp.expand();
 </script>
 </body>
 </html>
