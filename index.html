@@ -69,8 +69,10 @@
             animation: glassAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         @keyframes glassAppear {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from { transform: scale(0.9);
+            opacity: 0; }
+            to { transform: scale(1); opacity: 1;
+            }
         }
         .welcome-title {
             font-size: 2.2rem;
@@ -319,9 +321,12 @@
             background: rgba(0,200,83,0.15);
         }
         @keyframes shake {
-            0%,100% { transform: translateX(0); }
-            20%,60% { transform: translateX(-5px); }
-            40%,80% { transform: translateX(5px); }
+            0%,100% { transform: translateX(0);
+            }
+            20%,60% { transform: translateX(-5px);
+            }
+            40%,80% { transform: translateX(5px);
+            }
         }
 
         .app-container {
@@ -341,53 +346,77 @@
             overflow-y: auto;
         }
         @media (max-height: 700px) {
-            .app-container { padding: 8px 12px; }
-            .chart-container { height: 180px; }
-            .tf-btn { padding: 6px 0; font-size: 10px; }
-            .analyze-btn { padding: 12px; margin: 6px 0; }
+            .app-container { padding: 8px 12px;
+            }
+            .chart-container { height: 180px;
+            }
+            .tf-btn { padding: 6px 0; font-size: 10px;
+            }
+            .analyze-btn { padding: 12px; margin: 6px 0;
+            }
         }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0; }
-        .logo h1 { font-size: clamp(16px, 4vw, 18px); margin: 0; color: var(--text-color); animation: glowPulse 2s infinite; }
-        .logo span { color: var(--accent); font-weight: 800; text-shadow: 0 0 8px var(--accent); }
-        .sub-header { font-size: 10px; color: #444; margin-top: 2px; }
-        .header-buttons { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+        header { display: flex;
+            justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0; }
+        .logo h1 { font-size: clamp(16px, 4vw, 18px);
+            margin: 0; color: var(--text-color); animation: glowPulse 2s infinite; }
+        .logo span { color: var(--accent);
+            font-weight: 800; text-shadow: 0 0 8px var(--accent); }
+        .sub-header { font-size: 10px;
+            color: #444; margin-top: 2px; }
+        .header-buttons { display: flex; gap: 4px; flex-wrap: wrap;
+            justify-content: flex-end; }
         .icon-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color);
             padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.3s; display: flex; align-items: center; gap: 4px;
         }
-        .icon-btn:hover { background: var(--hover-color); transform: scale(1.05); }
-        .selector-container { position: relative; margin-bottom: 8px; flex-shrink: 0; }
+        .icon-btn:hover { background: var(--hover-color); transform: scale(1.05);
+        }
+        .selector-container { position: relative; margin-bottom: 8px; flex-shrink: 0;
+        }
         .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #8899ac;
             font-size: 16px; pointer-events: none; z-index: 2; }
         #pair-search { width: 100%; background: var(--secondary-bg);
             color: var(--text-color); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px 10px 40px; font-size: 14px; outline: none; box-sizing: border-box;
             transition: all 0.3s; margin-bottom: 8px; }
-        #pair-search:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-        #pair-search::placeholder { color: #8899ac; font-size: 14px; }
+        #pair-search:focus { border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow); }
+        #pair-search::placeholder { color: #8899ac; font-size: 14px;
+        }
         .pairs-container { max-height: 200px; overflow-y: auto; background: var(--secondary-bg); border: 1px solid var(--border-color);
             border-radius: 10px; padding: 5px 0; scrollbar-width: thin; display: none; position: absolute; width: 100%; z-index: 100; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
         .pair-option { padding: 8px 12px; cursor: pointer; transition: all 0.2s; display: flex;
             align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px;
         }
-        .pair-option:hover { background: var(--hover-color); }
-        .pair-option.selected { background: var(--accent); color: white; }
-        .pair-option .pair-flag { font-size: 1.2rem; min-width: 24px; text-align: center; }
-        .pair-option .pair-name { flex: 1; font-weight: 500; }
-        .chart-container { position: relative; width: 100%; height: 240px; margin-bottom: 8px; flex-shrink: 0; }
+        .pair-option:hover { background: var(--hover-color);
+        }
+        .pair-option.selected { background: var(--accent); color: white;
+        }
+        .pair-option .pair-flag { font-size: 1.2rem; min-width: 24px; text-align: center;
+        }
+        .pair-option .pair-name { flex: 1; font-weight: 500;
+        }
+        .chart-container { position: relative; width: 100%; height: 240px; margin-bottom: 8px; flex-shrink: 0;
+        }
         .chart-box { width: 100%; height: 100%; background: var(--app-bg); border-radius: 10px;
             border: 1px solid var(--border-color); position: relative; overflow: hidden; transition: box-shadow 0.3s;
         }
-        .chart-box:hover { box-shadow: 0 0 20px var(--accent-glow); }
+        .chart-box:hover { box-shadow: 0 0 20px var(--accent-glow);
+        }
         
-        .watermark { position: absolute; bottom: 5px; right: 10px; font-size: 10px; color: rgba(150,150,150,0.4);
-            pointer-events: none; z-index: 5; font-weight: bold;}
+        .watermark { position: absolute;
+            bottom: 5px; right: 10px; font-size: 10px; color: rgba(150,150,150,0.4);
+            pointer-events: none; z-index: 5;
+            font-weight: bold;}
         .chart-controls { position: absolute; top: 5px; right: 5px;
-            display: flex; gap: 5px; z-index: 10; }
+            display: flex;
+            gap: 5px; z-index: 10; }
         .chart-controls button { background: var(--secondary-bg);
             border: 1px solid var(--border-color); color: var(--text-color); width: 28px; height: 28px; border-radius: 14px; cursor: pointer; font-weight: bold; transition: all 0.3s;
         }
-        .chart-controls button:hover { background: var(--accent); color: white; }
-        .tf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 5px; flex-shrink: 0; }
+        .chart-controls button:hover { background: var(--accent); color: white;
+        }
+        .tf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 5px;
+            flex-shrink: 0; }
         .tf-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: #666;
             padding: 8px 0; border-radius: 8px; font-size: 11px; cursor: pointer; transition: all 0.3s ease; font-weight: 600;
         }
@@ -399,8 +428,10 @@
         .analyze-btn { width: 100%; background: var(--accent); border: none; padding: 14px; border-radius: 12px;
             color: white; font-weight: bold; cursor: pointer; font-size: clamp(14px, 4vw, 16px); margin: 5px 0; transition: all 0.3s; position: relative; overflow: hidden;
             flex-shrink: 0; }
-        .analyze-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow); }
-        .analyze-btn.cooldown { pointer-events: none; opacity: 0.7; }
+        .analyze-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow);
+        }
+        .analyze-btn.cooldown { pointer-events: none; opacity: 0.7;
+        }
         .timer-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center; pointer-events: none; }
         .timer-circle { width: 36px;
@@ -408,26 +439,40 @@
         }
         .timer-number { position: absolute; font-size: 16px; font-weight: bold; color: white;
             text-shadow: 0 0 5px var(--accent); }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin { 0% { transform: rotate(0deg);
+        } 100% { transform: rotate(360deg); } }
         .status-area { display: flex; justify-content: center;
-            align-items: center; gap: 8px; height: 24px; margin: 5px 0; font-size: 13px; flex-shrink: 0; }
+            align-items: center; gap: 8px; height: 24px; margin: 5px 0; font-size: 13px; flex-shrink: 0;
+        }
         .dot { width: 10px; height: 10px; background: #2575fc; border-radius: 50%;
             box-shadow: 0 0 10px #2575fc; animation: pulseDot 1.2s infinite; }
         .result-display { width: 100%;
             height: 36px; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 10px; text-align: center; font-weight: bold; line-height: 36px; margin-bottom: 5px; opacity: 0;
             visibility: hidden; transition: opacity 0.2s; font-size: 14px; flex-shrink: 0; }
-        .result-display.visible { opacity: 1; visibility: visible; }
+        .result-display.visible { opacity: 1;
+            visibility: visible; }
         #snow-layer { position: absolute; top: 0; left: 0; width: 100%;
             height: 100%; pointer-events: none; z-index: 1000; }
         #tooltip { position: absolute; background: rgba(0,0,0,0.8);
-            color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; pointer-events: none; z-index: 1001; display: none; }
+            color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; pointer-events: none; z-index: 1001; display: none;
+        }
         .indicator-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color);
-            padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; transition: all 0.3s; margin-right: 5px; }
-        .indicator-btn.active { background: var(--accent); color: white; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--accent-glow); } 70% { box-shadow: 0 0 0 10px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
-        @keyframes pulseDot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes glowPulse { 0% { text-shadow: 0 0 2px var(--accent); } 50% { text-shadow: 0 0 15px var(--accent); } 100% { text-shadow: 0 0 2px var(--accent); } }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 80% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+            padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; transition: all 0.3s; margin-right: 5px;
+        }
+        .indicator-btn.active { background: var(--accent); color: white;
+        }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--accent-glow);
+        } 70% { box-shadow: 0 0 0 10px transparent; } 100% { box-shadow: 0 0 0 0 transparent;
+        } }
+        @keyframes pulseDot { 0% { transform: scale(1); opacity: 1;
+        } 50% { transform: scale(1.3); opacity: 0.7; } 100% { transform: scale(1); opacity: 1;
+        } }
+        @keyframes glowPulse { 0% { text-shadow: 0 0 2px var(--accent);
+        } 50% { text-shadow: 0 0 15px var(--accent); } 100% { text-shadow: 0 0 2px var(--accent);
+        } }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0;
+        } 80% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1;
+        } }
     </style>
 </head>
 <body>
@@ -440,6 +485,7 @@
             <div class="language-item" data-lang="en"><span class="flag">🇬🇧</span> English</div>
             <div class="language-item" data-lang="es"><span class="flag">🇪🇸</span> Español</div>
             <div class="language-item" data-lang="ru"><span class="flag">🇷🇺</span> Русский</div>
+          
             <div class="language-item" data-lang="pl"><span class="flag">🇵🇱</span> Polski</div>
             <div class="language-item" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</div>
             <div class="language-item" data-lang="fr"><span class="flag">🇫🇷</span> Français</div>
@@ -452,6 +498,7 @@
     <div class="register-glass">
         <h3 id="register-title">🔐 Активация доступа</h3>
         <p id="register-desc">Для входа в платформу <strong>OptiBotX PRO</strong> необходим лицензионный код</p>
+     
         <div id="code-hint" class="code-hint">
             📌 <span id="hint-title">Как получить код?</span><br>
             <span id="hint-step1">1️⃣ Нажмите кнопку <strong>«Написать мне»</strong> ниже</span><br>
@@ -465,6 +512,7 @@
                 <a id="contactMeBtn" class="contact-btn" href="https://t.me/ZentixTrade" target="_blank">✍️ Написать мне</a>
                 <button id="copyNickBtn" class="copy-btn">📋 Копировать ник</button>
             </div>
+            
             <div class="contact-info">
                 <span>🤖 Мой TG: <strong>@ZentixTrade</strong></span>
                 <span>📱 Ник: <strong>ZentixTrade</strong></span>
@@ -488,39 +536,42 @@
     </div>
     <select id="pair" style="display: none;"></select>
     
-    <div class="chart-container">
-        <div class="chart-box" id="tv_chart_container">
-            </div>
-        <div id="watermark" class="watermark">OptiBotX PRO</div>
-        
-        <div class="chart-controls"><button onclick="zoomOut()">−</button><button onclick="zoomIn()">+</button></div>
-        <div style="position: absolute; bottom: 5px; left: 5px;"><button id="smaBtn" class="indicator-btn" onclick="toggleSMA()">SMA 7</button></div>
-    </div>
-    
     <div class="tf-grid">
         <button class="tf-btn" onclick="selectTf(this)">5s</button><button class="tf-btn" onclick="selectTf(this)">10s</button>
         <button class="tf-btn" onclick="selectTf(this)">15s</button><button class="tf-btn" onclick="selectTf(this)">30s</button>
         <button class="tf-btn active" onclick="selectTf(this)">1m</button><button class="tf-btn" onclick="selectTf(this)">2m</button>
         <button class="tf-btn" onclick="selectTf(this)">5m</button><button class="tf-btn" onclick="selectTf(this)">15m</button>
     </div>
+
+    <div class="chart-container">
+        <div class="chart-box" id="tv_chart_container">
+    
+        </div>
+        <div id="watermark" class="watermark">OptiBotX PRO</div>
+        
+        <div class="chart-controls"><button onclick="zoomOut()">−</button><button onclick="zoomIn()">+</button></div>
+        <div style="position: absolute; bottom: 5px; left: 5px;"><button id="smaBtn" class="indicator-btn" onclick="toggleSMA()">SMA 7</button></div>
+    </div>
+    
     <button id="anBtn" class="analyze-btn" onclick="startAnalysis(this)"><span class="btn-text">Analyze</span></button>
     <div id="status" class="status-area"><div class="dot"></div> <span id="wait-msg">Waiting...</span></div>
     <div id="result" class="result-display"></div>
 </div>
 
 <script>
+    
     // ======================== 100 ОДНОРАЗОВЫХ КОДОВ ДОСТУПА ========================
     const ONE_TIME_CODES = [
-        "1001","1002","1003","1004","1005","1006","1007","1008","1009","1010",
-        "1011","1012","1013","1014","1015","1016","1017","1018","1019","1020",
-        "1021","1022","1023","1024","1025","1026","1027","1028","1029","1030",
-        "1031","1032","1033","1034","1035","1036","1037","1038","1039","1040",
-        "1041","1042","1043","1044","1045","1046","1047","1048","1049","1050",
-        "2001","2002","2003","2004","2005","2006","2007","2008","2009","2010",
-        "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020",
-        "3001","3002","3003","3004","3005","3006","3007","3008","3009","3010",
-        "4001","4002","4003","4004","4005","4006","4007","4008","4009","4010",
-        "5001","5002","5003","5004","5005","5006","5007","5008","5009","5010"
+        "A8X2M9K", "B4P7Y3T", "C1R5H6L", "D9V2N4F", "E3W8Z7Q", "F6J1S5M", "G2K9D4B", "H7L3C8X", "I5M6P1R", "J4N8T2V",
+        "K1Q5W9Y", "L9S2Z3H", "M7T4X6C", "N3V8F1J", "O2W6K9D", "P5Y1M4S", "Q8Z3R7B", "R4B9H2L", "S1C6N5V", "T9D2Q8W",
+        "U3F7V4Z", "V6H1Y9K", "W2J5M3P", "X8L9S1T", "Y5N4C7R", "Z7P2F8M", "A4R6K3V", "B1T9D5W", "C9V3H8Y", "D6W8N1Z",
+        "E2X5S4C", "F8Y2B9F", "G5Z7J3L", "H3B1M6Q", "I9C4R8T", "J1D6V2X", "K7F9Z5Y", "L4H2K1M", "M2J8P7S", "N8L5W3R",
+        "O5N1C9V", "P3Q7F2B", "Q9R4H5L", "R6S1N8V", "S2T8Q4W", "T5V3Z9F", "U1W9Y6K", "V8X4M2P", "W4Y7S1T", "X2Z5C8R",
+        "Y7B1F3M", "Z3C9K6V", "A9D4W2Y", "B6F8H5Z", "C2H5N1C", "D8J2B7F", "E5L9J4M", "F1M6R8T", "G7N3V2X", "H4Q1Z9Y",
+        "I2R8K5M", "J9S4P1S", "K6T2W7R", "L3V9C4V", "M8W5F6B", "N1X3H9L", "O7Y8N2V", "P4Z1Q5W", "Q2B6Z8F", "R9C3Y4K",
+        "S5D1M7P", "T1F7S9T", "U8H4C2R", "V4J9F5M", "W6L2K8V", "X3M7D1W", "Y9N5H4Y", "Z1Q8N7Z", "A7R3S2C", "B5S9B6F",
+        "C8T4J1L", "D2V1M9Q", "E6W7R3T", "F3X4V8X", "G9Y2Z4Y", "H1Z6K7M", "I7B3P2S", "J4C9W5R", "K2D5C1V", "L8F1F9B",
+        "M5H7H3L", "N9J2N6V", "O3L8Q1W", "P6M4Z7F", "Q1N9Y2K", "R7Q5M8P", "S4R2S3T", "T8S6C9R", "U2T1F4M", "V5V7K2V"
     ];
     let usedCodes = JSON.parse(localStorage.getItem('optibotx_used_codes')) || {};
     
@@ -542,7 +593,6 @@
     const registerMessageDiv = document.getElementById('register-message');
     const mainApp = document.getElementById('main-app');
     const welcomeOverlay = document.getElementById('welcome-overlay');
-
     function setActivated() {
         const code = codeInput.value;
         if(isValidCode(code)) {
@@ -670,28 +720,24 @@
         document.querySelector('#anBtn .btn-text').innerText = t.analyze;
         document.getElementById('wait-msg').innerText = t.waiting;
         document.getElementById('pair-search').placeholder = t.searchPlaceholder;
-        document.getElementById('langBtn').innerHTML = `${curLang === 'en' ? '🇬🇧' : curLang === 'ru' ? '🇷🇺' : curLang === 'es' ? '🇪🇸' : curLang === 'pl' ? '🇵🇱' : curLang === 'de' ? '🇩🇪' : '🇫🇷'} ${curLang.toUpperCase()}`;
-        
+        document.getElementById('langBtn').innerHTML = `${curLang === 'en' ?
+        '🇬🇧' : curLang === 'ru' ? '🇷🇺' : curLang === 'es' ? '🇪🇸' : curLang === 'pl' ?
+        '🇵🇱' : curLang === 'de' ? '🇩🇪' : '🇫🇷'} ${curLang.toUpperCase()}`;
         // Перерисовываем график, чтобы язык TradingView тоже обновился
         if(isActivated) initChart();
     }
 
     // ======================== ГРАФИК TRADINGVIEW ========================
     let tvWidget = null;
-    
     function initChart() {
         const container = document.getElementById('tv_chart_container');
         if(!container) return;
-        
         // Очищаем контейнер перед созданием нового
         container.innerHTML = '';
-        
         // Получаем пару (например, "EUR/USD OTC")
         let pairName = document.getElementById('pair').value || "EUR/USD";
-        
         // Преобразуем для TradingView: убираем слэш и "OTC"
         let tvSymbol = "FX:" + pairName.replace("/", "").replace(" OTC", "");
-        
         const isLight = document.body.classList.contains('light-theme');
         
         // Создаем виджет
@@ -701,7 +747,8 @@
             "interval": "1",
             "timezone": "Etc/UTC",
             "theme": isLight ? "light" : "dark",
-            "style": "1", // Японские свечи
+            "style": "1", 
+            // Японские свечи
             "locale": curLang || "ru",
             "enable_publishing": false,
             "backgroundColor": "rgba(0, 0, 0, 0)", // Прозрачный фон
@@ -722,7 +769,6 @@
     }
     
     window.zoomIn = zoomIn; window.zoomOut = zoomOut; window.toggleSMA = toggleSMA;
-    
     // Снег
     const sCanvas = document.getElementById('snow-layer'), sCtx = sCanvas.getContext('2d'); let flakes = [], snowAnimation;
     function setupSnow() { sCanvas.width = sCanvas.parentElement.clientWidth; sCanvas.height = sCanvas.parentElement.clientHeight; flakes = Array.from({length:60},()=>({ x:Math.random()*sCanvas.width, y:Math.random()*sCanvas.height, r:Math.random()*3+1, d:Math.random()*1+0.5, angle:Math.random()*360 })); if(snowAnimation) cancelAnimationFrame(snowAnimation);
@@ -746,15 +792,49 @@
         setTimeout(()=>{ 
             initChart(); 
             tvContainer.style.opacity='1'; 
-        },500); 
+        },500);
     } window.changePair=changePair;
     
-    function startAnalysis(btn){ if(!isActivated){ showActivationModal(); return; } if(cooldownActive)return; cooldownActive=true; btn.classList.add('cooldown'); const timerOverlay=document.createElement('div'); timerOverlay.className='timer-overlay'; const circle=document.createElement('div');
-    circle.className='timer-circle'; const number=document.createElement('span'); number.className='timer-number'; number.innerText='5'; timerOverlay.appendChild(circle); timerOverlay.appendChild(number); btn.appendChild(timerOverlay); let timeLeft=5; const interval=setInterval(()=>{ timeLeft--; number.innerText=timeLeft; if(timeLeft<=0)clearInterval(interval); },1000); const res=document.getElementById('result'); const stat=document.getElementById('status');
-    res.classList.remove('visible'); stat.style.display='flex'; setTimeout(()=>{ stat.style.display='none'; res.classList.add('visible'); const isUp=Math.random()>0.5; res.style.color=isUp?'#00ff88':'#ff4d4d'; res.style.borderColor=isUp?'#00ff88':'#ff4d4d'; res.innerHTML=`${isUp?translations[curLang].buy:translations[curLang].sell} (${Math.floor(Math.random()*15+82)}%)`; res.style.animation='popIn 0.4s'; setTimeout(()=>res.style.animation='',400); },1500);
-    setTimeout(()=>{ clearInterval(interval); cooldownActive=false; btn.classList.remove('cooldown'); const overlay=btn.querySelector('.timer-overlay'); if(overlay)overlay.remove(); },5000); } window.startAnalysis=startAnalysis;
-    function selectTf(btn){ if(!isActivated){ showActivationModal(); return; } document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); } window.selectTf=selectTf;
+    let cooldownActive=false;
+    let snowEnabled=true;
+
+    function startAnalysis(btn){ 
+        if(!isActivated){ showActivationModal(); return; } 
+        if(cooldownActive)return; 
+        cooldownActive=true; 
+        btn.classList.add('cooldown'); 
+        const timerOverlay=document.createElement('div'); timerOverlay.className='timer-overlay'; 
+        const circle=document.createElement('div'); circle.className='timer-circle'; 
+        const number=document.createElement('span'); number.className='timer-number';
+        number.innerText='5'; 
+        timerOverlay.appendChild(circle); timerOverlay.appendChild(number); 
+        btn.appendChild(timerOverlay); 
+        let timeLeft=5; 
+        const interval=setInterval(()=>{ 
+            timeLeft--; number.innerText=timeLeft; 
+            if(timeLeft<=0)clearInterval(interval); 
+        },1000); 
+        const res=document.getElementById('result'); 
+        const stat=document.getElementById('status');
+        res.classList.remove('visible'); stat.style.display='flex';
+        setTimeout(()=>{ 
+            stat.style.display='none'; 
+            res.classList.add('visible'); 
+            const isUp=Math.random()>0.5; 
+            const dotColor = isUp ? '#00ff88' : '#ff4d4d';
+            res.style.color=dotColor; 
+            res.style.borderColor=dotColor; 
+            
+            const dotHTML = `<div class="dot" style="display:inline-block; margin-right:8px; background:${dotColor}; box-shadow:0 0 10px ${dotColor}; animation: pulseDot 1.2s infinite;"></div>`;
+            res.innerHTML = dotHTML + `${isUp?translations[curLang].buy:translations[curLang].sell} (${Math.floor(Math.random()*15+82)}%)`; 
+            
+            res.style.animation='popIn 0.4s'; 
+            setTimeout(()=>res.style.animation='',400); 
+        },1500);
+        setTimeout(()=>{ clearInterval(interval); cooldownActive=false; btn.classList.remove('cooldown'); const overlay=btn.querySelector('.timer-overlay'); if(overlay)overlay.remove(); },5000); 
+    } window.startAnalysis=startAnalysis;
     
+    function selectTf(btn){ if(!isActivated){ showActivationModal(); return; } document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); } window.selectTf=selectTf;
     // DOM элементы
     const startBtnElem = document.getElementById('start-btn');
     const langItemsElem = document.querySelectorAll('.language-item');
@@ -767,24 +847,22 @@
     const smaBtn = document.getElementById('smaBtn');
     const contactMeBtn = document.getElementById('contactMeBtn');
     const copyNickBtnElem = document.getElementById('copyNickBtn');
-    
     copyNickBtnElem.addEventListener('click', () => {
         navigator.clipboard.writeText("ZentixTrade").then(() => {
             const original = copyNickBtnElem.innerHTML;
             copyNickBtnElem.innerHTML = "✅ " + (curLang === 'ru' ? "Скопировано!" : curLang === 'es' ? "¡Copiado!" : curLang === 'pl' ? "Skopiowano!" : curLang === 'de' ? "Kopiert!" : curLang === 'fr' ? "Copié !" : "Copied!");
             setTimeout(() => { copyNickBtnElem.innerHTML = original; }, 1500);
+     
             if(registerMessageDiv) { registerMessageDiv.innerText = translations[curLang].copySuccess; registerMessageDiv.classList.add('success'); setTimeout(()=>registerMessageDiv.innerText='', 1800); }
         });
     });
-    
     function toggleTheme() { 
-        document.body.classList.toggle('light-theme'); 
+        document.body.classList.toggle('light-theme');
         // Пересобираем график чтобы он сменил тему TradingView
-        if(isActivated) initChart(); 
+        if(isActivated) initChart();
     }
     themeBtnElem.onclick = toggleTheme;
     snowToggleElem.onclick = toggleSnow;
-    
     langBtnElem.onclick = function() {
         const langs = ['en', 'es', 'ru', 'pl', 'de', 'fr'];
         let idx = langs.indexOf(curLang);
@@ -794,7 +872,6 @@
         updateRegisterLang();
         renderPairs(searchInput.value);
     };
-    
     let selectedLanguage = null;
     langItemsElem.forEach(item => {
         item.addEventListener('click', () => {
@@ -804,7 +881,6 @@
             startBtnElem.classList.add('visible');
         });
     });
-    
     startBtnElem.addEventListener('click', () => {
         if(!selectedLanguage) { selectedLanguage = 'en'; const def = document.querySelector('.language-item[data-lang="en"]'); if(def) def.classList.add('selected'); }
         curLang = selectedLanguage;
@@ -814,13 +890,13 @@
         mainApp.style.display = 'flex';
         
         allPairs.forEach(p => { const opt = document.createElement('option'); opt.value = p.name; opt.text = p.name; hiddenSelect.appendChild(opt); });
+    
         if(allPairs.length > 0){ hiddenSelect.value = allPairs[0].name; searchInput.value = allPairs[0].name; }
         
         initChart(); // Запускаем TradingView
         setupSnow();
         renderPairs();
     });
-    
     searchInput.addEventListener('focus', () => { pairsContainer.style.display = 'block'; });
     document.addEventListener('click', (e) => { if(!searchInput.contains(e.target) && !pairsContainer.contains(e.target)) pairsContainer.style.display = 'none'; });
     searchInput.addEventListener('input', (e) => { renderPairs(e.target.value); if(!pairsContainer.style.display || pairsContainer.style.display === 'none') pairsContainer.style.display = 'block'; });
