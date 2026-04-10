@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OptiBotX PRO | TradingView</title>
-    <!-- TradingView Lightweight Charts -->
-    <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none; /* для удобства на мобильных */
+            user-select: none;
         }
         :root {
             --bg-color: #050510;
@@ -158,7 +156,7 @@
         .chart-container {
             position: relative;
             width: 100%;
-            height: 280px; /* явная высота — критично для TradingView */
+            height: 280px;
             margin-bottom: 15px;
             flex-shrink: 0;
             background: var(--app-bg);
@@ -226,11 +224,23 @@
             .app-container { padding: 12px; }
             .chart-container { height: 250px; }
         }
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: #ff8888;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: center;
+            z-index: 20;
+        }
     </style>
 </head>
 <body>
 
-<!-- Приветствие -->
 <div id="welcome-overlay" class="welcome-overlay visible">
     <div class="welcome-glass">
         <h1 class="welcome-title">Welcome</h1>
@@ -246,7 +256,6 @@
     </div>
 </div>
 
-<!-- Активация -->
 <div id="access-overlay" class="register-overlay">
     <div class="register-glass">
         <h3 id="access-title">🔐 Access</h3>
@@ -258,7 +267,6 @@
     </div>
 </div>
 
-<!-- Основное приложение -->
 <div class="app-container" id="main-app">
     <canvas id="snow-layer"></canvas>
     <header>
@@ -315,6 +323,8 @@
         let showSMA = false;
         let candlesData = [];
         let updateInterval = null;
+        let libraryReady = false;
+        let libraryLoadAttempts = 0;
 
         // ------------------- СЛОВАРЬ -------------------
         const dict = {
@@ -358,8 +368,50 @@
             { name: "GBP/NZD OTC", flag: "🇬🇧🇳🇿", type: "OTC" }
         ];
 
-        // ------------------- ГРАФИК TRADINGVIEW (ГАРАНТИРОВАННО РАБОТАЕТ) -------------------
+        // ------------------- ФУНКЦИЯ ЗАГРУЗКИ БИБЛИОТЕКИ С ПОВТОРАМИ -------------------
+        function loadLightweightCharts(callback) {
+            if (window.LightweightCharts) {
+                libraryReady = true;
+                callback();
+                return;
+            }
+            const cdnList = [
+                'https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.js',
+                'https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.js'
+            ];
+            let currentIndex = 0;
+            function tryLoad() {
+                if (currentIndex >= cdnList.length) {
+                    console.error('Не удалось загрузить Lightweight Charts');
+                    document.getElementById('tv-chart').innerHTML = '<div class="otc-placeholder">❌ Ошибка загрузки графика<br>Проверьте соединение</div>';
+                    return;
+                }
+                const script = document.createElement('script');
+                script.src = cdnList[currentIndex];
+                script.onload = () => {
+                    if (window.LightweightCharts) {
+                        libraryReady = true;
+                        callback();
+                    } else {
+                        currentIndex++;
+                        tryLoad();
+                    }
+                };
+                script.onerror = () => {
+                    currentIndex++;
+                    tryLoad();
+                };
+                document.head.appendChild(script);
+            }
+            tryLoad();
+        }
+
+        // ------------------- ГРАФИК TRADINGVIEW -------------------
         function initTradingViewChart() {
+            if (!libraryReady || !window.LightweightCharts) {
+                setTimeout(() => initTradingViewChart(), 100);
+                return;
+            }
             const container = document.getElementById('tv-chart');
             if (!container) return;
             container.innerHTML = '';
@@ -373,39 +425,43 @@
             const width = chartContainer.clientWidth;
             const height = chartContainer.clientHeight;
             if (width === 0 || height === 0) {
-                // если контейнер ещё не отрисован, отложим инициализацию
                 setTimeout(initTradingViewChart, 50);
                 return;
             }
-            chart = LightweightCharts.createChart(container, {
-                width: width,
-                height: height,
-                layout: {
-                    background: { color: 'transparent' },
-                    textColor: document.body.classList.contains('light-theme') ? '#000' : '#FFF',
-                },
-                grid: {
-                    vertLines: { color: document.body.classList.contains('light-theme') ? '#ddd' : '#1e1e2f' },
-                    horzLines: { color: document.body.classList.contains('light-theme') ? '#ddd' : '#1e1e2f' },
-                },
-                crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-                rightPriceScale: { borderColor: '#888' },
-                timeScale: { borderColor: '#888', timeVisible: true, secondsVisible: false },
-            });
-            candleSeries = chart.addCandlestickSeries({
-                upColor: '#00ff88', downColor: '#ff4d4d', borderDownColor: '#ff4d4d', borderUpColor: '#00ff88',
-                wickDownColor: '#ff4d4d', wickUpColor: '#00ff88',
-            });
-            if (showSMA && !smaSeries) {
-                smaSeries = chart.addLineSeries({ color: '#ffaa00', lineWidth: 2, title: 'SMA 7' });
-            }
-            // обработчик изменения размера окна
-            window.addEventListener('resize', () => {
-                if (chart && !isOTC) {
-                    const newRect = document.getElementById('chart-container').getBoundingClientRect();
-                    chart.applyOptions({ width: newRect.width, height: newRect.height });
+            try {
+                chart = LightweightCharts.createChart(container, {
+                    width: width,
+                    height: height,
+                    layout: {
+                        background: { color: 'transparent' },
+                        textColor: document.body.classList.contains('light-theme') ? '#000' : '#FFF',
+                    },
+                    grid: {
+                        vertLines: { color: document.body.classList.contains('light-theme') ? '#ddd' : '#1e1e2f' },
+                        horzLines: { color: document.body.classList.contains('light-theme') ? '#ddd' : '#1e1e2f' },
+                    },
+                    crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+                    rightPriceScale: { borderColor: '#888' },
+                    timeScale: { borderColor: '#888', timeVisible: true, secondsVisible: false },
+                });
+                candleSeries = chart.addCandlestickSeries({
+                    upColor: '#00ff88', downColor: '#ff4d4d', borderDownColor: '#ff4d4d', borderUpColor: '#00ff88',
+                    wickDownColor: '#ff4d4d', wickUpColor: '#00ff88',
+                });
+                if (showSMA && !smaSeries) {
+                    smaSeries = chart.addLineSeries({ color: '#ffaa00', lineWidth: 2, title: 'SMA 7' });
                 }
-            });
+                // обработчик изменения размера
+                window.addEventListener('resize', () => {
+                    if (chart && !isOTC) {
+                        const newRect = document.getElementById('chart-container').getBoundingClientRect();
+                        chart.applyOptions({ width: newRect.width, height: newRect.height });
+                    }
+                });
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = '<div class="otc-placeholder">❌ Ошибка инициализации графика</div>';
+            }
         }
 
         function updateChartTheme() {
@@ -419,7 +475,6 @@
             });
         }
 
-        // Генерация случайных исторических свечей
         function generateRandomCandles(count, startPrice = 100) {
             let data = [];
             let price = startPrice;
@@ -485,7 +540,6 @@
             }, 3000);
         }
 
-        // Загрузка пары (OTC или обычная)
         function loadPair(pairName) {
             currentPair = pairName;
             isOTC = pairName.toLowerCase().includes('otc');
@@ -502,29 +556,36 @@
                 chartDiv.innerHTML = '<div class="otc-placeholder">📊 В разработке<br>OTC график появится позже</div>';
             } else {
                 chartDiv.innerHTML = '';
-                initTradingViewChart();
-                // даём время на инициализацию
-                setTimeout(() => {
-                    if (candleSeries) {
-                        candlesData = generateRandomCandles(30, 100);
-                        candleSeries.setData(candlesData);
-                        if (showSMA && smaSeries) {
-                            let period = 7;
-                            let smaVals = [];
-                            for (let i = period-1; i < candlesData.length; i++) {
-                                let sum = 0;
-                                for (let j = i-period+1; j <= i; j++) sum += candlesData[j].close;
-                                smaVals.push({ time: candlesData[i].time, value: sum/period });
-                            }
-                            smaSeries.setData(smaVals);
-                        }
-                        startDataInterval();
+                // ждём готовности библиотеки
+                const waitForLib = () => {
+                    if (!libraryReady) {
+                        setTimeout(waitForLib, 50);
+                        return;
                     }
-                }, 100);
+                    initTradingViewChart();
+                    setTimeout(() => {
+                        if (candleSeries) {
+                            candlesData = generateRandomCandles(30, 100);
+                            candleSeries.setData(candlesData);
+                            if (showSMA && smaSeries) {
+                                let period = 7;
+                                let smaVals = [];
+                                for (let i = period-1; i < candlesData.length; i++) {
+                                    let sum = 0;
+                                    for (let j = i-period+1; j <= i; j++) sum += candlesData[j].close;
+                                    smaVals.push({ time: candlesData[i].time, value: sum/period });
+                                }
+                                smaSeries.setData(smaVals);
+                            }
+                            startDataInterval();
+                        }
+                    }, 100);
+                };
+                waitForLib();
             }
         }
 
-        // ------------------- ОСТАЛЬНЫЕ ФУНКЦИИ -------------------
+        // ------------------- ОСТАЛЬНЫЕ ФУНКЦИИ (ЯЗЫКИ, ТЕМА, СНЕГ, ПОИСК, АНАЛИЗ, АКТИВАЦИЯ) -------------------
         function updateUILang() {
             document.getElementById('sub-header').innerText = dict[curLang].sub;
             document.querySelector('#anBtn .btn-text').innerText = dict[curLang].an;
@@ -567,7 +628,6 @@
         }
         function toggleSnow() { snowEnabled = !snowEnabled; document.getElementById('snowToggle').innerText = snowEnabled ? '❄️' : '☃️'; }
 
-        // Поиск пар
         function renderPairs(filter = '') {
             const filterLower = filter.toLowerCase();
             const filtered = allPairs.filter(p => p.name.toLowerCase().includes(filterLower) || p.type.toLowerCase().includes(filterLower));
@@ -588,7 +648,6 @@
             });
         }
 
-        // Анализ
         function startAnalysis(btn) {
             if (!registered) {
                 document.getElementById('access-overlay').classList.add('visible');
@@ -615,7 +674,6 @@
             setTimeout(() => { clearInterval(interval); cooldownActive = false; btn.classList.remove('cooldown'); const ov = btn.querySelector('.timer-overlay'); if(ov) ov.remove(); }, 5000);
         }
 
-        // Активация по кодам
         const validCodes = ['10341638','20451927','30561836','40771345','50881454','60991563','70101672','80211781','90321890','10431909','11542018','12652127','13762236','14872345','15982454','16092563','17102672','18212781','19322890','20432909','21543018','22653127','23763236','24873345','25983454','26093563','27103672','28213781','29323890','30433909','31544018','32654127','33764236','34874345','35984454','36094563','37104672','38214781','39324890','40434909','41545018','42655127','43765236','44875345','45985454','46095563','47105672','48215781','49325890','50435909'];
         let usedCodes = JSON.parse(localStorage.getItem('usedCodes')) || {};
         function isCodeValid(code) { return validCodes.includes(code) && !usedCodes[code]; }
@@ -637,10 +695,14 @@
         startBtn.addEventListener('click', () => {
             welcomeOverlay.classList.remove('visible');
             document.getElementById('main-app').style.display = 'flex';
-            currentPair = allPairs[0].name;
-            document.getElementById('pair-search').value = currentPair;
-            renderPairs('');
-            loadPair(currentPair);
+            // Загружаем библиотеку TradingView
+            loadLightweightCharts(() => {
+                console.log('Lightweight Charts loaded');
+                currentPair = allPairs[0].name;
+                document.getElementById('pair-search').value = currentPair;
+                renderPairs('');
+                loadPair(currentPair);
+            });
             setupSnow();
             updateUILang();
 
@@ -680,7 +742,6 @@
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    // Можно изменить интервал обновления свечей, но для демо оставим
                 });
             });
             document.getElementById('anBtn').onclick = () => startAnalysis(document.getElementById('anBtn'));
@@ -688,7 +749,6 @@
             document.getElementById('pair-search').addEventListener('focus', () => document.getElementById('pairs-container').style.display = 'block');
             document.addEventListener('click', (e) => { if(!document.getElementById('pair-search').contains(e.target) && !document.getElementById('pairs-container').contains(e.target)) document.getElementById('pairs-container').style.display = 'none'; });
             
-            // Активация
             document.getElementById('activate-btn').onclick = () => {
                 const code = document.getElementById('code-input').value.trim();
                 const msgDiv = document.getElementById('access-message');
