@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OptiBotX PRO | Premium Trading Terminal</title>
+    <title>OptiBotX PRO | Trading Terminal</title>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
         :root {
-            /* Освеженная цветовая палитра: глубокий темный с бирюзовым акцентом */
             --bg-color: #0a0e17;
             --app-bg: #111827;
             --border-color: #1f2937;
@@ -20,6 +19,7 @@
             --glass-border: rgba(255, 255, 255, 0.1);
             --success-color: #00e676;
             --danger-color: #ff4d4d;
+            --neutral-color: #3b82f6;
         }
         body.light-theme {
             --bg-color: #e5e7eb;
@@ -48,9 +48,7 @@
             z-index: 20000; opacity: 0; visibility: hidden;
             transition: opacity 0.4s ease, visibility 0.4s;
         }
-        .welcome-overlay.visible, .register-overlay.visible {
-            opacity: 1; visibility: visible;
-        }
+        .welcome-overlay.visible, .register-overlay.visible { opacity: 1; visibility: visible; }
         .welcome-glass, .register-glass {
             background: var(--glass-bg); backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border); border-radius: 30px;
@@ -58,10 +56,7 @@
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             transform: scale(0.9); animation: glassAppear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        @keyframes glassAppear {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+        @keyframes glassAppear { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .welcome-title, .register-glass h3 {
             font-size: 2rem; font-weight: 800; margin: 0 0 15px;
             background: linear-gradient(135deg, #fff, var(--accent));
@@ -77,10 +72,7 @@
             display: flex; align-items: center; gap: 15px; cursor: pointer; transition: all 0.3s;
         }
         .language-item:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
-        .language-item.selected {
-            background: var(--accent); color: #fff; border-color: var(--accent);
-            box-shadow: 0 5px 20px var(--accent-glow);
-        }
+        .language-item.selected { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 5px 20px var(--accent-glow); }
 
         .start-btn, .register-btn {
             background: linear-gradient(135deg, var(--accent), #0088cc); border: none; color: white;
@@ -92,32 +84,17 @@
         .start-btn:hover, .register-btn:hover { transform: scale(1.03); filter: brightness(1.1); }
 
         .register-glass p { font-size: 0.95rem; margin-bottom: 20px; line-height: 1.4; opacity: 0.9; }
-        .code-hint {
-            background: rgba(0, 210, 255, 0.08); border-left: 4px solid var(--accent);
-            border-radius: 12px; padding: 12px 14px; margin-bottom: 20px; text-align: left;
-            font-size: 0.85rem; color: #d1d5db;
-        }
+        .code-hint { background: rgba(0, 210, 255, 0.08); border-left: 4px solid var(--accent); border-radius: 12px; padding: 12px 14px; margin-bottom: 20px; text-align: left; font-size: 0.85rem; color: #d1d5db; }
         .code-hint span { font-weight: 600; color: var(--accent); }
-        .register-input {
-            width: 100%; padding: 14px; background: rgba(0,0,0,0.3);
-            border: 1px solid var(--glass-border); border-radius: 30px; color: var(--text-color);
-            font-size: 1rem; text-align: center; margin-bottom: 15px; outline: none; transition: 0.3s; box-sizing: border-box;
-        }
+        .register-input { width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 30px; color: var(--text-color); font-size: 1rem; text-align: center; margin-bottom: 15px; outline: none; transition: 0.3s; box-sizing: border-box; }
         .register-input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
         .register-input.error-shake { animation: shake 0.4s ease-in-out; border-color: var(--danger-color); }
         
         .contact-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
         .double-buttons { display: flex; gap: 10px; justify-content: stretch; }
-        .contact-btn, .copy-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-            color: var(--text-color); font-size: 0.85rem; font-weight: 600; padding: 10px 0;
-            border-radius: 20px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1; text-decoration: none;
-        }
+        .contact-btn, .copy-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-color); font-size: 0.85rem; font-weight: 600; padding: 10px 0; border-radius: 20px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1; text-decoration: none; }
         .contact-btn:hover, .copy-btn:hover { background: rgba(0, 210, 255, 0.15); border-color: var(--accent); }
-        .contact-info {
-            background: rgba(0,0,0,0.2); border-radius: 20px; padding: 8px; font-size: 0.75rem;
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; border: 1px solid rgba(255,255,255,0.05);
-        }
+        .contact-info { background: rgba(0,0,0,0.2); border-radius: 20px; padding: 8px; font-size: 0.75rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; border: 1px solid rgba(255,255,255,0.05); }
         .register-message { font-size: 0.85rem; min-height: 38px; margin-top: 12px; padding: 6px 10px; border-radius: 20px; transition: 0.2s; }
         .register-message.error { color: var(--danger-color); background: rgba(255,77,77,0.1); }
         .register-message.success { color: var(--success-color); background: rgba(0,230,118,0.1); }
@@ -133,9 +110,8 @@
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-shrink: 0; }
-        .logo h1 { font-size: 1.2rem; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
+        .logo h1 { font-size: 1.4rem; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
         .logo span { color: var(--accent); font-weight: 800; text-shadow: 0 0 10px var(--accent-glow); }
-        .sub-header { font-size: 0.7rem; color: #6b7280; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
         
         .header-buttons { display: flex; gap: 6px; }
         .icon-btn {
@@ -148,68 +124,72 @@
         .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #6b7280; font-size: 14px; }
         #pair-search {
             width: 100%; background: var(--secondary-bg); color: var(--text-color); border: 1px solid var(--border-color);
-            border-radius: 16px; padding: 12px 12px 12px 38px; font-size: 0.95rem; outline: none; box-sizing: border-box; transition: 0.3s;
+            border-radius: 12px; padding: 12px 12px 12px 38px; font-size: 0.95rem; outline: none; box-sizing: border-box; transition: 0.3s;
         }
         #pair-search:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
         .pairs-container {
-            max-height: 220px; overflow-y: auto; background: var(--secondary-bg); border: 1px solid var(--border-color);
-            border-radius: 16px; padding: 5px 0; display: none; position: absolute; width: 100%; top: 105%; z-index: 100;
+            max-height: 250px; overflow-y: auto; background: var(--secondary-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 5px 0; display: none; position: absolute; width: 100%; top: 105%; z-index: 100;
             box-shadow: 0 15px 30px rgba(0,0,0,0.6); backdrop-filter: blur(10px);
         }
+        .pairs-container::-webkit-scrollbar { width: 6px; }
+        .pairs-container::-webkit-scrollbar-thumb { background: var(--hover-color); border-radius: 10px; }
         .pair-option {
             padding: 10px 15px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px;
             border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.9rem;
         }
-        .pair-option:last-child { border-bottom: none; }
         .pair-option:hover { background: var(--hover-color); padding-left: 20px; }
         .pair-option.selected { background: rgba(0, 210, 255, 0.1); border-left: 3px solid var(--accent); color: var(--accent); font-weight: bold; }
         .pair-option .pair-flag { font-size: 1.2rem; }
 
-        /* --- NEW CONTROLS PANEL --- */
+        /* --- NEW BEAUTIFUL CONTROLS PANEL --- */
         .controls-panel {
-            background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 20px;
-            padding: 15px; margin-bottom: 12px; flex-shrink: 0; box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            background: transparent; margin-bottom: 12px; flex-shrink: 0;
         }
-        .tf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+        .tf-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; margin-bottom: 12px; }
         .tf-btn {
-            background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: #9ca3af;
-            padding: 8px 0; border-radius: 10px; font-size: 0.75rem; cursor: pointer; transition: 0.3s; font-weight: 700;
+            background: var(--secondary-bg); border: 1px solid var(--border-color); color: #9ca3af;
+            padding: 10px 0; border-radius: 10px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease; 
+            font-weight: 700; flex: 1 1 calc(25% - 6px); box-sizing: border-box;
         }
         .tf-btn:hover { background: var(--hover-color); color: var(--text-color); }
         .tf-btn.active {
-            background: var(--accent); color: #000; border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow); animation: pulse 2s infinite;
+            background: linear-gradient(135deg, var(--accent), #3a7bd5); color: #fff;
+            border-color: transparent; box-shadow: 0 4px 15px var(--accent-glow);
         }
 
         .analyze-btn {
-            width: 100%; background: linear-gradient(135deg, var(--accent), #0088cc); border: none; padding: 14px;
-            border-radius: 14px; color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-            cursor: pointer; font-size: 1rem; transition: 0.3s; position: relative; overflow: hidden; box-shadow: 0 6px 15px var(--accent-glow);
+            width: 100%; background: linear-gradient(135deg, #10b981, #059669); border: none; padding: 14px;
+            border-radius: 12px; color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; font-size: 1rem; transition: 0.3s; position: relative; overflow: hidden; box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
         }
-        .analyze-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px var(--accent-glow); filter: brightness(1.1); }
+        .analyze-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5); filter: brightness(1.1); }
         .analyze-btn.cooldown { pointer-events: none; opacity: 0.8; filter: grayscale(0.5); }
         
-        .timer-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); }
-        .timer-circle { width: 30px; height: 30px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2); border-top-color: white; animation: spin 1s linear infinite; position: absolute; }
-        .timer-number { position: absolute; font-size: 14px; font-weight: bold; color: white; text-shadow: 0 0 5px #000; }
+        .timer-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); border-radius: 12px; }
+        .timer-circle { width: 28px; height: 28px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2); border-top-color: white; animation: spin 1s linear infinite; position: absolute; }
+        .timer-number { position: absolute; font-size: 13px; font-weight: bold; color: white; text-shadow: 0 0 5px #000; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* ОЖИДАНИЕ С СИНИМ ШАРИКОМ */
         .status-area { display: flex; justify-content: center; align-items: center; gap: 8px; height: 20px; margin-top: 12px; font-size: 0.85rem; color: #9ca3af; }
-        /* ЗЕЛЕНЫЙ ИНДИКАТОР */
-        .dot { width: 10px; height: 10px; background: var(--success-color); border-radius: 50%; box-shadow: 0 0 10px var(--success-color); animation: pulseDot 1.2s infinite; }
+        .dot-waiting { width: 10px; height: 10px; background: var(--neutral-color); border-radius: 50%; box-shadow: 0 0 10px var(--neutral-color); animation: pulseDot 1.2s infinite; }
         
+        /* РЕЗУЛЬТАТ (КРАСНЫЙ ИЛИ ЗЕЛЕНЫЙ ШАРИК ВНУТРИ) */
         .result-display {
-            width: 100%; height: 42px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color);
-            border-radius: 12px; text-align: center; font-weight: 800; line-height: 40px; font-size: 1.1rem;
+            width: 100%; height: 46px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color);
+            border-radius: 12px; text-align: center; font-weight: 800; line-height: 44px; font-size: 1.15rem;
             margin-top: 12px; opacity: 0; visibility: hidden; transition: 0.3s; box-sizing: border-box;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
         }
         .result-display.visible { opacity: 1; visibility: visible; }
+        .result-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
 
-        /* --- CHART DOWN BELOW --- */
+        /* --- CHART DOWN BELOW (SMALLER) --- */
         .chart-container {
-            position: relative; width: 100%; flex-grow: 1; min-height: 200px;
-            background: var(--secondary-bg); border-radius: 20px; border: 1px solid var(--border-color);
-            overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            position: relative; width: 100%; height: 260px; /* Уменьшенный график */
+            background: var(--secondary-bg); border-radius: 16px; border: 1px solid var(--border-color);
+            overflow: hidden; flex-shrink: 0; box-shadow: inset 0 0 20px rgba(0,0,0,0.3); margin-top: auto;
         }
         .chart-box { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
         .watermark { position: absolute; bottom: 8px; right: 12px; font-size: 0.7rem; font-weight: bold; color: rgba(150,150,150,0.3); pointer-events: none; z-index: 5; letter-spacing: 1px; }
@@ -268,7 +248,7 @@
     <canvas id="snow-layer"></canvas>
     
     <header>
-        <div class="logo"><h1>OptiBotX <span>PRO</span></h1><div id="sub-header" class="sub-header">Premium Terminal</div></div>
+        <div class="logo"><h1>OptiBotX <span>PRO</span></h1></div>
         <div class="header-buttons">
             <button id="themeBtn" class="icon-btn">🌓</button>
             <button id="snowToggle" class="icon-btn">❄️</button>
@@ -298,7 +278,7 @@
         <button id="anBtn" class="analyze-btn" onclick="startAnalysis(this)"><span class="btn-text">Analyze Market</span></button>
         
         <div id="status" class="status-area" style="display: none;">
-            <div class="dot"></div> <span id="wait-msg">Analyzing data...</span>
+            <div class="dot-waiting"></div> <span id="wait-msg">Analyzing data...</span>
         </div>
         
         <div id="result" class="result-display"></div>
@@ -311,7 +291,7 @@
 </div>
 
 <script>
-    // ======================== 100 СЛУЧАЙНЫХ 7-ЗНАЧНЫХ КОДОВ ========================
+    // ======================== КОДЫ ========================
     const ONE_TIME_CODES = [
         "8472915", "3918472", "5729103", "9183745", "2847193", "7361928", "4928173", "1837462", "5928174", "3847192",
         "7192834", "6281937", "4719283", "9382716", "2837491", "5192837", "8471923", "3628194", "7281934", "1938472",
@@ -325,204 +305,182 @@
         "7192831", "6281931", "4719281", "9382711", "2837492", "5192831", "8471921", "3628191", "7281931", "1938471"
     ];
     let usedCodes = JSON.parse(localStorage.getItem('optibotx_used_codes')) || {};
-    
-    function isValidCode(code) {
-        if(!code) return false;
-        const trimmed = code.trim();
-        return ONE_TIME_CODES.includes(trimmed) && !usedCodes[trimmed];
-    }
-    
-    function markCodeAsUsed(code) {
-        usedCodes[code.trim()] = true;
-        localStorage.setItem('optibotx_used_codes', JSON.stringify(usedCodes));
-    }
+    function isValidCode(code) { return code && ONE_TIME_CODES.includes(code.trim()) && !usedCodes[code.trim()]; }
+    function markCodeAsUsed(code) { usedCodes[code.trim()] = true; localStorage.setItem('optibotx_used_codes', JSON.stringify(usedCodes)); }
     
     let isActivated = localStorage.getItem('optibotx_activated') === 'true';
     const registerOverlay = document.getElementById('register-overlay');
-    const codeInput = document.getElementById('code-input');
-    const activateBtn = document.getElementById('activate-btn');
     const registerMessageDiv = document.getElementById('register-message');
-    const mainApp = document.getElementById('main-app');
-    const welcomeOverlay = document.getElementById('welcome-overlay');
 
     function setActivated() {
-        const code = codeInput.value;
+        const code = document.getElementById('code-input').value;
         if(isValidCode(code)) {
-            markCodeAsUsed(code);
-            isActivated = true;
-            localStorage.setItem('optibotx_activated', 'true');
-            registerMessageDiv.innerText = getTranslation('activateSuccess');
-            registerMessageDiv.classList.add('success');
-            registerMessageDiv.classList.remove('error');
+            markCodeAsUsed(code); isActivated = true; localStorage.setItem('optibotx_activated', 'true');
+            registerMessageDiv.innerText = getTranslation('activateSuccess'); registerMessageDiv.className = 'register-message success';
             setTimeout(() => { registerOverlay.classList.remove('visible'); registerMessageDiv.innerText = ''; }, 1000);
         } else {
-            registerMessageDiv.innerText = getTranslation('wrongCode');
-            registerMessageDiv.classList.add('error');
-            registerMessageDiv.classList.remove('success');
-            codeInput.classList.add('error-shake');
-            setTimeout(() => codeInput.classList.remove('error-shake'), 400);
+            registerMessageDiv.innerText = getTranslation('wrongCode'); registerMessageDiv.className = 'register-message error';
+            document.getElementById('code-input').classList.add('error-shake');
+            setTimeout(() => document.getElementById('code-input').classList.remove('error-shake'), 400);
         }
     }
-    
-    activateBtn.addEventListener('click', setActivated);
+    document.getElementById('activate-btn').addEventListener('click', setActivated);
     function showActivationModal() { if(!isActivated){ updateRegisterLang(); registerOverlay.classList.add('visible'); } return isActivated; }
 
-    // ======================== ПОЛНАЯ ЛОКАЛИЗАЦИЯ ========================
+    // ======================== ЛОКАЛИЗАЦИЯ ========================
     const translations = {
         en: {
             welcomeTitle: "Welcome", welcomeSub: "Choose your language", start: "Continue",
             registerTitle: "🔐 Activation", registerDesc: "To access <strong>OptiBotX PRO</strong> you need a license code",
             hintTitle: "How to get a code?", step1: "1️⃣ Click the <strong>«Write to me»</strong> button below",
-            step2: "2️⃣ Write the word <strong>«CODE»</strong> in Telegram",
-            step3: "3️⃣ Get your personal access ✅",
+            step2: "2️⃣ Write the word <strong>«CODE»</strong> in Telegram", step3: "3️⃣ Get your personal access ✅",
             placeholder: "Enter code (7 chars)", btnText: "🎯 Activate", contactBtn: "✍️ Write to me",
             activateSuccess: "✅ Activation successful! Welcome.", wrongCode: "❌ Invalid or already used code.",
-            copySuccess: "📋 Nickname copied!",
-            subHeader: "Premium Terminal", analyze: "Analyze Market", waiting: "Analyzing data...", buy: "BUY", sell: "SELL",
+            copySuccess: "📋 Nickname copied!", analyze: "Analyze Market", waiting: "Analyzing data...", buy: "BUY", sell: "SELL",
             searchPlaceholder: "Search currency pair...", nothingFound: "❌ Nothing found"
         },
         ru: {
             welcomeTitle: "Добро пожаловать", welcomeSub: "Выберите язык", start: "Продолжить",
             registerTitle: "🔐 Активация", registerDesc: "Для входа в платформу <strong>OptiBotX PRO</strong> необходим лицензионный код",
             hintTitle: "Как получить код?", step1: "1️⃣ Нажмите кнопку <strong>«Написать мне»</strong> ниже",
-            step2: "2️⃣ Напишите слово <strong>«КОД»</strong> в Telegram",
-            step3: "3️⃣ Получите персональный доступ ✅",
+            step2: "2️⃣ Напишите слово <strong>«КОД»</strong> в Telegram", step3: "3️⃣ Получите персональный доступ ✅",
             placeholder: "Введите код (7 символов)", btnText: "🎯 Активировать", contactBtn: "✍️ Написать мне",
             activateSuccess: "✅ Активация успешна! Добро пожаловать.", wrongCode: "❌ Неверный или уже использованный код.",
-            copySuccess: "📋 Ник скопирован!",
-            subHeader: "Премиум Терминал", analyze: "Анализировать", waiting: "Анализ рынка...", buy: "ВВЕРХ", sell: "ВНИЗ",
+            copySuccess: "📋 Ник скопирован!", analyze: "Анализировать", waiting: "Анализ рынка...", buy: "ВВЕРХ", sell: "ВНИЗ",
             searchPlaceholder: "Поиск валютной пары...", nothingFound: "❌ Ничего не найдено"
         },
         es: {
             welcomeTitle: "Bienvenido", welcomeSub: "Elige tu idioma", start: "Continuar",
             registerTitle: "🔐 Activación", registerDesc: "Para acceder a <strong>OptiBotX PRO</strong> necesitas un código de licencia",
             hintTitle: "¿Cómo obtener un código?", step1: "1️⃣ Haz clic en el botón <strong>«Escríbeme»</strong> abajo",
-            step2: "2️⃣ Escribe la palabra <strong>«CODE»</strong> en Telegram",
-            step3: "3️⃣ Obtén tu acceso personal ✅",
+            step2: "2️⃣ Escribe la palabra <strong>«CODE»</strong> en Telegram", step3: "3️⃣ Obtén tu acceso personal ✅",
             placeholder: "Ingresa el código (7 carac.)", btnText: "🎯 Activar", contactBtn: "✍️ Escríbeme",
             activateSuccess: "✅ ¡Activación exitosa! Bienvenido.", wrongCode: "❌ Código inválido o ya usado.",
-            copySuccess: "📋 ¡Nick copiado!",
-            subHeader: "Terminal Premium", analyze: "Analizar Mercado", waiting: "Analizando datos...", buy: "COMPRAR", sell: "VENDER",
+            copySuccess: "📋 ¡Nick copiado!", analyze: "Analizar Mercado", waiting: "Analizando datos...", buy: "COMPRAR", sell: "VENDER",
             searchPlaceholder: "Buscar par de divisas...", nothingFound: "❌ Nada encontrado"
         },
         pl: {
             welcomeTitle: "Witamy", welcomeSub: "Wybierz język", start: "Kontynuuj",
             registerTitle: "🔐 Aktywacja", registerDesc: "Aby uzyskać dostęp do <strong>OptiBotX PRO</strong> potrzebny jest kod licencyjny",
             hintTitle: "Jak uzyskać kod?", step1: "1️⃣ Kliknij przycisk <strong>«Napisz do mnie»</strong> poniżej",
-            step2: "2️⃣ Napisz słowo <strong>«KOD»</strong> w Telegramie",
-            step3: "3️⃣ Zdobądź osobisty dostęp ✅",
+            step2: "2️⃣ Napisz słowo <strong>«KOD»</strong> w Telegramie", step3: "3️⃣ Zdobądź osobisty dostęp ✅",
             placeholder: "Wprowadź kod (7 znaków)", btnText: "🎯 Aktywuj", contactBtn: "✍️ Napisz do mnie",
             activateSuccess: "✅ Aktywacja udana! Witamy.", wrongCode: "❌ Nieprawidłowy lub użyty kod.",
-            copySuccess: "📋 Pseudonim skopiowany!",
-            subHeader: "Terminal Premium", analyze: "Analizuj Rynek", waiting: "Analizowanie...", buy: "W GÓRĘ", sell: "W DÓŁ",
+            copySuccess: "📋 Pseudonim skopiowany!", analyze: "Analizuj Rynek", waiting: "Analizowanie...", buy: "W GÓRĘ", sell: "W DÓŁ",
             searchPlaceholder: "Szukaj pary walutowej...", nothingFound: "❌ Nic nie znaleziono"
         },
         de: {
             welcomeTitle: "Willkommen", welcomeSub: "Wähle deine Sprache", start: "Weiter",
             registerTitle: "🔐 Aktivierung", registerDesc: "Für den Zugriff auf <strong>OptiBotX PRO</strong> benötigen Sie einen Lizenzcode",
             hintTitle: "Wie erhalte ich einen Code?", step1: "1️⃣ Klicken Sie unten auf die Schaltfläche <strong>«Schreib mir»</strong>",
-            step2: "2️⃣ Schreiben Sie das Wort <strong>«CODE»</strong> in Telegram",
-            step3: "3️⃣ Holen Sie sich Ihren persönlichen Zugang ✅",
+            step2: "2️⃣ Schreiben Sie das Wort <strong>«CODE»</strong> in Telegram", step3: "3️⃣ Holen Sie sich Ihren persönlichen Zugang ✅",
             placeholder: "Code eingeben (7 Zeichen)", btnText: "🎯 Aktivieren", contactBtn: "✍️ Schreib mir",
             activateSuccess: "✅ Aktivierung erfolgreich! Willkommen.", wrongCode: "❌ Ungültiger oder verwendeter Code.",
-            copySuccess: "📋 Spitzname kopiert!",
-            subHeader: "Premium-Terminal", analyze: "Markt Analysieren", waiting: "Daten analysieren...", buy: "KAUFEN", sell: "VERKAUFEN",
+            copySuccess: "📋 Spitzname kopiert!", analyze: "Markt Analysieren", waiting: "Daten analysieren...", buy: "KAUFEN", sell: "VERKAUFEN",
             searchPlaceholder: "Währungspaar suchen...", nothingFound: "❌ Nichts gefunden"
         },
         fr: {
             welcomeTitle: "Bienvenue", welcomeSub: "Choisissez votre langue", start: "Continuer",
             registerTitle: "🔐 Activation", registerDesc: "Pour accéder à <strong>OptiBotX PRO</strong> vous avez besoin d'un code de licence",
             hintTitle: "Comment obtenir un code ?", step1: "1️⃣ Cliquez sur le bouton <strong>«Écris-moi»</strong> ci-dessous",
-            step2: "2️⃣ Écrivez le mot <strong>«CODE»</strong> dans Telegram",
-            step3: "3️⃣ Obtenez votre accès personnel ✅",
+            step2: "2️⃣ Écrivez le mot <strong>«CODE»</strong> dans Telegram", step3: "3️⃣ Obtenez votre accès personnel ✅",
             placeholder: "Entrez le code (7 carac.)", btnText: "🎯 Activer", contactBtn: "✍️ Écris-moi",
             activateSuccess: "✅ Activation réussie ! Bienvenue.", wrongCode: "❌ Code invalide ou déjà utilisé.",
-            copySuccess: "📋 Surnom copié !",
-            subHeader: "Terminal Premium", analyze: "Analyser le Marché", waiting: "Analyse en cours...", buy: "ACHAT", sell: "VENTE",
+            copySuccess: "📋 Surnom copié !", analyze: "Analyser le Marché", waiting: "Analyse en cours...", buy: "ACHAT", sell: "VENTE",
             searchPlaceholder: "Rechercher une paire...", nothingFound: "❌ Rien trouvé"
         }
     };
     
     let curLang = 'en';
-    
     function getTranslation(key) { return translations[curLang][key] || translations.en[key]; }
     
     function updateRegisterLang() {
         const t = translations[curLang];
-        document.getElementById('register-title').innerHTML = t.registerTitle;
-        document.getElementById('register-desc').innerHTML = t.registerDesc;
-        document.getElementById('hint-title').innerHTML = t.hintTitle;
-        document.getElementById('hint-step1').innerHTML = t.step1;
-        document.getElementById('hint-step2').innerHTML = t.step2;
-        document.getElementById('hint-step3').innerHTML = t.step3;
-        codeInput.placeholder = t.placeholder;
-        activateBtn.innerHTML = t.btnText;
-        contactMeBtn.innerHTML = t.contactBtn;
+        document.getElementById('register-title').innerHTML = t.registerTitle; document.getElementById('register-desc').innerHTML = t.registerDesc;
+        document.getElementById('hint-title').innerHTML = t.hintTitle; document.getElementById('hint-step1').innerHTML = t.step1;
+        document.getElementById('hint-step2').innerHTML = t.step2; document.getElementById('hint-step3').innerHTML = t.step3;
+        document.getElementById('code-input').placeholder = t.placeholder; document.getElementById('activate-btn').innerHTML = t.btnText;
+        document.getElementById('contactMeBtn').innerHTML = t.contactBtn;
     }
     
     function updateUILang() {
         const t = translations[curLang];
-        document.getElementById('sub-header').innerText = t.subHeader;
         document.querySelector('#anBtn .btn-text').innerText = t.analyze;
         document.getElementById('wait-msg').innerText = t.waiting;
         document.getElementById('pair-search').placeholder = t.searchPlaceholder;
         document.getElementById('langBtn').innerHTML = `${curLang === 'en' ? '🇬🇧' : curLang === 'ru' ? '🇷🇺' : curLang === 'es' ? '🇪🇸' : curLang === 'pl' ? '🇵🇱' : curLang === 'de' ? '🇩🇪' : '🇫🇷'} ${curLang.toUpperCase()}`;
-        
         if(isActivated) initChart();
     }
 
     // ======================== ГРАФИК TRADINGVIEW ========================
     let tvWidget = null;
-    
     function initChart() {
         const container = document.getElementById('tv_chart_container');
-        if(!container) return;
-        
-        container.innerHTML = '';
+        if(!container) return; container.innerHTML = '';
         let pairName = document.getElementById('pair').value || "EUR/USD";
-        let tvSymbol = "FX:" + pairName.replace("/", "").replace(" OTC", "");
-        const isLight = document.body.classList.contains('light-theme');
+        // Для крипты и сырья префиксы могут быть разными, но TV умный
+        let tvSymbol = pairName.includes("BTC") || pairName.includes("ETH") ? "BINANCE:" + pairName.replace("/", "") : "FX:" + pairName.replace("/", "").replace(" OTC", "");
         
         tvWidget = new TradingView.widget({
-            "autosize": true,
-            "symbol": tvSymbol,
-            "interval": "1",
-            "timezone": "Etc/UTC",
-            "theme": isLight ? "light" : "dark",
-            "style": "1",
-            "locale": curLang || "ru",
-            "enable_publishing": false,
-            "backgroundColor": "rgba(0, 0, 0, 0)",
-            "gridColor": isLight ? "rgba(0, 0, 0, 0.05)" : "rgba(255, 255, 255, 0.03)",
-            "hide_top_toolbar": true,
-            "hide_legend": true,
-            "save_image": false,
-            "container_id": "tv_chart_container"
+            "autosize": true, "symbol": tvSymbol, "interval": "1", "timezone": "Etc/UTC",
+            "theme": document.body.classList.contains('light-theme') ? "light" : "dark",
+            "style": "1", "locale": curLang || "ru", "enable_publishing": false,
+            "backgroundColor": "rgba(0, 0, 0, 0)", "gridColor": document.body.classList.contains('light-theme') ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.03)",
+            "hide_top_toolbar": true, "hide_legend": true, "save_image": false, "container_id": "tv_chart_container"
         });
     }
     
     // Снег
-    const sCanvas = document.getElementById('snow-layer'), sCtx = sCanvas.getContext('2d'); let flakes = [], snowAnimation;
-    let snowEnabled = false;
-    function setupSnow() { sCanvas.width = sCanvas.parentElement.clientWidth; sCanvas.height = sCanvas.parentElement.clientHeight; flakes = Array.from({length:60},()=>({ x:Math.random()*sCanvas.width, y:Math.random()*sCanvas.height, r:Math.random()*3+1, d:Math.random()*1+0.5, angle:Math.random()*360 })); if(snowAnimation) cancelAnimationFrame(snowAnimation);
-    drawSnow(); }
-    function drawSnow() { if(!snowEnabled) { sCtx.clearRect(0,0,sCanvas.width,sCanvas.height); snowAnimation=requestAnimationFrame(drawSnow); return; } sCtx.clearRect(0,0,sCanvas.width,sCanvas.height); sCtx.fillStyle="rgba(255,255,255,0.6)";
-    flakes.forEach(f=>{ sCtx.save(); sCtx.translate(f.x,f.y); sCtx.rotate(f.angle*Math.PI/180); sCtx.beginPath(); sCtx.arc(0,0,f.r,0,Math.PI*2); sCtx.fill(); sCtx.restore(); f.y+=f.d; f.x+=Math.sin(f.angle)*0.2; if(f.y>sCanvas.height) { f.y=-5; f.x=Math.random()*sCanvas.width; } if(f.x>sCanvas.width) f.x=0; if(f.x<0) f.x=sCanvas.width; });
-    snowAnimation=requestAnimationFrame(drawSnow); }
+    const sCanvas = document.getElementById('snow-layer'), sCtx = sCanvas.getContext('2d'); let flakes = [], snowAnimation, snowEnabled = false;
+    function setupSnow() { sCanvas.width = sCanvas.parentElement.clientWidth; sCanvas.height = sCanvas.parentElement.clientHeight; flakes = Array.from({length:60},()=>({ x:Math.random()*sCanvas.width, y:Math.random()*sCanvas.height, r:Math.random()*3+1, d:Math.random()*1+0.5, angle:Math.random()*360 })); if(snowAnimation) cancelAnimationFrame(snowAnimation); drawSnow(); }
+    function drawSnow() { if(!snowEnabled) { sCtx.clearRect(0,0,sCanvas.width,sCanvas.height); snowAnimation=requestAnimationFrame(drawSnow); return; } sCtx.clearRect(0,0,sCanvas.width,sCanvas.height); sCtx.fillStyle="rgba(255,255,255,0.6)"; flakes.forEach(f=>{ sCtx.save(); sCtx.translate(f.x,f.y); sCtx.rotate(f.angle*Math.PI/180); sCtx.beginPath(); sCtx.arc(0,0,f.r,0,Math.PI*2); sCtx.fill(); sCtx.restore(); f.y+=f.d; f.x+=Math.sin(f.angle)*0.2; if(f.y>sCanvas.height) { f.y=-5; f.x=Math.random()*sCanvas.width; } if(f.x>sCanvas.width) f.x=0; if(f.x<0) f.x=sCanvas.width; }); snowAnimation=requestAnimationFrame(drawSnow); }
     function toggleSnow() { snowEnabled = !snowEnabled; document.getElementById('snowToggle').style.borderColor = snowEnabled ? 'var(--accent)' : 'var(--border-color)'; }
     
-    // Пары
+    // ======================== ОГРОМНЫЙ СПИСОК ПАР ========================
     const allPairs = [
-        { name:"EUR/USD", flag:"🇪🇺🇺🇸" },{ name:"GBP/USD", flag:"🇬🇧🇺🇸" },{ name:"USD/JPY", flag:"🇺🇸🇯🇵" },{ name:"AUD/USD", flag:"🇦🇺🇺🇸" },{ name:"USD/CAD", flag:"🇺🇸🇨🇦" },{ name:"USD/CHF", flag:"🇺🇸🇨🇭" },{ name:"NZD/USD", flag:"🇳🇿🇺🇸" },{ name:"EUR/GBP", flag:"🇪🇺🇬🇧" },{ name:"EUR/JPY", flag:"🇪🇺🇯🇵" },{ name:"GBP/JPY", flag:"🇬🇧🇯🇵" },{ name:"AUD/JPY", flag:"🇦🇺🇯🇵" },{ name:"EUR/CAD", flag:"🇪🇺🇨🇦" },{ name:"USD/RUB", flag:"🇺🇸🇷🇺" },{ name:"EUR/RUB", flag:"🇪🇺🇷🇺" },{ name:"EUR/USD OTC", flag:"🇪🇺🇺🇸" },{ name:"GBP/USD OTC", flag:"🇬🇧🇺🇸" }
+        // Мажоры
+        { name:"EUR/USD", flag:"🇪🇺🇺🇸" }, { name:"GBP/USD", flag:"🇬🇧🇺🇸" }, { name:"USD/JPY", flag:"🇺🇸🇯🇵" },
+        { name:"AUD/USD", flag:"🇦🇺🇺🇸" }, { name:"USD/CAD", flag:"🇺🇸🇨🇦" }, { name:"USD/CHF", flag:"🇺🇸🇨🇭" }, { name:"NZD/USD", flag:"🇳🇿🇺🇸" },
+        // Кроссы
+        { name:"EUR/GBP", flag:"🇪🇺🇬🇧" }, { name:"EUR/JPY", flag:"🇪🇺🇯🇵" }, { name:"GBP/JPY", flag:"🇬🇧🇯🇵" },
+        { name:"AUD/JPY", flag:"🇦🇺🇯🇵" }, { name:"EUR/CAD", flag:"🇪🇺🇨🇦" }, { name:"AUD/CAD", flag:"🇦🇺🇨🇦" },
+        { name:"CAD/JPY", flag:"🇨🇦🇯🇵" }, { name:"CHF/JPY", flag:"🇨🇭🇯🇵" }, { name:"EUR/CHF", flag:"🇪🇺🇨🇭" },
+        // OTC (внебиржевые, симулируем для красоты)
+        { name:"EUR/USD OTC", flag:"🇪🇺🇺🇸" }, { name:"GBP/USD OTC", flag:"🇬🇧🇺🇸" }, { name:"AUD/USD OTC", flag:"🇦🇺🇺🇸" },
+        { name:"NZD/USD OTC", flag:"🇳🇿🇺🇸" }, { name:"USD/CHF OTC", flag:"🇺🇸🇨🇭" }, { name:"EUR/JPY OTC", flag:"🇪🇺🇯🇵" },
+        // Крипта
+        { name:"BTC/USD", flag:"₿" }, { name:"ETH/USD", flag:"♦" }, { name:"SOL/USD", flag:"◎" },
+        { name:"XRP/USD", flag:"✕" }, { name:"ADA/USD", flag:"₳" }, { name:"DOGE/USD", flag:"Ð" },
+        // Сырье
+        { name:"XAU/USD (Gold)", flag:"🪙" }, { name:"XAG/USD (Silver)", flag:"🥈" }, { name:"USOIL (Oil)", flag:"🛢️" }
     ];
-    function renderPairs(filter=''){ const f=filter.toLowerCase(); const filtered=allPairs.filter(p=>p.name.toLowerCase().includes(f)); const pairsContainer = document.getElementById('pairs-container'); pairsContainer.innerHTML=''; filtered.forEach(pair=>{ const div=document.createElement('div'); div.className='pair-option'; if(pair.name===document.getElementById('pair').value) div.classList.add('selected'); div.innerHTML=`<span class="pair-flag">${pair.flag}</span><span class="pair-name">${pair.name}</span>`; div.addEventListener('click',()=>{ document.querySelectorAll('.pair-option').forEach(el=>el.classList.remove('selected')); div.classList.add('selected'); document.getElementById('pair').value=pair.name; document.getElementById('pair-search').value=pair.name; changePair(); pairsContainer.style.display='none'; }); pairsContainer.appendChild(div); });
-    if(filtered.length===0){ const empty=document.createElement('div'); empty.className='pair-option'; empty.style.justifyContent='center'; empty.style.padding='20px'; empty.innerText=getTranslation('nothingFound'); pairsContainer.appendChild(empty); } }
+
+    function renderPairs(filter=''){ 
+        const f=filter.toLowerCase(); 
+        const filtered=allPairs.filter(p=>p.name.toLowerCase().includes(f)); 
+        const pairsContainer = document.getElementById('pairs-container'); 
+        pairsContainer.innerHTML=''; 
+        filtered.forEach(pair=>{ 
+            const div=document.createElement('div'); div.className='pair-option'; 
+            if(pair.name===document.getElementById('pair').value) div.classList.add('selected'); 
+            div.innerHTML=`<span class="pair-flag">${pair.flag}</span><span class="pair-name">${pair.name}</span>`; 
+            div.addEventListener('click',()=>{ 
+                document.querySelectorAll('.pair-option').forEach(el=>el.classList.remove('selected')); 
+                div.classList.add('selected'); 
+                document.getElementById('pair').value=pair.name; 
+                document.getElementById('pair-search').value=pair.name; 
+                changePair(); 
+                pairsContainer.style.display='none'; 
+            }); 
+            pairsContainer.appendChild(div); 
+        });
+        if(filtered.length===0){ 
+            const empty=document.createElement('div'); empty.className='pair-option'; empty.style.justifyContent='center'; 
+            empty.style.padding='20px'; empty.innerText=getTranslation('nothingFound'); pairsContainer.appendChild(empty); 
+        } 
+    }
     
-    function changePair(){ 
-        const tvContainer = document.getElementById('tv_chart_container');
-        tvContainer.style.opacity='0.3';
-        setTimeout(()=>{ initChart(); tvContainer.style.opacity='1'; },500); 
-    } window.changePair=changePair;
+    function changePair(){ const tv = document.getElementById('tv_chart_container'); tv.style.opacity='0.3'; setTimeout(()=>{ initChart(); tv.style.opacity='1'; },500); }
     
     let cooldownActive = false;
     function startAnalysis(btn){ 
@@ -542,11 +500,20 @@
         
         setTimeout(()=>{ 
             stat.style.display='none'; res.classList.add('visible'); 
-            const isUp=Math.random()>0.5; 
-            res.style.color=isUp?'var(--success-color)':'var(--danger-color)'; 
-            res.style.borderColor=isUp?'var(--success-color)':'var(--danger-color)'; 
-            res.style.background=isUp?'rgba(0, 230, 118, 0.1)':'rgba(255, 77, 77, 0.1)';
-            res.innerHTML=`${isUp?translations[curLang].buy:translations[curLang].sell} (${Math.floor(Math.random()*15+82)}%)`; 
+            const isUp = Math.random() > 0.5; 
+            const color = isUp ? 'var(--success-color)' : 'var(--danger-color)';
+            const bg = isUp ? 'rgba(0, 230, 118, 0.1)' : 'rgba(255, 77, 77, 0.1)';
+            
+            res.style.color = color; 
+            res.style.borderColor = color; 
+            res.style.background = bg;
+            
+            // Вставляем шарик прямо в текст результата
+            res.innerHTML = `
+                <span class="result-dot" style="background: ${color}; box-shadow: 0 0 10px ${color};"></span>
+                ${isUp ? translations[curLang].buy : translations[curLang].sell} (${Math.floor(Math.random()*15+82)}%)
+            `; 
+            
             res.style.animation='popIn 0.4s'; setTimeout(()=>res.style.animation='',400); 
         },1500);
         
@@ -555,24 +522,11 @@
     
     function selectTf(btn){ if(!isActivated){ showActivationModal(); return; } document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); } window.selectTf=selectTf;
     
-    // Инициализация событий
-    document.getElementById('copyNickBtn').addEventListener('click', () => {
-        navigator.clipboard.writeText("ZentixTrade").then(() => {
-            const btn = document.getElementById('copyNickBtn');
-            const original = btn.innerHTML;
-            btn.innerHTML = "✅ " + translations[curLang].copySuccess;
-            setTimeout(() => { btn.innerHTML = original; }, 1500);
-        });
-    });
-    
+    // Инициализация
+    document.getElementById('copyNickBtn').addEventListener('click', () => { navigator.clipboard.writeText("ZentixTrade").then(() => { const btn = document.getElementById('copyNickBtn'); const original = btn.innerHTML; btn.innerHTML = "✅ " + translations[curLang].copySuccess; setTimeout(() => { btn.innerHTML = original; }, 1500); }); });
     document.getElementById('themeBtn').onclick = () => { document.body.classList.toggle('light-theme'); if(isActivated) initChart(); };
     document.getElementById('snowToggle').onclick = toggleSnow;
-    
-    document.getElementById('langBtn').onclick = function() {
-        const langs = ['en', 'es', 'ru', 'pl', 'de', 'fr'];
-        curLang = langs[(langs.indexOf(curLang) + 1) % langs.length];
-        updateUILang(); updateRegisterLang(); renderPairs(document.getElementById('pair-search').value);
-    };
+    document.getElementById('langBtn').onclick = function() { const langs = ['en', 'es', 'ru', 'pl', 'de', 'fr']; curLang = langs[(langs.indexOf(curLang) + 1) % langs.length]; updateUILang(); updateRegisterLang(); renderPairs(document.getElementById('pair-search').value); };
     
     let selectedLanguage = null;
     document.querySelectorAll('.language-item').forEach(item => {
@@ -586,8 +540,7 @@
     document.getElementById('start-btn').addEventListener('click', () => {
         if(!selectedLanguage) { selectedLanguage = 'en'; document.querySelector('.language-item[data-lang="en"]').classList.add('selected'); }
         curLang = selectedLanguage; updateUILang(); updateRegisterLang();
-        document.getElementById('welcome-overlay').classList.remove('visible');
-        document.getElementById('main-app').style.display = 'flex';
+        document.getElementById('welcome-overlay').classList.remove('visible'); document.getElementById('main-app').style.display = 'flex';
         
         const hiddenSelect = document.getElementById('pair');
         allPairs.forEach(p => { const opt = document.createElement('option'); opt.value = p.name; opt.text = p.name; hiddenSelect.appendChild(opt); });
