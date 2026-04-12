@@ -50,7 +50,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* --- Welcome Screen --- */
+        /* --- Welcome Screen (выбор языка: только ru/en) --- */
         #welcome-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-color); z-index: 9999;
@@ -88,7 +88,7 @@
         .start-btn.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
         .start-btn:active { transform: scale(0.95); }
 
-        /* --- Промежуточное меню (отзывы, обучение, начать работать) --- */
+        /* --- Промежуточное меню (отзывы, обучение, начать работать) без кнопки Старт --- */
         .menu-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-color); backdrop-filter: blur(20px);
@@ -124,26 +124,12 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            transition: 0.2s;
         }
-        .menu-btn.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-        .menu-start-btn {
-            background: var(--accent);
-            border: none;
-            color: white;
-            font-size: 18px;
-            font-weight: 700;
-            padding: 14px;
-            border-radius: 40px;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+        .menu-btn:hover { transform: scale(1.02); background: var(--hover-color); }
+        .menu-btn:active { transform: scale(0.98); }
 
-        /* --- Окно активации (как на скриншоте) --- */
+        /* --- Окно активации (точь-в-точь как на скриншоте, ник @AuraVay) --- */
         .access-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
@@ -163,6 +149,15 @@
         }
         .access-card h3 { font-size: 24px; margin-bottom: 12px; }
         .access-card p { font-size: 14px; color: #aaa; margin-bottom: 20px; }
+        .access-steps {
+            text-align: left;
+            font-size: 13px;
+            margin: 15px 0;
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 20px;
+        }
+        .access-steps p { margin: 5px 0; color: #ccc; }
         .tg-row {
             background: var(--secondary-bg);
             border-radius: 20px;
@@ -204,7 +199,7 @@
         .btn-primary { background: var(--accent); color: white; border: none; }
         .btn-secondary { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color); }
 
-        /* --- Main App Layout --- */
+        /* --- Основное приложение --- */
         .app-container {
             display: none;
             flex-direction: column;
@@ -262,7 +257,7 @@
 
         /* Bottom Menu */
         .bottom-menu {
-            padding: 15px 20px 25px;
+            padding: 15px 20px 20px;
             background: var(--secondary-bg);
             border-top: 1px solid var(--border-color);
             z-index: 40;
@@ -275,12 +270,20 @@
         .selector-label { font-size: 12px; color: #888; }
         .selector-value { font-weight: 700; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
         .main-btn {
-            width: 100%; padding: 16px; border: none; border-radius: 15px;
+            width: 100%; padding: 14px; border: none; border-radius: 15px;
             background: linear-gradient(135deg, var(--accent), #ff3366); color: white;
             font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 25px var(--accent-glow);
             display: flex; justify-content: center; align-items: center; gap: 10px;
+            margin-bottom: 10px;
         }
         .main-btn:active { transform: scale(0.98); }
+        .back-btn {
+            width: 100%; padding: 12px; border-radius: 40px;
+            background: var(--secondary-bg); border: 1px solid var(--border-color);
+            color: var(--text-color); font-size: 16px; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .back-btn:active { transform: scale(0.97); }
 
         /* Dropdowns */
         .pairs-dropdown, .time-dropdown {
@@ -359,38 +362,37 @@
     </div>
 </div>
 
-<!-- 2. Промежуточное меню (отзывы, обучение, начать работать) -->
+<!-- 2. Промежуточное меню (отзывы, обучение, начать работать) без кнопки Старт -->
 <div id="menu-overlay" class="menu-overlay">
     <div class="menu-card">
         <h3 id="menu-title">Выберите действие</h3>
         <div class="menu-buttons">
-            <div class="menu-btn" data-action="reviews">
+            <div class="menu-btn" data-action="reviews" id="reviews-btn">
                 <i class="fas fa-star"></i> <span id="reviews-text">Отзывы приложения</span>
             </div>
-            <div class="menu-btn" data-action="tutorial">
+            <div class="menu-btn" data-action="tutorial" id="tutorial-btn">
                 <i class="fas fa-graduation-cap"></i> <span id="tutorial-text">Обучение</span>
             </div>
             <div class="menu-btn" data-action="start" id="start-work-btn">
                 <i class="fas fa-play"></i> <span id="start-work-text">Начать работать</span>
             </div>
         </div>
-        <button id="menu-start-btn" class="menu-start-btn">Старт →</button>
     </div>
 </div>
 
-<!-- 3. Окно активации (точь-в-точь как на скриншоте) -->
+<!-- 3. Окно активации (точь-в-точь как на скриншоте, ник @AuraVay) -->
 <div id="access-overlay" class="access-overlay">
     <div class="access-card">
         <h3>🔐 Активация доступа</h3>
         <p>Для входа в платформу OptiBotX PRO необходим лицензионный код</p>
-        <div style="text-align: left; font-size: 13px; margin: 10px 0;">
-            <p>• Как получить код?</p>
-            <p>  - Нажмите кнопку «Написать мне» ниже</p>
-            <p>  - Напишите слово «КОД» в Telegram</p>
-            <p>  - Менеджер выдаст вам персональный код активации</p>
+        <div class="access-steps">
+            <p><strong>Как получить код?</strong></p>
+            <p>1. Нажмите кнопку «Написать мне» ниже</p>
+            <p>2. Напишите слово «КОД» в Telegram</p>
+            <p>3. Менеджер выдаст вам персональный код активации ✅</p>
         </div>
         <div class="tg-row">
-            <span>Мой TG: @ZentixTrade</span>
+            <span>Мой TG: @AuraVay</span>
             <button id="copy-nick-btn" class="copy-btn"><i class="far fa-copy"></i> Копировать ник</button>
         </div>
         <input type="text" id="activation-code" class="code-input" placeholder="Введите полученный код">
@@ -442,6 +444,9 @@
         </div>
         <button class="main-btn" id="get-signal-btn">
             <i class="fas fa-radar"></i> <span data-i18n="getSignal">Получить сигнал</span>
+        </button>
+        <button class="back-btn" id="back-to-menu-btn">
+            <i class="fas fa-arrow-left"></i> Назад в меню
         </button>
     </div>
 
@@ -507,7 +512,7 @@
 
     // Таймфреймы для обычных и OTC
     const tfNormal = ["1m", "5m", "15m", "1h"];
-    const tfOTC = ["5s", "10s", "15s", "30s"];
+    const tfOTC = ["5s", "10s", "15s", "30s", "1m", "5m", "15m"];
 
     // Коды активации (ваш список)
     const validCodes = ['10341638','20451927','30561836','40771345','50881454','60991563','70101672','80211781','90321890','10431909','11542018','12652127','13762236','14872345','15982454','16092563','17102672','18212781','19322890','20432909','21543018','22653127','23763236','24873345','25983454','26093563','27103672','28213781','29323890','30433909','31544018','32654127','33764236','34874345','35984454','36094563','37104672','38214781','39324890','40434909','41545018','42655127','43765236','44875345','45985454','46095563','47105672','48215781','49325890','50435909'];
@@ -519,7 +524,6 @@
     let currentPair = "EUR/USD";
     let currentTF = "1m";
     let isOTC = false;
-    let selectedAction = 'start';
 
     // DOM элементы
     const welcomeOverlay = document.getElementById('welcome-overlay');
@@ -533,6 +537,7 @@
     const pairsListDiv = document.getElementById('pairs-list');
     const timeDropdown = document.getElementById('time-dropdown');
     const getSignalBtn = document.getElementById('get-signal-btn');
+    const backToMenuBtn = document.getElementById('back-to-menu-btn');
 
     // ======================= ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =======================
     function updateUILang() {
@@ -545,12 +550,11 @@
         document.getElementById('reviews-text').innerText = translations[currentLang].reviews;
         document.getElementById('tutorial-text').innerText = translations[currentLang].tutorial;
         document.getElementById('start-work-text').innerText = translations[currentLang].startWork;
-        document.getElementById('menu-start-btn').innerText = "Старт →";
     }
 
     // Инициализация/перезагрузка графика TradingView
     function initChart(symbol, interval) {
-        if (isOTC) return; // для OTC график не создаём
+        if (isOTC) return;
         const formattedSymbol = symbol.replace('/', '');
         const tvInterval = interval.replace('s', '').replace('m', '');
         const isLight = document.body.classList.contains('light-theme');
@@ -582,15 +586,11 @@
                 currentPair = pair;
                 selectedPairSpan.innerText = pair;
                 document.getElementById('pairs-dropdown').style.display = 'none';
-                // Определяем OTC
                 isOTC = pair.toLowerCase().includes('otc');
-                // Обновляем таймфреймы
                 updateTimeframeList();
-                // Выбираем первый таймфрейм по умолчанию
                 const tfs = isOTC ? tfOTC : tfNormal;
                 currentTF = tfs[0];
                 selectedTimeSpan.innerText = currentTF;
-                // Показываем заглушку или график
                 const chartContainer = document.getElementById('tv_chart_container');
                 if (isOTC) {
                     if (tvWidget) tvWidget.remove();
@@ -665,7 +665,6 @@
         const confidence = Math.floor(Math.random() * (98 - 78 + 1) + 78);
         percentEl.textContent = confidence + '%';
         analysisWidget.classList.add('active');
-        // Если на мобильном, скрываем панель управления (опционально)
         if (window.innerWidth < 768) {
             document.getElementById('controls-panel').style.display = 'none';
         }
@@ -699,6 +698,17 @@
         }
     }
 
+    // Возврат в меню выбора действия
+    function backToMenu() {
+        // Останавливаем график, если он есть
+        if (tvWidget) {
+            tvWidget.remove();
+            tvWidget = null;
+        }
+        mainApp.style.display = 'none';
+        menuOverlay.classList.add('visible');
+    }
+
     // ======================= ОБРАБОТЧИКИ ИНТЕРФЕЙСА =======================
     // Выбор языка
     document.querySelectorAll('.language-item').forEach(item => {
@@ -721,27 +731,14 @@
         }, 400);
     });
 
-    // Выбор кнопки в меню (подсветка)
-    document.querySelectorAll('.menu-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            selectedAction = btn.dataset.action;
-        });
+    // Кнопки меню: при клике сразу выполняем действие (без дополнительной кнопки Старт)
+    document.getElementById('reviews-btn').addEventListener('click', () => {
+        window.open('https://t.me/optibotxx', '_blank');
     });
-    // По умолчанию активна "Начать работать"
-    document.querySelector('.menu-btn[data-action="start"]').classList.add('active');
-
-    // Кнопка "Старт" в меню
-    document.getElementById('menu-start-btn').addEventListener('click', () => {
-        if (selectedAction === 'reviews') {
-            window.open('https://t.me/ZentixTrade', '_blank');
-            return;
-        } else if (selectedAction === 'tutorial') {
-            alert('Обучение: скоро в Telegram @ZentixTrade');
-            return;
-        }
-        // Начать работать
+    document.getElementById('tutorial-btn').addEventListener('click', () => {
+        window.open('https://t.me/CieePXj_6AyYWEx', '_blank');
+    });
+    document.getElementById('start-work-btn').addEventListener('click', () => {
         menuOverlay.classList.remove('visible');
         mainApp.style.display = 'flex';
         // Инициализация приложения
@@ -757,51 +754,51 @@
             initChart(currentPair, currentTF);
         }
         renderPairsList('');
-        // Обработчики UI
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            document.getElementById('theme-toggle').innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-            if (!isOTC && tvWidget) initChart(currentPair, currentTF);
-        });
-        // Селекторы
-        document.getElementById('pair-selector').onclick = (e) => {
-            if (e.target.tagName !== 'INPUT') {
-                const dd = document.getElementById('pairs-dropdown');
+        // Обработчики UI (если ещё не назначены)
+        if (!window._handlersAssigned) {
+            window._handlersAssigned = true;
+            document.getElementById('theme-toggle').addEventListener('click', () => {
+                document.body.classList.toggle('light-theme');
+                const isLight = document.body.classList.contains('light-theme');
+                document.getElementById('theme-toggle').innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                if (!isOTC && tvWidget) initChart(currentPair, currentTF);
+            });
+            document.getElementById('pair-selector').onclick = (e) => {
+                if (e.target.tagName !== 'INPUT') {
+                    const dd = document.getElementById('pairs-dropdown');
+                    dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+                    document.getElementById('time-dropdown').style.display = 'none';
+                }
+            };
+            document.getElementById('pair-search').addEventListener('input', (e) => renderPairsList(e.target.value));
+            document.getElementById('time-selector').onclick = () => {
+                const dd = document.getElementById('time-dropdown');
                 dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
-                document.getElementById('time-dropdown').style.display = 'none';
-            }
-        };
-        document.getElementById('pair-search').addEventListener('input', (e) => renderPairsList(e.target.value));
-        document.getElementById('time-selector').onclick = () => {
-            const dd = document.getElementById('time-dropdown');
-            dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
-            document.getElementById('pairs-dropdown').style.display = 'none';
-        };
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('#pair-selector')) document.getElementById('pairs-dropdown').style.display = 'none';
-            if (!e.target.closest('#time-selector')) document.getElementById('time-dropdown').style.display = 'none';
-        });
-        // Кнопка получения сигнала
-        getSignalBtn.addEventListener('click', () => {
-            if (!isActivated) {
-                accessOverlay.classList.add('visible');
-                return;
-            }
-            showAnalysisModal(() => showAnalysisResult());
-        });
-        // Кнопки виджета
-        document.getElementById('win-action').onclick = closeWidget;
-        document.getElementById('loss-action').onclick = closeWidget;
-        document.getElementById('close-widget').onclick = closeWidget;
-        // Активация
-        document.getElementById('activate-access-btn').onclick = activateCode;
-        document.getElementById('copy-nick-btn').onclick = () => {
-            navigator.clipboard.writeText('@ZentixTrade');
-            alert('Ник скопирован: @AuraVay');
-        };
-        document.getElementById('write-to-tg-btn').onclick = () => window.open('https://t.me/ZentixTrade', '_blank');
-        document.getElementById('close-access-btn').onclick = () => accessOverlay.classList.remove('visible');
+                document.getElementById('pairs-dropdown').style.display = 'none';
+            };
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#pair-selector')) document.getElementById('pairs-dropdown').style.display = 'none';
+                if (!e.target.closest('#time-selector')) document.getElementById('time-dropdown').style.display = 'none';
+            });
+            getSignalBtn.addEventListener('click', () => {
+                if (!isActivated) {
+                    accessOverlay.classList.add('visible');
+                    return;
+                }
+                showAnalysisModal(() => showAnalysisResult());
+            });
+            document.getElementById('win-action').onclick = closeWidget;
+            document.getElementById('loss-action').onclick = closeWidget;
+            document.getElementById('close-widget').onclick = closeWidget;
+            document.getElementById('activate-access-btn').onclick = activateCode;
+            document.getElementById('copy-nick-btn').onclick = () => {
+                navigator.clipboard.writeText('@AuraVay');
+                alert('Ник скопирован: @AuraVay');
+            };
+            document.getElementById('write-to-tg-btn').onclick = () => window.open('https://t.me/AuraVay', '_blank');
+            document.getElementById('close-access-btn').onclick = () => accessOverlay.classList.remove('visible');
+            backToMenuBtn.addEventListener('click', backToMenu);
+        }
         if (window.Telegram?.WebApp) window.Telegram.WebApp.expand();
     });
 </script>
