@@ -129,7 +129,7 @@
         .menu-btn:hover { transform: scale(1.02); background: var(--hover-color); }
         .menu-btn:active { transform: scale(0.98); }
 
-        /* --- Окно активации (точь-в-точь как на скриншоте, ник @AuraVay) --- */
+        /* --- Окно активации (точь-в-точь как на скриншоте, ник @AuraVey) --- */
         .access-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
@@ -248,9 +248,33 @@
             z-index: 100;
         }
         .user-info { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #ff3366); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: white; }
+        .avatar {
+            width: 45px; height: 45px;
+            background: linear-gradient(135deg, var(--accent), #ff3366);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+        }
         .user-details { display: flex; flex-direction: column; }
-        .user-name { font-weight: 700; font-size: 16px; }
+        .user-name {
+            font-weight: 800;
+            font-size: 18px;
+            background: linear-gradient(135deg, #fff, #aaccff, #ff99cc);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
         .user-id { font-size: 12px; color: #888; }
         .controls { display: flex; gap: 15px; align-items: center; }
         .icon-btn {
@@ -393,7 +417,7 @@
     </div>
 </div>
 
-<!-- 3. Окно активации (точь-в-точь как на скриншоте) -->
+<!-- 3. Окно активации (ник @AuraVey) -->
 <div id="access-overlay" class="access-overlay">
     <div class="access-card">
         <h3>Активация доступа</h3>
@@ -411,8 +435,8 @@
             <button id="copy-nick-btn" class="action-btn copy"><i class="far fa-copy"></i> Копировать ник</button>
         </div>
         <div class="contact-info">
-            <span>Мой TG: @AuraVay</span>
-            <span>Ник: AuraVay</span>
+            <span>Мой TG: @AuraVey</span>
+            <span>Ник: AuraVey</span>
         </div>
         <div id="access-message"></div>
     </div>
@@ -422,10 +446,10 @@
 <div class="app-container" id="main-app">
     <div class="top-bar">
         <div class="user-info">
-            <div class="avatar"><i class="fas fa-user"></i></div>
+            <div class="avatar"><i class="fas fa-chart-line"></i></div>
             <div class="user-details">
-                <span class="user-name" id="ui-username">Trader_Pro</span>
-                <span class="user-id">ID: 8493021</span>
+                <div class="user-name">OptiBotX PRO</div>
+                <div class="user-id">ID: 8493021</div>
             </div>
         </div>
         <div class="controls">
@@ -524,7 +548,7 @@
     ];
 
     const tfNormal = ["1m", "5m", "15m", "1h"];
-    const tfOTC = ["5s", "10s", "15s", "30s", "1m", "5m", "15m"];
+    const tfOTC = ["5s", "10s", "15s", "30s"];
 
     // Коды активации (ваш список)
     const validCodes = ['10341638','20451927','30561836','40771345','50881454','60991563','70101672','80211781','90321890','10431909','11542018','12652127','13762236','14872345','15982454','16092563','17102672','18212781','19322890','20432909','21543018','22653127','23763236','24873345','25983454','26093563','27103672','28213781','29323890','30433909','31544018','32654127','33764236','34874345','35984454','36094563','37104672','38214781','39324890','40434909','41545018','42655127','43765236','44875345','45985454','46095563','47105672','48215781','49325890','50435909'];
@@ -564,13 +588,17 @@
 
     function initChart(symbol, interval) {
         if (isOTC) return;
+        // Убираем слеш для TradingView
         const formattedSymbol = symbol.replace('/', '');
+        // Для всех валютных пар используем FX_IDC префикс
+        let tvSymbol = "FX_IDC:" + formattedSymbol;
+        // Если символ содержит крипто или другие, можно оставить как есть, но для списка всё валюты
         const tvInterval = interval.replace('s', '').replace('m', '');
         const isLight = document.body.classList.contains('light-theme');
         if (tvWidget) tvWidget.remove();
         tvWidget = new TradingView.widget({
             autosize: true,
-            symbol: "FX_IDC:" + formattedSymbol,
+            symbol: tvSymbol,
             interval: tvInterval,
             timezone: "Etc/UTC",
             theme: isLight ? "light" : "dark",
@@ -779,10 +807,10 @@
             document.getElementById('close-widget').onclick = closeWidget;
             document.getElementById('activate-access-btn').onclick = activateCode;
             document.getElementById('copy-nick-btn').onclick = () => {
-                navigator.clipboard.writeText('@AuraVay');
-                alert('Ник скопирован: @AuraVay');
+                navigator.clipboard.writeText('@AuraVey');
+                alert('Ник скопирован: @AuraVey');
             };
-            document.getElementById('write-to-tg-btn').onclick = () => window.open('https://t.me/AuraVay', '_blank');
+            document.getElementById('write-to-tg-btn').onclick = () => window.open('https://t.me/AuraVey', '_blank');
             document.getElementById('close-access-btn')?.addEventListener('click', () => accessOverlay.classList.remove('visible'));
             backToMenuBtn.addEventListener('click', backToMenu);
         }
