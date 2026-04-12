@@ -88,7 +88,7 @@
         .start-btn.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
         .start-btn:active { transform: scale(0.95); }
 
-        /* --- Промежуточное меню (отзывы, обучение, начать работать) без кнопки Старт --- */
+        /* --- Промежуточное меню (отзывы, обучение, начать работать) --- */
         .menu-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-color); backdrop-filter: blur(20px);
@@ -148,31 +148,32 @@
             text-align: center;
         }
         .access-card h3 { font-size: 24px; margin-bottom: 12px; }
-        .access-card p { font-size: 14px; color: #aaa; margin-bottom: 20px; }
-        .access-steps {
+        .access-card > p { font-size: 14px; color: #aaa; margin-bottom: 20px; }
+        .how-to-get {
             text-align: left;
-            font-size: 13px;
-            margin: 15px 0;
             background: rgba(0,0,0,0.2);
-            padding: 12px;
-            border-radius: 20px;
-        }
-        .access-steps p { margin: 5px 0; color: #ccc; }
-        .tg-row {
-            background: var(--secondary-bg);
             border-radius: 20px;
             padding: 12px 15px;
             margin: 15px 0;
+        }
+        .how-to-get p { margin: 5px 0; font-size: 13px; color: #ccc; }
+        .how-to-get strong { color: white; }
+        .tg-row {
+            background: var(--secondary-bg);
+            border-radius: 20px;
+            padding: 10px 15px;
+            margin: 12px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        .tg-row span { font-size: 14px; font-weight: 500; }
         .copy-btn {
             background: none;
             border: none;
             color: var(--accent);
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
         }
         .code-input {
             width: 100%;
@@ -183,21 +184,52 @@
             color: var(--text-color);
             text-align: center;
             margin: 15px 0;
+            font-size: 14px;
         }
-        .double-btn {
-            display: flex;
-            gap: 12px;
-            margin-top: 10px;
-        }
-        .double-btn button {
-            flex: 1;
-            padding: 12px;
+        .activate-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            border: none;
             border-radius: 30px;
+            color: white;
             font-weight: bold;
+            font-size: 16px;
             cursor: pointer;
+            margin-bottom: 15px;
         }
-        .btn-primary { background: var(--accent); color: white; border: none; }
-        .btn-secondary { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color); }
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .action-btn.telegram { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color); }
+        .action-btn.copy { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color); }
+        .contact-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #aaa;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--glass-border);
+        }
+        .contact-info span { color: var(--accent); }
+        #access-message { margin-top: 12px; font-size: 13px; }
 
         /* --- Основное приложение --- */
         .app-container {
@@ -208,7 +240,6 @@
             position: relative;
         }
 
-        /* Top Bar */
         .top-bar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 12px 20px;
@@ -229,7 +260,6 @@
             cursor: pointer; transition: 0.3s; border: 1px solid var(--border-color);
         }
 
-        /* Chart Area - уменьшенная высота для телефона */
         .chart-wrapper {
             height: 38vh;
             min-height: 260px;
@@ -237,25 +267,13 @@
             background: var(--app-bg);
             position: relative;
         }
-        #tv_chart_container {
-            width: 100%;
-            height: 100%;
-        }
+        #tv_chart_container { width: 100%; height: 100%; }
         .otc-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--secondary-bg);
-            font-size: 16px;
-            font-weight: bold;
-            color: #888;
-            text-align: center;
-            border-radius: 12px;
+            width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+            background: var(--secondary-bg); font-size: 16px; font-weight: bold; color: #888;
+            text-align: center; border-radius: 12px;
         }
 
-        /* Bottom Menu */
         .bottom-menu {
             padding: 15px 20px 20px;
             background: var(--secondary-bg);
@@ -276,16 +294,13 @@
             display: flex; justify-content: center; align-items: center; gap: 10px;
             margin-bottom: 10px;
         }
-        .main-btn:active { transform: scale(0.98); }
         .back-btn {
             width: 100%; padding: 12px; border-radius: 40px;
             background: var(--secondary-bg); border: 1px solid var(--border-color);
             color: var(--text-color); font-size: 16px; font-weight: 600;
             cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .back-btn:active { transform: scale(0.97); }
 
-        /* Dropdowns */
         .pairs-dropdown, .time-dropdown {
             position: absolute; bottom: 100%; left: 0; width: 100%; background: var(--secondary-bg);
             border: 1px solid var(--border-color); border-radius: 12px; max-height: 250px;
@@ -297,7 +312,6 @@
         .pair-item, .time-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color); transition: 0.2s; }
         .pair-item:hover, .time-item:hover { background: var(--hover-color); }
 
-        /* Analysis Widget */
         .analysis-widget {
             display: none;
             background: var(--glass-bg);
@@ -321,7 +335,6 @@
         .btn-loss { background: rgba(255,51,102,0.2); color: var(--sell-color); border: 1px solid var(--sell-color); }
         .btn-close { background: var(--secondary-bg); color: var(--text-color); border: 1px solid var(--border-color); }
 
-        /* Modal Analysis */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 1000; display: none;
@@ -362,7 +375,7 @@
     </div>
 </div>
 
-<!-- 2. Промежуточное меню (отзывы, обучение, начать работать) без кнопки Старт -->
+<!-- 2. Промежуточное меню (отзывы, обучение, начать работать) -->
 <div id="menu-overlay" class="menu-overlay">
     <div class="menu-card">
         <h3 id="menu-title">Выберите действие</h3>
@@ -380,28 +393,28 @@
     </div>
 </div>
 
-<!-- 3. Окно активации (точь-в-точь как на скриншоте, ник @AuraVay) -->
+<!-- 3. Окно активации (точь-в-точь как на скриншоте) -->
 <div id="access-overlay" class="access-overlay">
     <div class="access-card">
-        <h3>🔐 Активация доступа</h3>
+        <h3>Активация доступа</h3>
         <p>Для входа в платформу OptiBotX PRO необходим лицензионный код</p>
-        <div class="access-steps">
+        <div class="how-to-get">
             <p><strong>Как получить код?</strong></p>
             <p>1. Нажмите кнопку «Написать мне» ниже</p>
             <p>2. Напишите слово «КОД» в Telegram</p>
             <p>3. Менеджер выдаст вам персональный код активации ✅</p>
         </div>
-        <div class="tg-row">
-            <span>Мой TG: @AuraVay</span>
-            <button id="copy-nick-btn" class="copy-btn"><i class="far fa-copy"></i> Копировать ник</button>
-        </div>
         <input type="text" id="activation-code" class="code-input" placeholder="Введите полученный код">
-        <button id="activate-access-btn" class="btn-primary" style="width:100%;">Активировать</button>
-        <div class="double-btn">
-            <button id="write-to-tg-btn" class="btn-secondary"><i class="fab fa-telegram"></i> Написать мне</button>
-            <button id="close-access-btn" class="btn-secondary">Отмена</button>
+        <button id="activate-access-btn" class="activate-btn">Активировать</button>
+        <div class="action-row">
+            <button id="write-to-tg-btn" class="action-btn telegram"><i class="fab fa-telegram"></i> Написать мне</button>
+            <button id="copy-nick-btn" class="action-btn copy"><i class="far fa-copy"></i> Копировать ник</button>
         </div>
-        <div id="access-message" style="margin-top: 12px; font-size: 13px;"></div>
+        <div class="contact-info">
+            <span>Мой TG: @AuraVay</span>
+            <span>Ник: AuraVay</span>
+        </div>
+        <div id="access-message"></div>
     </div>
 </div>
 
@@ -480,7 +493,7 @@
 </div>
 
 <script>
-    // ======================= ПЕРЕВОДЫ (только ru/en) =======================
+    // ======================= ПЕРЕВОДЫ =======================
     const translations = {
         ru: { 
             start: "Далее →", asset: "Актив", timeframe: "Таймфрейм", getSignal: "Получить сигнал", 
@@ -510,7 +523,6 @@
         "GBP/CHF OTC", "EUR/NZD OTC", "GBP/NZD OTC"
     ];
 
-    // Таймфреймы для обычных и OTC
     const tfNormal = ["1m", "5m", "15m", "1h"];
     const tfOTC = ["5s", "10s", "15s", "30s", "1m", "5m", "15m"];
 
@@ -525,7 +537,6 @@
     let currentTF = "1m";
     let isOTC = false;
 
-    // DOM элементы
     const welcomeOverlay = document.getElementById('welcome-overlay');
     const menuOverlay = document.getElementById('menu-overlay');
     const mainApp = document.getElementById('main-app');
@@ -539,7 +550,6 @@
     const getSignalBtn = document.getElementById('get-signal-btn');
     const backToMenuBtn = document.getElementById('back-to-menu-btn');
 
-    // ======================= ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =======================
     function updateUILang() {
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
@@ -552,7 +562,6 @@
         document.getElementById('start-work-text').innerText = translations[currentLang].startWork;
     }
 
-    // Инициализация/перезагрузка графика TradingView
     function initChart(symbol, interval) {
         if (isOTC) return;
         const formattedSymbol = symbol.replace('/', '');
@@ -574,7 +583,6 @@
         });
     }
 
-    // Отрисовка списка пар с поиском
     function renderPairsList(filter = '') {
         const filtered = allPairs.filter(p => p.toLowerCase().includes(filter.toLowerCase()));
         pairsListDiv.innerHTML = '';
@@ -604,7 +612,6 @@
         });
     }
 
-    // Обновление выпадающего списка таймфреймов
     function updateTimeframeList() {
         const tfs = isOTC ? tfOTC : tfNormal;
         timeDropdown.innerHTML = '';
@@ -623,7 +630,6 @@
         });
     }
 
-    // Показать модалку анализа с прогрессом
     function showAnalysisModal(callback) {
         const fill = document.getElementById('progress-fill');
         const textSpan = document.getElementById('progress-text');
@@ -646,7 +652,6 @@
         }, 200);
     }
 
-    // Показать результат анализа (BUY/SELL)
     function showAnalysisResult() {
         const pair = selectedPairSpan.innerText;
         const tf = selectedTimeSpan.innerText;
@@ -677,7 +682,6 @@
         }
     }
 
-    // Активация кода
     function activateCode() {
         const code = document.getElementById('activation-code').value.trim();
         const msgDiv = document.getElementById('access-message');
@@ -698,19 +702,13 @@
         }
     }
 
-    // Возврат в меню выбора действия
     function backToMenu() {
-        // Останавливаем график, если он есть
-        if (tvWidget) {
-            tvWidget.remove();
-            tvWidget = null;
-        }
+        if (tvWidget) { tvWidget.remove(); tvWidget = null; }
         mainApp.style.display = 'none';
         menuOverlay.classList.add('visible');
     }
 
-    // ======================= ОБРАБОТЧИКИ ИНТЕРФЕЙСА =======================
-    // Выбор языка
+    // ======================= ОБРАБОТЧИКИ =======================
     document.querySelectorAll('.language-item').forEach(item => {
         item.addEventListener('click', () => {
             document.querySelectorAll('.language-item').forEach(i => i.classList.remove('selected'));
@@ -721,7 +719,6 @@
         });
     });
 
-    // Переход к меню после выбора языка
     document.getElementById('start-btn').addEventListener('click', () => {
         welcomeOverlay.style.opacity = '0';
         setTimeout(() => {
@@ -731,17 +728,11 @@
         }, 400);
     });
 
-    // Кнопки меню: при клике сразу выполняем действие (без дополнительной кнопки Старт)
-    document.getElementById('reviews-btn').addEventListener('click', () => {
-        window.open('https://t.me/optibotxx', '_blank');
-    });
-    document.getElementById('tutorial-btn').addEventListener('click', () => {
-        window.open('https://t.me/CieePXj_6AyYWEx', '_blank');
-    });
+    document.getElementById('reviews-btn').addEventListener('click', () => window.open('https://t.me/optibotxx', '_blank'));
+    document.getElementById('tutorial-btn').addEventListener('click', () => window.open('https://t.me/CieePXj_6AyYWEx', '_blank'));
     document.getElementById('start-work-btn').addEventListener('click', () => {
         menuOverlay.classList.remove('visible');
         mainApp.style.display = 'flex';
-        // Инициализация приложения
         currentPair = allPairs[0];
         selectedPairSpan.innerText = currentPair;
         isOTC = currentPair.toLowerCase().includes('otc');
@@ -754,7 +745,6 @@
             initChart(currentPair, currentTF);
         }
         renderPairsList('');
-        // Обработчики UI (если ещё не назначены)
         if (!window._handlersAssigned) {
             window._handlersAssigned = true;
             document.getElementById('theme-toggle').addEventListener('click', () => {
@@ -781,10 +771,7 @@
                 if (!e.target.closest('#time-selector')) document.getElementById('time-dropdown').style.display = 'none';
             });
             getSignalBtn.addEventListener('click', () => {
-                if (!isActivated) {
-                    accessOverlay.classList.add('visible');
-                    return;
-                }
+                if (!isActivated) { accessOverlay.classList.add('visible'); return; }
                 showAnalysisModal(() => showAnalysisResult());
             });
             document.getElementById('win-action').onclick = closeWidget;
@@ -796,7 +783,7 @@
                 alert('Ник скопирован: @AuraVay');
             };
             document.getElementById('write-to-tg-btn').onclick = () => window.open('https://t.me/AuraVay', '_blank');
-            document.getElementById('close-access-btn').onclick = () => accessOverlay.classList.remove('visible');
+            document.getElementById('close-access-btn')?.addEventListener('click', () => accessOverlay.classList.remove('visible'));
             backToMenuBtn.addEventListener('click', backToMenu);
         }
         if (window.Telegram?.WebApp) window.Telegram.WebApp.expand();
