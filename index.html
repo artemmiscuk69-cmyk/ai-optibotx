@@ -20,305 +20,588 @@
             --accent-glow: rgba(91, 77, 255, 0.3);
             --glass-bg: rgba(20, 30, 50, 0.7);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --buy-color: #00ff88;
+            --sell-color: #ff3366;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body.light-theme {
+            --bg-color: #f0f2f5;
+            --app-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-color: #1e293b;
+            --secondary-bg: #f8fafc;
+            --hover-color: #e2e8f0;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            margin: 0; padding: 0; background: var(--bg-color); color: var(--text-color);
-            font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* --- ПЕРВОНАЧАЛЬНЫЕ ЭКРАНЫ --- */
-        .overlay {
+        /* --- Welcome Screen --- */
+        #welcome-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color); z-index: 10000; display: flex;
-            align-items: center; justify-content: center; backdrop-filter: blur(10px);
+            background: var(--bg-color); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s;
         }
-        .step-card {
-            background: var(--secondary-bg); border: 1px solid var(--border-color);
-            border-radius: 30px; padding: 30px; width: 90%; max-width: 360px;
-            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        .welcome-content {
+            text-align: center; max-width: 90%; width: 400px;
         }
-        .step-title { font-size: 22px; font-weight: 800; margin-bottom: 20px; color: var(--accent); }
-        .list-options { display: flex; flex-direction: column; gap: 12px; }
-        .option-btn {
-            background: var(--app-bg); border: 1px solid var(--border-color);
-            padding: 16px; border-radius: 15px; color: white; cursor: pointer;
-            font-weight: 600; transition: 0.3s; font-size: 16px;
+        .logo-container {
+            width: 120px; height: 120px; margin: 0 auto 30px;
+            background: linear-gradient(135deg, var(--accent), #ff3366);
+            border-radius: 30px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 40px var(--accent-glow);
+            animation: float 3s ease-in-out infinite;
         }
-        .option-btn:hover, .option-btn.active { 
-            border-color: var(--accent); background: rgba(91, 77, 255, 0.15); 
-            box-shadow: 0 0 15px var(--accent-glow);
+        .logo-container i { font-size: 60px; color: white; }
+        .welcome-title { font-size: 32px; font-weight: 800; margin-bottom: 10px; background: linear-gradient(to right, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .language-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 40px; }
+        .language-item {
+            background: var(--secondary-bg); border: 2px solid var(--border-color); padding: 15px;
+            border-radius: 15px; cursor: pointer; transition: all 0.3s;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
-        .hidden { display: none !important; }
+        .language-item.selected { border-color: var(--accent); background: var(--accent-glow); transform: translateY(-3px); }
+        .language-item img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .language-item span { font-weight: 600; font-size: 14px; }
+        .start-btn {
+            margin-top: 30px; width: 100%; padding: 18px; border: none;
+            background: var(--accent); color: white; border-radius: 15px;
+            font-size: 18px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 10px 20px var(--accent-glow); transition: all 0.3s;
+            opacity: 0; pointer-events: none; transform: translateY(20px);
+        }
+        .start-btn.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
+        .start-btn:active { transform: scale(0.95); }
 
-        /* --- ИНТЕРФЕЙС ПРИЛОЖЕНИЯ --- */
-        .app-main { display: flex; flex-direction: column; height: 100vh; }
+        /* --- Main App Layout --- */
+        .app-container {
+            display: none; /* flex set via JS */
+            flex-direction: column; height: 100vh; background: var(--app-bg);
+            position: relative;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; background: var(--secondary-bg);
+            border-bottom: 1px solid var(--border-color); z-index: 100;
+        }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #ff3366); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: white; }
+        .user-details { display: flex; flex-direction: column; }
+        .user-name { font-weight: 700; font-size: 16px; }
+        .user-id { font-size: 12px; color: #888; }
+        .controls { display: flex; gap: 15px; align-items: center; }
+        .icon-btn {
+            width: 40px; height: 40px; border-radius: 12px; border: none;
+            background: var(--bg-color); color: var(--text-color);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; border: 1px solid var(--border-color);
+        }
+        .icon-btn:hover { background: var(--hover-color); }
+
+        /* Chart Area */
+        #tv_chart_container { flex: 1; width: 100%; min-height: 40vh; }
+
+        /* --- Beautiful Analysis Widget --- */
+        .analysis-widget {
+            display: none; /* Shown via JS */
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--glass-border);
+            padding: 25px 20px;
+            text-align: center;
+            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+            z-index: 50;
+            position: relative;
+        }
+        .analysis-widget.active { display: block; }
         
-        /* Уменьшенный график для телефонов */
-        #tv-container { flex: 0 0 40vh; width: 100%; background: #000; border-bottom: 1px solid var(--border-color); }
+        .aw-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .aw-pair-info { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
+        .aw-pair-info i { color: var(--accent); }
+        .aw-timeframe { background: var(--secondary-bg); padding: 5px 12px; border-radius: 8px; font-size: 14px; color: #aaa;}
 
-        .controls-panel {
-            flex: 1; padding: 15px; display: flex; flex-direction: column; gap: 12px;
-            background: var(--app-bg); overflow-y: auto;
+        .aw-result-container {
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            margin: 20px 0;
+        }
+        .aw-label { font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: #888; }
+        
+        /* The magical BUY / SELL Text */
+        .aw-signal {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin: 5px 0;
+        }
+        .signal-buy {
+            color: var(--buy-color);
+            animation: pulse-buy 2s infinite;
+        }
+        .signal-sell {
+            color: var(--sell-color);
+            animation: pulse-sell 2s infinite;
         }
 
-        .input-group { background: var(--secondary-bg); padding: 12px; border-radius: 15px; border: 1px solid var(--border-color); }
-        .label { font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
-
-        select {
-            width: 100%; background: var(--app-bg); color: white; border: 1px solid var(--border-color);
-            padding: 12px; border-radius: 10px; font-size: 15px; outline: none;
+        .aw-confidence {
+            font-size: 16px; color: #bbb;
         }
+        .aw-confidence span { font-weight: 700; color: white; }
 
-        .tf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .tf-item {
-            background: var(--app-bg); border: 1px solid var(--border-color);
-            padding: 10px 5px; text-align: center; border-radius: 8px; font-size: 13px;
-            cursor: pointer; transition: 0.2s; font-weight: 600;
+        /* Action Buttons */
+        .aw-actions {
+            display: flex; gap: 15px; margin-top: 20px;
         }
-        .tf-item.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
-
-        .btn-analyze {
-            background: var(--accent); color: white; border: none; padding: 18px;
-            border-radius: 15px; font-size: 18px; font-weight: 800; cursor: pointer;
-            text-transform: uppercase; margin-top: auto; letter-spacing: 1px;
-            box-shadow: 0 10px 25px var(--accent-glow);
+        .aw-btn {
+            flex: 1; padding: 15px; border: none; border-radius: 12px;
+            font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            color: white;
         }
+        .btn-win { background: rgba(0, 255, 136, 0.2); border: 1px solid var(--buy-color); color: var(--buy-color); }
+        .btn-loss { background: rgba(255, 51, 102, 0.2); border: 1px solid var(--sell-color); color: var(--sell-color); }
+        .btn-close { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--text-color); }
+        
+        .aw-btn:active { transform: scale(0.95); }
 
-        /* --- ОКНО РЕГИСТРАЦИИ (ПОД СКРИНШОТ) --- */
-        .reg-modal {
+        /* Bottom Menu (Main Controls) */
+        .bottom-menu {
+            padding: 15px 20px 25px; background: var(--secondary-bg);
+            border-top: 1px solid var(--border-color); z-index: 40;
+        }
+        .control-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .selector {
+            background: var(--bg-color); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 5px; cursor: pointer; position: relative;
+        }
+        .selector-label { font-size: 12px; color: #888; }
+        .selector-value { font-weight: 700; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .main-btn {
+            width: 100%; padding: 18px; border: none; border-radius: 15px;
+            background: linear-gradient(135deg, var(--accent), #ff3366); color: white;
+            font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 25px var(--accent-glow); transition: 0.3s;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .main-btn:active { transform: scale(0.98); }
+
+        /* Pair Dropdown */
+        .pairs-dropdown {
+            position: absolute; bottom: 100%; left: 0; width: 100%; background: var(--secondary-bg);
+            border: 1px solid var(--border-color); border-radius: 12px; max-height: 250px;
+            overflow-y: auto; display: none; z-index: 200; box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+        .search-box { padding: 10px; position: sticky; top: 0; background: var(--secondary-bg); border-bottom: 1px solid var(--border-color); }
+        .search-box input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); outline: none; }
+        .pair-item { padding: 12px 15px; display: flex; justify-content: space-between; cursor: pointer; border-bottom: 1px solid var(--border-color); transition: 0.2s; }
+        .pair-item:hover { background: var(--hover-color); }
+
+        /* Timeframe Dropdown */
+        .time-dropdown {
+            position: absolute; bottom: 100%; left: 0; width: 100%; background: var(--secondary-bg);
+            border: 1px solid var(--border-color); border-radius: 12px; display: none; z-index: 200;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.5); margin-bottom: 10px;
+        }
+        .time-item { padding: 12px 15px; text-align: center; cursor: pointer; border-bottom: 1px solid var(--border-color); }
+        .time-item:hover { background: var(--hover-color); }
+
+        /* Analyzing Modal */
+        .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 20000; display: flex;
-            align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.8); z-index: 1000; display: none;
+            align-items: center; justify-content: center; backdrop-filter: blur(5px);
         }
-        .reg-card {
+        .modal-content {
             background: var(--secondary-bg); border: 1px solid var(--border-color);
-            border-radius: 35px; padding: 25px; width: 88%; max-width: 340px; text-align: center;
+            border-radius: 20px; padding: 30px; width: 90%; max-width: 350px; text-align: center;
         }
-        .reg-card h2 { font-size: 20px; margin-bottom: 10px; }
-        .reg-card p { font-size: 13px; color: #bbb; margin-bottom: 20px; line-height: 1.5; }
-        .reg-input {
-            width: 100%; padding: 16px; background: #000; border: 1px solid var(--border-color);
-            border-radius: 50px; color: white; text-align: center; font-size: 16px; margin-bottom: 15px; outline: none;
+        .loader-ring { width: 80px; height: 80px; border: 4px solid var(--border-color); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        .progress-bar { width: 100%; height: 8px; background: var(--bg-color); border-radius: 4px; margin-top: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.1s; }
+
+        /* Animations */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-buy { 
+            0% { text-shadow: 0 0 10px rgba(0,255,136,0.4); transform: scale(1); }
+            50% { text-shadow: 0 0 30px rgba(0,255,136,0.8), 0 0 60px rgba(0,255,136,0.4); transform: scale(1.05); }
+            100% { text-shadow: 0 0 10px rgba(0,255,136,0.4); transform: scale(1); }
         }
-        .reg-btn {
-            background: var(--accent); color: white; width: 100%; padding: 16px;
-            border-radius: 50px; font-weight: 700; border: none; cursor: pointer; margin-bottom: 10px;
-        }
-        .reg-support {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-        }
-        .support-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
-            padding: 12px; border-radius: 50px; color: white; font-size: 12px; text-decoration: none;
+        @keyframes pulse-sell { 
+            0% { text-shadow: 0 0 10px rgba(255,51,102,0.4); transform: scale(1); }
+            50% { text-shadow: 0 0 30px rgba(255,51,102,0.8), 0 0 60px rgba(255,51,102,0.4); transform: scale(1.05); }
+            100% { text-shadow: 0 0 10px rgba(255,51,102,0.4); transform: scale(1); }
         }
 
-        /* Анимация пульсации для АНАЛИЗА */
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        .analyzing { animation: pulse 1s infinite; pointer-events: none; background: #333 !important; }
-
-        /* Сигнальный виджет */
-        #signal-widget {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: var(--secondary-bg); border: 2px solid var(--accent);
-            padding: 30px; border-radius: 30px; z-index: 30000; display: none;
-            width: 80%; text-align: center; box-shadow: 0 0 50px var(--accent-glow);
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .app-container { flex-direction: row; }
+            #tv_chart_container { height: 100vh; }
+            .right-panel { 
+                width: 400px; 
+                display: flex; 
+                flex-direction: column; 
+                border-left: 1px solid var(--border-color);
+                background: var(--app-bg);
+            }
+            .bottom-menu { border-top: none; border-bottom: 1px solid var(--border-color); }
+            .analysis-widget { 
+                flex: 1; 
+                border-radius: 0;
+                border-top: none; 
+                display: flex; 
+                flex-direction: column; 
+                justify-content: center;
+                animation: none; /* No slideup on desktop */
+                display: none; /* hidden initially */
+            }
+            .analysis-widget.active { display: flex; }
         }
+        @media (max-width: 767px) {
+            .right-panel { display: flex; flex-direction: column; }
+        }
+
     </style>
 </head>
-<body>
+<body class="dark-theme">
 
-    <div id="lang-step" class="overlay">
-        <div class="step-card">
-            <div class="step-title">SELECT LANGUAGE</div>
-            <div class="list-options">
-                <div class="option-btn" onclick="nextStep('ru')">🇷🇺 РУССКИЙ</div>
-                <div class="option-btn" onclick="nextStep('en')">🇺🇸 ENGLISH</div>
+    <div id="welcome-overlay">
+        <div class="welcome-content">
+            <div class="logo-container">
+                <i class="fas fa-robot"></i>
             </div>
+            <h1 class="welcome-title">OptiBotX PRO</h1>
+            <p style="color: #888;">Premium Trading Intelligence</p>
+            
+            <div class="language-grid">
+                <div class="language-item" data-lang="ru">
+                    <img src="https://flagcdn.com/w80/ru.png" alt="RU">
+                    <span>Русский</span>
+                </div>
+                <div class="language-item" data-lang="en">
+                    <img src="https://flagcdn.com/w80/gb.png" alt="EN">
+                    <span>English</span>
+                </div>
+                <div class="language-item" data-lang="es">
+                    <img src="https://flagcdn.com/w80/es.png" alt="ES">
+                    <span>Español</span>
+                </div>
+                <div class="language-item" data-lang="pt">
+                    <img src="https://flagcdn.com/w80/br.png" alt="PT">
+                    <span>Português</span>
+                </div>
+            </div>
+
+            <button class="start-btn" id="start-btn">Начать работу <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
-    <div id="menu-step" class="overlay hidden">
-        <div class="step-card">
-            <div class="step-title" id="menu-header">MENU</div>
-            <div class="list-options">
-                <div class="option-btn" onclick="window.open('https://t.me/ZentixTrade')">ОТЗЫВЫ ПРИЛОЖЕНИЯ</div>
-                <div class="option-btn" onclick="alert('Coming soon...')">ОБУЧЕНИЕ</div>
-                <div class="option-btn active" onclick="startApp()">НАЧАТЬ РАБОТАТЬ</div>
-            </div>
-            <button class="reg-btn" style="margin-top: 20px;" onclick="startApp()">СТАРТ</button>
-        </div>
-    </div>
-
-    <div id="reg-modal" class="reg-modal hidden">
-        <div class="reg-card">
-            <h2>🔐 АКТИВАЦИЯ</h2>
-            <p>Для использования бота необходимо привязать свой аккаунт. Введите ваш ID ниже.</p>
-            <input type="number" id="user-id" class="reg-input" placeholder="ID ВАШЕГО АККАУНТА">
-            <button class="reg-btn" onclick="checkAccess()">ПРОВЕРИТЬ</button>
-            <div class="reg-support">
-                <a href="https://t.me/ZentixTrade" class="support-btn">НАПИСАТЬ МНЕ</a>
-                <button class="support-btn" onclick="document.getElementById('reg-modal').classList.add('hidden')">ЗАКРЫТЬ</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="app-main hidden" id="app-ui">
-        <div id="tv-container"></div>
+    <div class="app-container" id="main-app">
         
-        <div class="controls-panel">
-            <div class="input-group">
-                <div class="label">ВАЛЮТНАЯ ПАРА</div>
-                <select id="pair-select" onchange="updatePair()">
-                    <option value="EURUSD">EUR/USD</option>
-                    <option value="GBPUSD">GBP/USD</option>
-                    <option value="USDJPY">USD/JPY</option>
-                    <option value="AUDUSD">AUD/USD</option>
-                    <option value="EURUSD_OTC">EUR/USD (OTC)</option>
-                    <option value="GBPUSD_OTC">GBP/USD (OTC)</option>
-                    <option value="USDJPY_OTC">USD/JPY (OTC)</option>
-                    <option value="AUDUSD_OTC">AUD/USD (OTC)</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <div class="label">ВРЕМЯ ЭКСПИРАЦИИ</div>
-                <div class="tf-grid" id="tf-container">
+        <div style="display: flex; flex-direction: column; flex: 1;">
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
                     </div>
+                    <div class="user-details">
+                        <span class="user-name" id="ui-username">Trader_Pro</span>
+                        <span class="user-id">ID: 8493021</span>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="icon-btn" id="theme-toggle"><i class="fas fa-moon"></i></button>
+                </div>
+            </div>
+            <div id="tv_chart_container"></div>
+        </div>
+
+        <div class="right-panel">
+            
+            <div class="bottom-menu" id="controls-panel">
+                <div class="control-panel">
+                    <div class="selector" id="pair-selector">
+                        <span class="selector-label" data-i18n="asset">Актив</span>
+                        <div class="selector-value"><span id="selected-pair">EUR/USD</span> <i class="fas fa-chevron-down"></i></div>
+                        <div class="pairs-dropdown" id="pairs-dropdown">
+                            <div class="search-box">
+                                <input type="text" id="pair-search" placeholder="Поиск...">
+                            </div>
+                            <div id="pairs-list"></div>
+                        </div>
+                    </div>
+                    <div class="selector" id="time-selector">
+                        <span class="selector-label" data-i18n="timeframe">Время</span>
+                        <div class="selector-value"><span id="selected-time">1M</span> <i class="fas fa-chevron-down"></i></div>
+                        <div class="time-dropdown" id="time-dropdown">
+                            <div class="time-item" data-val="1">1M</div>
+                            <div class="time-item" data-val="5">5M</div>
+                            <div class="time-item" data-val="15">15M</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="main-btn" id="get-signal-btn">
+                    <i class="fas fa-radar"></i> <span data-i18n="getSignal">Получить сигнал</span>
+                </button>
             </div>
 
-            <button class="btn-analyze" id="btn-main" onclick="handleAnalyze()">АНАЛИЗ</button>
+            <div class="analysis-widget" id="analysis-widget">
+                <div class="aw-header">
+                    <div class="aw-pair-info">
+                        <i class="fas fa-chart-pie"></i> <span id="aw-pair">EUR/USD</span>
+                    </div>
+                    <div class="aw-timeframe" id="aw-time">1M</div>
+                </div>
+
+                <div class="aw-result-container">
+                    <div class="aw-label" data-i18n="analysisResult">Analysis Result</div>
+                    <div class="aw-signal signal-buy" id="aw-signal-text">BUY</div>
+                    <div class="aw-confidence"><span data-i18n="confidence">Confidence</span>: <span id="aw-percent">89%</span></div>
+                </div>
+
+                <div class="aw-actions">
+                    <button class="aw-btn btn-win" onclick="closeWidget()"><i class="fas fa-check"></i> Win</button>
+                    <button class="aw-btn btn-loss" onclick="closeWidget()"><i class="fas fa-times"></i> Loss</button>
+                    <button class="aw-btn btn-close" onclick="closeWidget()"><i class="fas fa-undo"></i></button>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <div id="signal-widget">
-        <div style="font-size: 14px; color: #888;" id="sig-pair-label">EUR/USD</div>
-        <div style="font-size: 48px; font-weight: 900; margin: 15px 0;" id="sig-direction">BUY</div>
-        <div style="font-size: 24px; color: var(--accent);" id="sig-percent">92%</div>
-        <button class="reg-btn" style="margin-top: 20px; background: transparent; border: 1px solid var(--accent);" onclick="closeSignal()">OK</button>
+    <div class="modal-overlay" id="analyzing-modal">
+        <div class="modal-content">
+            <div class="loader-ring"></div>
+            <h3 style="margin-bottom: 10px;" id="analyzing-title" data-i18n="analyzing">Анализ рынка...</h3>
+            <p style="color: #888; font-size: 14px;" id="analyzing-desc" data-i18n="analyzingDesc">ИИ сканирует паттерны</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div style="margin-top: 10px; font-weight: bold;" id="progress-text">0%</div>
+        </div>
     </div>
 
     <script>
+        // --- Translations ---
+        const translations = {
+            ru: { start: "Начать работу", asset: "Актив", timeframe: "Время", getSignal: "Получить сигнал", analyzing: "Анализ рынка...", analyzingDesc: "Искусственный интеллект сканирует паттерны", analysisResult: "Результат анализа", confidence: "Точность", search: "Поиск..." },
+            en: { start: "Start Trading", asset: "Asset", timeframe: "Timeframe", getSignal: "Get Signal", analyzing: "Analyzing market...", analyzingDesc: "AI is scanning patterns", analysisResult: "Analysis Result", confidence: "Confidence", search: "Search..." },
+            es: { start: "Comenzar", asset: "Activo", timeframe: "Marco temporal", getSignal: "Obtener señal", analyzing: "Analizando mercado...", analyzingDesc: "La IA está escaneando", analysisResult: "Resultado del análisis", confidence: "Confianza", search: "Buscar..." },
+            pt: { start: "Começar", asset: "Ativo", timeframe: "Período", getSignal: "Obter Sinal", analyzing: "Analisando mercado...", analyzingDesc: "A IA está escaneando", analysisResult: "Resultado da análise", confidence: "Confiança", search: "Procurar..." }
+        };
+
         let currentLang = 'ru';
-        let isAuthorized = false;
-        let selectedPair = 'EURUSD';
-        let selectedTime = '1m';
+        let tvWidget = null;
 
-        // Инициализация при выборе языка
-        function nextStep(lang) {
-            currentLang = lang;
-            document.getElementById('lang-step').classList.add('hidden');
-            document.getElementById('menu-step').classList.remove('hidden');
-            if(lang === 'en') {
-                document.getElementById('menu-header').innerText = 'MAIN MENU';
-                // Можно добавить перевод остальных кнопок
-            }
-        }
+        const pairs = [
+            "EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "USDCHF", "NZDUSD",
+            "EURGBP", "EURJPY", "GBPJPY", "AUDJPY", "EURAUD",
+            "BTCUSD", "ETHUSD", "SOLUSD", "BNBUSD"
+        ];
 
-        // Запуск приложения
-        function startApp() {
-            document.getElementById('menu-step').classList.add('hidden');
-            document.getElementById('app-ui').classList.remove('hidden');
-            initChart('FX:EURUSD');
-            renderTimeframes(false);
-        }
-
-        // Отрисовка таймфреймов
-        function renderTimeframes(isOTC) {
-            const container = document.getElementById('tf-container');
-            container.innerHTML = '';
-            const times = isOTC ? ['5s', '10s', '15s', '30s'] : ['1m', '2m', '5m', '15m'];
-            selectedTime = times[0];
-
-            times.forEach(t => {
-                const div = document.createElement('div');
-                div.className = `tf-item ${t === selectedTime ? 'active' : ''}`;
-                div.innerText = t;
-                div.onclick = () => {
-                    document.querySelectorAll('.tf-item').forEach(el => el.classList.remove('active'));
-                    div.classList.add('active');
-                    selectedTime = t;
-                };
-                container.appendChild(div);
+        // --- Init App ---
+        document.querySelectorAll('.language-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.language-item').forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+                currentLang = item.dataset.lang;
+                document.getElementById('start-btn').classList.add('visible');
+                document.getElementById('start-btn').innerHTML = translations[currentLang].start + ' <i class="fas fa-arrow-right"></i>';
             });
-        }
+        });
 
-        // Смена пары
-        function updatePair() {
-            const select = document.getElementById('pair-select');
-            selectedPair = select.value;
-            const isOTC = selectedPair.includes('OTC');
-            
-            let symbol = "FX:" + selectedPair.replace('_OTC', '');
-            initChart(symbol);
-            renderTimeframes(isOTC);
-        }
-
-        // Трейдинг Вью
-        function initChart(symbol) {
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": symbol,
-                "interval": "1",
-                "timezone": "Etc/UTC",
-                "theme": "dark",
-                "style": "1",
-                "locale": "ru",
-                "container_id": "tv-container",
-                "hide_top_toolbar": true,
-                "hide_legend": true,
-                "save_image": false,
-                "backgroundColor": "#050510",
-                "gridColor": "rgba(42, 46, 57, 0.06)"
-            });
-        }
-
-        // Логика Анализа
-        function handleAnalyze() {
-            if (!isAuthorized) {
-                document.getElementById('reg-modal').classList.remove('hidden');
-                return;
-            }
-
-            const btn = document.getElementById('btn-main');
-            btn.classList.add('analyzing');
-            btn.innerText = currentLang === 'ru' ? 'АНАЛИЗИРУЮ...' : 'ANALYZING...';
-
+        document.getElementById('start-btn').addEventListener('click', () => {
+            document.getElementById('welcome-overlay').style.opacity = '0';
             setTimeout(() => {
-                btn.classList.remove('analyzing');
-                btn.innerText = currentLang === 'ru' ? 'АНАЛИЗ' : 'ANALYZE';
-                showSignal();
-            }, 3000);
+                document.getElementById('welcome-overlay').style.display = 'none';
+                document.getElementById('main-app').style.display = window.innerWidth > 767 ? 'flex' : 'flex';
+                updateLanguage();
+                initChart("EURUSD");
+                renderPairsList();
+            }, 500);
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[currentLang][key]) el.textContent = translations[currentLang][key];
+            });
+            document.getElementById('pair-search').placeholder = translations[currentLang].search;
         }
 
-        function checkAccess() {
-            const id = document.getElementById('user-id').value;
-            if (id.length > 4) {
-                isAuthorized = true;
-                document.getElementById('reg-modal').classList.add('hidden');
-                alert(currentLang === 'ru' ? 'Доступ разрешен!' : 'Access granted!');
-            } else {
-                alert(currentLang === 'ru' ? 'Неверный ID!' : 'Invalid ID!');
+        // --- Theme Toggle ---
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            const isLight = document.body.classList.contains('light-theme');
+            document.getElementById('theme-toggle').innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            if (tvWidget) {
+                initChart(document.getElementById('selected-pair').textContent.replace('/',''));
             }
+        });
+
+        // --- Chart ---
+        function initChart(symbol) {
+            const isLight = document.body.classList.contains('light-theme');
+            const formattedSymbol = symbol.includes("USD") && !symbol.startsWith("BTC") && !symbol.startsWith("ETH") ? "FX_IDC:" + symbol : "BINANCE:" + symbol;
+            
+            tvWidget = new TradingView.widget({
+                "autosize": true,
+                "symbol": formattedSymbol,
+                "interval": document.getElementById('selected-time').textContent.replace('M',''),
+                "timezone": "Etc/UTC",
+                "theme": isLight ? "light" : "dark",
+                "style": "1",
+                "locale": currentLang === 'pt' ? 'br' : currentLang,
+                "enable_publishing": false,
+                "backgroundColor": isLight ? "#ffffff" : "#0b0b1a",
+                "gridColor": isLight ? "#e2e8f0" : "#1a1a2e",
+                "hide_top_toolbar": true,
+                "hide_legend": false,
+                "save_image": false,
+                "container_id": "tv_chart_container",
+                "toolbar_bg": isLight ? "#f8fafc" : "#161625"
+            });
         }
 
-        function showSignal() {
+        // --- Selectors Logic ---
+        function renderPairsList(filter = '') {
+            const list = document.getElementById('pairs-list');
+            list.innerHTML = '';
+            pairs.filter(p => p.toLowerCase().includes(filter.toLowerCase())).forEach(p => {
+                const formatted = p.length === 6 ? p.slice(0,3) + '/' + p.slice(3) : p;
+                const div = document.createElement('div');
+                div.className = 'pair-item';
+                div.innerHTML = `<span>${formatted}</span>`;
+                div.onclick = () => {
+                    document.getElementById('selected-pair').textContent = formatted;
+                    document.getElementById('pairs-dropdown').style.display = 'none';
+                    initChart(p);
+                };
+                list.appendChild(div);
+            });
+        }
+
+        document.getElementById('pair-selector').onclick = (e) => {
+            if(e.target.tagName !== 'INPUT') {
+                const dd = document.getElementById('pairs-dropdown');
+                dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+                document.getElementById('time-dropdown').style.display = 'none';
+            }
+        };
+
+        document.getElementById('pair-search').oninput = (e) => renderPairsList(e.target.value);
+
+        document.getElementById('time-selector').onclick = () => {
+            const dd = document.getElementById('time-dropdown');
+            dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+            document.getElementById('pairs-dropdown').style.display = 'none';
+        };
+
+        document.querySelectorAll('.time-item').forEach(item => {
+            item.onclick = (e) => {
+                e.stopPropagation();
+                document.getElementById('selected-time').textContent = item.textContent;
+                document.getElementById('time-dropdown').style.display = 'none';
+                initChart(document.getElementById('selected-pair').textContent.replace('/',''));
+            };
+        });
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', (e) => {
+            if(!e.target.closest('#pair-selector')) document.getElementById('pairs-dropdown').style.display = 'none';
+            if(!e.target.closest('#time-selector')) document.getElementById('time-dropdown').style.display = 'none';
+        });
+
+        // --- Signal Generation Logic ---
+        document.getElementById('get-signal-btn').addEventListener('click', () => {
+            // Hide widget and controls temporarily (on mobile)
+            document.getElementById('analysis-widget').classList.remove('active');
+            if(window.innerWidth < 768) {
+                document.getElementById('controls-panel').style.display = 'none';
+            }
+
+            const modal = document.getElementById('analyzing-modal');
+            const fill = document.getElementById('progress-fill');
+            const text = document.getElementById('progress-text');
+            
+            modal.style.display = 'flex';
+            let progress = 0;
+            
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 15) + 5;
+                if(progress > 100) progress = 100;
+                fill.style.width = progress + '%';
+                text.textContent = progress + '%';
+
+                if(progress === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                        fill.style.width = '0%';
+                        text.textContent = '0%';
+                        showAnalysisResult();
+                    }, 500);
+                }
+            }, 300);
+        });
+
+        function showAnalysisResult() {
+            const pair = document.getElementById('selected-pair').textContent;
+            const time = document.getElementById('selected-time').textContent;
+            
+            document.getElementById('aw-pair').textContent = pair;
+            document.getElementById('aw-time').textContent = time;
+
+            // Generate Signal (Random BUY/SELL)
             const isBuy = Math.random() > 0.5;
-            const direction = isBuy ? 'BUY' : 'SELL';
-            const color = isBuy ? '#00ff88' : '#ff4d4d';
+            const signalTextEl = document.getElementById('aw-signal-text');
+            const percentEl = document.getElementById('aw-percent');
             
-            document.getElementById('sig-pair-label').innerText = selectedPair.replace('_', ' ');
-            const dirEl = document.getElementById('sig-direction');
-            dirEl.innerText = direction;
-            dirEl.style.color = color;
-            document.getElementById('sig-percent').innerText = Math.floor(Math.random() * (98 - 85) + 85) + '%';
-            
-            document.getElementById('signal-widget').style.display = 'block';
+            // STRICTLY ENGLISH 'BUY' / 'SELL' with colors
+            if(isBuy) {
+                signalTextEl.textContent = 'BUY';
+                signalTextEl.className = 'aw-signal signal-buy';
+            } else {
+                signalTextEl.textContent = 'SELL';
+                signalTextEl.className = 'aw-signal signal-sell';
+            }
+
+            const confidence = Math.floor(Math.random() * (99 - 78 + 1)) + 78;
+            percentEl.textContent = confidence + '%';
+
+            // Show Widget
+            document.getElementById('analysis-widget').classList.add('active');
         }
 
-        function closeSignal() {
-            document.getElementById('signal-widget').style.display = 'none';
+        // Close Widget and restore menu
+        function closeWidget() {
+            document.getElementById('analysis-widget').classList.remove('active');
+            if(window.innerWidth < 768) {
+                document.getElementById('controls-panel').style.display = 'block';
+            }
         }
     </script>
 </body>
