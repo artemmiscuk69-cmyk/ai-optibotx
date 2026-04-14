@@ -102,7 +102,8 @@
             box-shadow: 0 0 40px rgba(91,77,255,0.5);
             animation: float 3s infinite;
         }
-        .logo-glow i { font-size: 48px; color: white; }
+        .logo-glow i { font-size: 48px;
+            color: white; }
         .welcome-title {
             font-size: 32px;
             font-weight: 800;
@@ -127,8 +128,10 @@
             text-align: center;
             min-width: 100px;
         }
-        .lang-card img { width: 40px; height: 40px; border-radius: 50%; margin-bottom: 8px; }
-        .lang-card span { font-size: 14px; font-weight: 500; display: block; }
+        .lang-card img { width: 40px; height: 40px; border-radius: 50%; margin-bottom: 8px;
+        }
+        .lang-card span { font-size: 14px; font-weight: 500; display: block;
+        }
         .lang-card.selected {
             background: linear-gradient(135deg, #5b4dff, #ff3366);
             border-color: transparent;
@@ -187,14 +190,15 @@
             transform: scale(1.02);
         }
 
-        /* Access Card */
+        /* Access Card (exact match screenshot, premium) */
         .access-card {
             width: 90%;
             max-width: 360px;
             padding: 24px 20px;
             text-align: center;
         }
-        .access-card h3 { font-size: 26px; margin-bottom: 8px; }
+        .access-card h3 { font-size: 26px;
+            margin-bottom: 8px; }
         .access-steps {
             background: rgba(0,0,0,0.3);
             border-radius: 20px;
@@ -298,8 +302,8 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        /* ID убран */
-
+        .user-id-premium { font-size: 12px; opacity: 0.7;
+        }
         .icon-glass {
             width: 44px;
             height: 44px;
@@ -323,7 +327,8 @@
             background: #0b0b1a;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        #tv_chart_container { width: 100%; height: 100%; }
+        #tv_chart_container { width: 100%; height: 100%;
+        }
         .otc-stub {
             width: 100%;
             height: 100%;
@@ -357,8 +362,10 @@
             cursor: pointer;
             position: relative;
         }
-        .premium-select .label { font-size: 12px; opacity: 0.7; }
-        .premium-select .value { font-weight: 700; display: flex; justify-content: space-between; margin-top: 4px; }
+        .premium-select .label { font-size: 12px; opacity: 0.7;
+        }
+        .premium-select .value { font-weight: 700; display: flex; justify-content: space-between; margin-top: 4px;
+        }
         .dropdown-premium {
             position: absolute;
             bottom: 100%;
@@ -419,15 +426,18 @@
             text-align: center;
             backdrop-filter: blur(20px);
         }
-        .result-widget.active { display: block; animation: fadeUp 0.4s; }
+        .result-widget.active { display: block; animation: fadeUp 0.4s;
+        }
         .signal-big {
             font-size: 56px;
             font-weight: 800;
             letter-spacing: 4px;
             margin: 10px 0;
         }
-        .signal-buy { color: #00ff88; text-shadow: 0 0 20px #00ff88; }
-        .signal-sell { color: #ff3366; text-shadow: 0 0 20px #ff3366; }
+        .signal-buy { color: #00ff88;
+            text-shadow: 0 0 20px #00ff88; }
+        .signal-sell { color: #ff3366;
+            text-shadow: 0 0 20px #ff3366; }
         .result-buttons {
             display: flex;
             gap: 12px;
@@ -441,9 +451,12 @@
             cursor: pointer;
             border: none;
         }
-        .win-premium { background: rgba(0,255,136,0.2); color: #00ff88; border: 1px solid #00ff88; }
-        .loss-premium { background: rgba(255,51,102,0.2); color: #ff3366; border: 1px solid #ff3366; }
-        .close-premium { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+        .win-premium { background: rgba(0,255,136,0.2); color: #00ff88; border: 1px solid #00ff88;
+        }
+        .loss-premium { background: rgba(255,51,102,0.2); color: #ff3366; border: 1px solid #ff3366;
+        }
+        .close-premium { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);
+        }
 
         /* Progress Modal */
         .progress-modal {
@@ -489,19 +502,21 @@
             transition: width 0.1s;
         }
 
-        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes float { 0%,100% { transform: translateY(0);
+        } 50% { transform: translateY(-8px); } }
+        @keyframes fadeUp { from { opacity: 0;
+            transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg);
+        } }
     </style>
 </head>
 <body>
 
-<!-- WELCOME OVERLAY -->
 <div id="welcomeOverlay" class="overlay visible">
     <div class="welcome-content glass-card" style="padding: 40px 30px;">
         <div class="logo-glow"><i class="fas fa-brain"></i></div>
         <h1 class="welcome-title">OptiBotX PRO</h1>
-        <p id="welcomeSub" style="margin: 8px 0 20px; opacity:0.7;">Premium Intelligence</p>
+        <p style="margin: 8px 0 20px; opacity:0.7;">Premium Intelligence</p>
         <div class="lang-grid">
             <div class="lang-card" data-lang="ru">
                 <img src="https://flagcdn.com/w80/ru.png" alt="RU">
@@ -516,10 +531,10 @@
     </div>
 </div>
 
-<!-- MENU OVERLAY -->
 <div id="menuOverlay" class="overlay">
     <div class="menu-card">
-        <i class="fas fa-crown" style="font-size: 40px; color: #ffcc00; margin-bottom: 15px;"></i>
+        <i class="fas fa-crown" style="font-size: 40px;
+            color: #ffcc00; margin-bottom: 15px;"></i>
         <h3 id="menuTitle">Выберите действие</h3>
         <div class="menu-buttons">
             <div class="menu-action" data-action="reviews" id="reviewsBtn"><i class="fas fa-star"></i> <span id="reviewsText">Отзывы приложения</span></div>
@@ -529,12 +544,11 @@
     </div>
 </div>
 
-<!-- ACCESS OVERLAY (исправлено: Ник: Harvey) -->
 <div id="accessOverlay" class="overlay">
     <div class="access-card">
-        <h3 id="accessTitle">🔐 Активация доступа</h3>
-        <p id="accessDesc">Для входа в платформу OptiBotX PRO необходим лицензионный код</p>
-        <div class="access-steps" id="accessSteps">
+        <h3>🔐 Активация доступа</h3>
+        <p>Для входа в платформу OptiBotX PRO необходим лицензионный код</p>
+        <div class="access-steps">
             <strong>Как получить код?</strong><br>
             1. Нажмите кнопку «Написать мне» ниже<br>
             2. Напишите слово «КОД» в Telegram<br>
@@ -543,25 +557,26 @@
         <input type="text" id="activationCode" class="code-input" placeholder="Введите полученный код">
         <button id="activateAccess" class="activate-premium">Активировать</button>
         <div class="action-double">
-            <button id="writeToTg"><i class="fab fa-telegram"></i> <span id="tgBtnText">Написать мне</span></button>
-            <button id="copyNick"><i class="far fa-copy"></i> <span id="copyBtnText">Копировать ник</span></button>
+            <button id="writeToTg"><i class="fab fa-telegram"></i> Написать мне</button>
+            <button id="copyNick"><i class="far fa-copy"></i> Копировать ник</button>
         </div>
+        
         <div class="contact-footer">
             <span>Мой TG: @AuraVey</span>
-            <span>Ник: Harvey</span>
+            <span>Ник: AuraVey</span>
         </div>
-        <div id="accessMsg" style="margin-top: 12px; font-size: 13px;"></div>
+        <div id="accessMsg" style="margin-top: 12px;
+            font-size: 13px;"></div>
     </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="mainApp" class="app-main">
     <div class="top-bar-premium glass-card" style="margin: 12px;">
         <div class="user-premium">
             <div class="avatar-premium"><i class="fas fa-chart-line"></i></div>
             <div class="user-text">
                 <div class="user-name-premium">OptiBotX PRO</div>
-                <!-- ID удалён -->
+                <div class="user-id-premium">ID: 8493021</div>
             </div>
         </div>
         <div class="icon-glass" id="themePremium"><i class="fas fa-moon"></i></div>
@@ -574,35 +589,35 @@
     <div class="controls-premium glass-card">
         <div class="double-selector">
             <div class="premium-select" id="pairSelectorPremium">
-                <div class="label" id="assetLabel">Актив</div>
+                <div class="label">Актив</div>
                 <div class="value"><span id="selectedPairPremium">EUR/USD</span> <i class="fas fa-chevron-down"></i></div>
                 <div class="dropdown-premium" id="pairDropdownPremium">
-                    <input type="text" id="pairSearchPremium" placeholder="Поиск..." style="width:100%; padding:8px; background:transparent; border:none; color:white;">
+                    <input type="text" id="pairSearchPremium" placeholder="Поиск..." style="width:100%;
+                        padding:8px; background:transparent; border:none; color:white;">
                     <div id="pairsListPremium"></div>
                 </div>
             </div>
             <div class="premium-select" id="tfSelectorPremium">
-                <div class="label" id="tfLabel">Таймфрейм</div>
+                <div class="label">Таймфрейм</div>
                 <div class="value"><span id="selectedTFPremium">1m</span> <i class="fas fa-chevron-down"></i></div>
                 <div class="dropdown-premium" id="tfDropdownPremium"></div>
             </div>
         </div>
-        <button id="getSignalPremium" class="btn-signal"><i class="fas fa-radar"></i> <span id="signalBtnText">Получить сигнал</span></button>
-        <button id="backToMenuPremium" class="btn-back"><i class="fas fa-arrow-left"></i> <span id="backBtnText">Назад в меню</span></button>
+        <button id="getSignalPremium" class="btn-signal"><i class="fas fa-radar"></i> Получить сигнал</button>
+        <button id="backToMenuPremium" class="btn-back"><i class="fas fa-arrow-left"></i> Назад в меню</button>
     </div>
 
     <div id="resultPremium" class="result-widget glass-card">
         <div class="signal-big" id="signalTextPremium">BUY</div>
-        <div><span id="confidenceLabel">Точность</span>: <span id="confidencePremium">94%</span></div>
+        <div>Точность: <span id="confidencePremium">94%</span></div>
         <div class="result-buttons">
-            <button id="winPremium" class="win-premium"><i class="fas fa-check"></i> <span id="winBtnText">Win</span></button>
-            <button id="lossPremium" class="loss-premium"><i class="fas fa-times"></i> <span id="lossBtnText">Loss</span></button>
-            <button id="closeResultPremium" class="close-premium"><i class="fas fa-undo"></i> <span id="closeBtnText"></span></button>
+            <button id="winPremium" class="win-premium"><i class="fas fa-check"></i> Win</button>
+            <button id="lossPremium" class="loss-premium"><i class="fas fa-times"></i> Loss</button>
+            <button id="closeResultPremium" class="close-premium"><i class="fas fa-undo"></i></button>
         </div>
     </div>
 </div>
 
-<!-- PROGRESS MODAL -->
 <div id="progressModal" class="progress-modal">
     <div class="progress-card">
         <div class="spinner"></div>
@@ -613,58 +628,12 @@
 </div>
 
 <script>
-    // ======================== TRANSLATIONS (EN + RU) ========================
+    // ======================== TRANSLATIONS (only ru/en) ========================
     const trans = {
-        ru: {
-            start: "Далее →",
-            welcomeSub: "Premium Intelligence",
-            menuTitle: "Выберите действие",
-            reviews: "Отзывы приложения",
-            tutorial: "Обучение",
-            startWork: "Начать работать",
-            asset: "Актив",
-            tf: "Таймфрейм",
-            getSignal: "Получить сигнал",
-            analyzing: "Анализ рынка...",
-            confidence: "Точность",
-            search: "Поиск...",
-            accessTitle: "🔐 Активация доступа",
-            accessDesc: "Для входа в платформу OptiBotX PRO необходим лицензионный код",
-            accessSteps: '<strong>Как получить код?</strong><br>1. Нажмите кнопку «Написать мне» ниже<br>2. Напишите слово «КОД» в Telegram<br>3. Менеджер выдаст вам персональный код активации ✅',
-            codePlaceholder: "Введите полученный код",
-            activateBtn: "Активировать",
-            writeToTg: "Написать мне",
-            copyNick: "Копировать ник",
-            backToMenu: "Назад в меню",
-            win: "Win",
-            loss: "Loss"
-        },
-        en: {
-            start: "Next →",
-            welcomeSub: "Premium Intelligence",
-            menuTitle: "Choose action",
-            reviews: "App Reviews",
-            tutorial: "Tutorial",
-            startWork: "Start Trading",
-            asset: "Asset",
-            tf: "Timeframe",
-            getSignal: "Get Signal",
-            analyzing: "Analyzing market...",
-            confidence: "Confidence",
-            search: "Search...",
-            accessTitle: "🔐 Access Activation",
-            accessDesc: "A license code is required to enter the OptiBotX PRO platform",
-            accessSteps: '<strong>How to get a code?</strong><br>1. Click the "Write to me" button below<br>2. Write the word "CODE" in Telegram<br>3. The manager will give you a personal activation code ✅',
-            codePlaceholder: "Enter the received code",
-            activateBtn: "Activate",
-            writeToTg: "Write to me",
-            copyNick: "Copy nickname",
-            backToMenu: "Back to menu",
-            win: "Win",
-            loss: "Loss"
-        }
+        ru: { start: "Далее →", asset: "Актив", tf: "Таймфрейм", getSignal: "Получить сигнал", analyzing: "Анализ рынка...", result: "Результат анализа", confidence: "Точность", search: "Поиск...", menuTitle: "Выберите действие", reviews: "Отзывы приложения", tutorial: "Обучение", startWork: "Начать работать" },
+        en: { start: "Next →", asset: "Asset", tf: "Timeframe", 
+            getSignal: "Get Signal", analyzing: "Analyzing market...", result: "Analysis Result", confidence: "Confidence", search: "Search...", menuTitle: "Choose action", reviews: "App Reviews", tutorial: "Tutorial", startWork: "Start Trading" }
     };
-
     let curLang = 'ru';
     let isActivated = localStorage.getItem('optibotx_activated') === 'true';
     let tvWidget = null;
@@ -688,7 +657,7 @@
     const tfNormal = ["1m","5m","15m","1h"];
     const tfOTC = ["5s","10s","15s","30s"];
 
-    // DOM elements
+    // DOM
     const welcomeDiv = document.getElementById('welcomeOverlay');
     const menuDiv = document.getElementById('menuOverlay');
     const accessDiv = document.getElementById('accessOverlay');
@@ -703,44 +672,43 @@
     const backBtn = document.getElementById('backToMenuPremium');
 
     function updateLangUI() {
-        document.getElementById('welcomeSub').innerText = trans[curLang].welcomeSub;
-        document.getElementById('welcomeNext').innerHTML = trans[curLang].start;
+        document.querySelectorAll('[data-i18n]').forEach(el => {});
+        document.getElementById('pairSearchPremium').placeholder = trans[curLang].search;
         document.getElementById('menuTitle').innerText = trans[curLang].menuTitle;
         document.getElementById('reviewsText').innerText = trans[curLang].reviews;
         document.getElementById('tutorialText').innerText = trans[curLang].tutorial;
         document.getElementById('startWorkText').innerText = trans[curLang].startWork;
-        document.getElementById('accessTitle').innerHTML = trans[curLang].accessTitle;
-        document.getElementById('accessDesc').innerText = trans[curLang].accessDesc;
-        document.getElementById('accessSteps').innerHTML = trans[curLang].accessSteps;
-        document.getElementById('activationCode').placeholder = trans[curLang].codePlaceholder;
-        document.getElementById('activateAccess').innerText = trans[curLang].activateBtn;
-        document.getElementById('tgBtnText').innerText = trans[curLang].writeToTg;
-        document.getElementById('copyBtnText').innerText = trans[curLang].copyNick;
-        document.getElementById('assetLabel').innerText = trans[curLang].asset;
-        document.getElementById('tfLabel').innerText = trans[curLang].tf;
-        document.getElementById('signalBtnText').innerText = trans[curLang].getSignal;
-        document.getElementById('backBtnText').innerText = trans[curLang].backToMenu;
-        document.getElementById('pairSearchPremium').placeholder = trans[curLang].search;
+        document.getElementById('getSignalPremium').innerHTML = `<i class="fas fa-radar"></i> ${trans[curLang].getSignal}`;
         document.getElementById('progressTitle').innerText = trans[curLang].analyzing;
-        document.getElementById('confidenceLabel').innerText = trans[curLang].confidence;
-        document.getElementById('winBtnText').innerText = trans[curLang].win;
-        document.getElementById('lossBtnText').innerText = trans[curLang].loss;
-        document.getElementById('closeBtnText').innerText = '';
     }
 
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ initChart
     function initChart(symbol, interval) {
         if (isOTC) return;
+        
         const formatted = symbol.replace('/', '');
         const tvSym = "FX_IDC:" + formatted; 
+        
+        // Правильная конвертация таймфреймов для TradingView
         const tfMap = { "1m": "1", "5m": "5", "15m": "15", "1h": "60" };
         const intv = tfMap[interval] || "1";
+        
         const isLight = document.body.classList.contains('light');
+        
+        // БЕЗОПАСНОЕ удаление виджета (с перехватом возможных ошибок)
         if (tvWidget) {
-            try { tvWidget.remove(); } catch(e) { console.warn(e); }
+            try {
+                tvWidget.remove();
+            } catch(e) {
+                console.warn("Ошибка при удалении старого виджета:", e);
+            }
             tvWidget = null;
         }
+
+        // Очищаем контейнер только после того, как виджет корректно удален
         const container = document.getElementById('tv_chart_container');
         if (container) container.innerHTML = '';
+
         tvWidget = new TradingView.widget({
             autosize: true,
             symbol: tvSym,
@@ -756,29 +724,40 @@
         });
     }
 
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ renderPairs
     function renderPairs(filter='') {
         const filtered = allPairs.filter(p => p.toLowerCase().includes(filter.toLowerCase()));
         pairsListDiv.innerHTML = '';
+        
         filtered.forEach(pair => {
             const div = document.createElement('div');
             div.textContent = pair;
             div.style.padding = '12px';
             div.style.cursor = 'pointer';
             div.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+            
             div.onclick = () => {
                 currentPair = pair;
                 selectedPairSpan.innerText = pair;
                 document.getElementById('pairDropdownPremium').style.display = 'none';
                 isOTC = pair.toLowerCase().includes('otc');
                 updateTFList();
+                
                 const tfs = isOTC ? tfOTC : tfNormal;
                 currentTF = tfs[0];
                 selectedTFSpan.innerText = currentTF;
+                
                 const container = document.getElementById('tv_chart_container');
+                
                 if (isOTC) {
-                    if (tvWidget) { try { tvWidget.remove(); } catch(e) {} tvWidget = null; }
+                    // Безопасное удаление при переключении на заглушку OTC
+                    if (tvWidget) {
+                        try { tvWidget.remove(); } catch(e) {}
+                        tvWidget = null;
+                    }
                     container.innerHTML = '<div class="otc-stub"><i class="fas fa-chart-simple"></i> OTC график в разработке<br>Сигналы доступны</div>';
                 } else {
+                    // Просто вызываем initChart, она сама всё безопасно очистит
                     initChart(currentPair, currentTF);
                 }
             };
@@ -855,7 +834,10 @@
     }
 
     function backToMenu() {
-        if (tvWidget) { try { tvWidget.remove(); } catch(e) {} tvWidget = null; }
+        if (tvWidget) {
+            try { tvWidget.remove(); } catch(e) {}
+            tvWidget = null;
+        }
         mainApp.style.display = 'none';
         menuDiv.classList.add('visible');
     }
@@ -868,7 +850,6 @@
             curLang = card.dataset.lang;
             document.getElementById('welcomeNext').classList.add('visible');
             document.getElementById('welcomeNext').innerHTML = trans[curLang].start;
-            updateLangUI();
         });
     });
     document.getElementById('welcomeNext').addEventListener('click', () => {
@@ -889,6 +870,7 @@
         selectedTFSpan.innerText = currentTF;
         initChart(currentPair, currentTF);
         renderPairs('');
+        // handlers
         if (!window._premiumHandlers) {
             window._premiumHandlers = true;
             document.getElementById('themePremium').onclick = () => {
@@ -915,14 +897,16 @@
                 if (!e.target.closest('#tfSelectorPremium')) document.getElementById('tfDropdownPremium').style.display = 'none';
             });
             getSignalBtn.onclick = () => {
-                if (!isActivated) { accessDiv.classList.add('visible'); return; }
+                if (!isActivated) { accessDiv.classList.add('visible');
+                return; }
                 showProgress(() => showSignal());
             };
             document.getElementById('winPremium').onclick = closeResult;
             document.getElementById('lossPremium').onclick = closeResult;
             document.getElementById('closeResultPremium').onclick = closeResult;
             document.getElementById('activateAccess').onclick = activateCode;
-            document.getElementById('copyNick').onclick = () => { navigator.clipboard.writeText('@AuraVey'); alert('Ник скопирован: @AuraVey'); };
+            document.getElementById('copyNick').onclick = () => { navigator.clipboard.writeText('@AuraVey');
+            alert('Ник скопирован: @AuraVey'); };
             document.getElementById('writeToTg').onclick = () => window.open('https://t.me/AuraVey', '_blank');
             backBtn.onclick = backToMenu;
         }
