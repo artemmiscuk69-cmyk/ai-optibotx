@@ -1,374 +1,564 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Wallet Mockup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Crypto Wallet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
+        :root {
+            --bg-color: #121212;
+            --surface-color: #222222;
+            --surface-light: #2a2a2a;
+            --accent-green: #38f37b;
+            --text-main: #ffffff;
+            --text-muted: #9e9e9e;
+            --red-down: #ff4d4d;
+            --font-main: 'Inter', sans-serif;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-main);
             display: flex;
             justify-content: center;
-            align-items: center;
             min-height: 100vh;
         }
-        .wallet-container {
-            width: 375px; /* Typical mobile width */
-            height: 812px; /* Typical mobile height */
-            background-color: #1e1e1e;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
+
+        .app-container {
+            width: 100%;
+            max-width: 480px; /* Ограничение для десктопа, на телефоне будет 100% */
+            background-color: #0f0f0f; /* Чуть темнее фон самого приложения */
+            position: relative;
+            padding-bottom: 80px; /* Место для нижнего меню */
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
         }
+
+        /* --- Header --- */
         .header {
-            padding: 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            background-color: #282828;
+            padding: 16px;
+            gap: 12px;
         }
-        .header .settings-icon {
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
             font-size: 24px;
             cursor: pointer;
-        }
-        .header .search-bar {
-            flex-grow: 1;
-            margin: 0 15px;
-            background-color: #333;
-            border-radius: 25px;
-            padding: 8px 15px;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
-        .header .search-bar input {
-            background: none;
-            border: none;
-            color: #e0e0e0;
-            outline: none;
-            margin-left: 5px;
-            font-size: 14px;
+
+        .search-bar {
+            flex-grow: 1;
+            background-color: var(--surface-color);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            color: var(--text-muted);
         }
-        .header .wallet-icon {
+
+        .search-bar i {
             font-size: 20px;
+            margin-right: 8px;
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: var(--font-main);
+            font-size: 15px;
+            width: 100%;
+            outline: none;
+        }
+
+        /* --- Wallet Balance Info --- */
+        .wallet-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 16px;
+        }
+
+        .wallet-selector {
+            background-color: var(--surface-color);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 16px;
             cursor: pointer;
         }
-        .main-balance {
-            text-align: center;
-            padding: 30px 0;
-            background-color: #1e1e1e;
-        }
-        .main-balance .amount {
-            font-size: 48px;
-            font-weight: bold;
-        }
-        .main-balance .details {
+
+        .wallet-selector i {
             font-size: 14px;
-            color: #aaa;
+            color: var(--text-muted);
         }
-        .actions {
+
+        .main-balance {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .sub-balance {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* --- Action Buttons --- */
+        .actions-row {
             display: flex;
-            justify-content: space-around;
-            padding: 20px 0;
-            background-color: #282828;
+            justify-content: center;
+            gap: 20px;
+            padding: 10px 16px 24px;
         }
+
         .action-item {
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 8px;
             cursor: pointer;
-            padding: 10px;
-            border-radius: 10px;
-            transition: background-color 0.2s ease;
         }
-        .action-item:hover {
-            background-color: #333;
-        }
-        .action-item i {
+
+        .action-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background-color: var(--surface-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 24px;
-            margin-bottom: 8px;
-            color: #00c853; /* Green accent */
+            color: var(--text-main);
+            transition: transform 0.1s;
         }
-        .action-item span {
+
+        .action-btn.buy {
+            background-color: var(--accent-green);
+            color: #000;
+        }
+
+        .action-item:active .action-btn {
+            transform: scale(0.95);
+        }
+
+        .action-label {
             font-size: 12px;
-            color: #ccc;
+            font-weight: 500;
         }
-        .crypto-list-header {
+
+        /* --- Tabs --- */
+        .tabs-row {
             display: flex;
-            justify-content: space-between;
-            padding: 15px 20px;
-            background-color: #282828;
-            border-bottom: 1px solid #333;
+            align-items: center;
+            padding: 0 16px;
+            border-bottom: 1px solid #222;
+            margin-bottom: 16px;
         }
-        .crypto-list-header span {
-            font-weight: bold;
-            font-size: 16px;
-        }
-        .crypto-list-header .tabs {
-            display: flex;
-            gap: 15px;
-        }
-        .crypto-list-header .tab {
+
+        .tab {
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
             cursor: pointer;
-            padding: 5px 10px;
-            border-bottom: 2px solid transparent;
-            transition: border-bottom-color 0.2s ease;
+            position: relative;
         }
-        .crypto-list-header .tab.active {
-            border-bottom-color: #00c853; /* Green accent */
+
+        .tab.active {
+            color: var(--text-main);
         }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 16px;
+            right: 16px;
+            height: 2px;
+            background-color: var(--accent-green);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .tab-icons {
+            margin-left: auto;
+            display: flex;
+            gap: 16px;
+            color: var(--text-muted);
+        }
+
+        /* --- Crypto List --- */
         .crypto-list {
-            flex-grow: 1;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 0 16px;
         }
+
         .crypto-item {
             display: flex;
             align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #333;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
+            justify-content: space-between;
+            padding: 12px 0;
         }
-        .crypto-item:hover {
-            background-color: #282828
 
-
-;
+        .crypto-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .crypto-item .icon {
+
+        .crypto-icon {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-right: 15px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            font-size: 20px;
-            font-weight: bold;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff;
         }
-        .crypto-item.sol .icon { background-color: #f7931a; color: #000; } /* Example colors */
-        .crypto-item.eth .icon { background-color: #627eea; color: #fff; }
-        .crypto-item.btc .icon { background-color: #f7931a; color: #fff; }
-        .crypto-item.bnb .icon { background-color: #f0b90b; color: #000; }
+        
+        /* Цвета для иконок монет */
+        .icon-sol { background: linear-gradient(135deg, #00FFA3, #DC1FFF); }
+        .icon-eth { background-color: #627EEA; }
+        .icon-btc { background-color: #F7931A; }
+        .icon-bnb { background-color: #F3BA2F; }
 
-        .crypto-item .details {
-            flex-grow: 1;
+        .crypto-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
-        .crypto-item .name {
-            font-weight: bold;
+
+        .crypto-name {
             font-size: 16px;
-            margin-bottom: 3px;
+            font-weight: 600;
         }
-        .crypto-item .balance {
+
+        .crypto-vol {
             font-size: 12px;
-            color: #aaa;
+            color: var(--text-muted);
         }
-        .crypto-item .price {
-            text-align: right;
+
+        .crypto-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
         }
-        .crypto-item .current-price {
-            font-weight: bold;
+
+        .crypto-price {
             font-size: 16px;
-            margin-bottom: 3px;
+            font-weight: 600;
         }
-        .crypto-item .change {
-            font-size: 12px;
-            text-align: right;
+
+        .crypto-change {
+            font-size: 13px;
+            font-weight: 500;
         }
-        .crypto-item .change.positive {
-            color: #00c853; /* Green */
-        }
-        .crypto-item .change.negative {
-            color: #ff1744; /* Red */
-        }
+
+        .change-up { color: var(--accent-green); }
+        .change-down { color: var(--red-down); }
+
+        /* --- View Tokens --- */
         .view-tokens {
             text-align: center;
-            padding: 15px 0;
-            background-color: #1e1e1e;
-            cursor: pointer;
-            color: #00c853; /* Green accent */
+            padding: 24px 0;
+        }
+
+        .view-tokens a {
+            color: var(--accent-green);
+            text-decoration: none;
             font-size: 14px;
-            transition: background-color 0.2s ease;
+            font-weight: 600;
         }
-        .view-tokens:hover {
-            background-color: #282828;
+
+        /* --- Earn Section --- */
+        .earn-section {
+            padding: 0 16px 20px;
         }
-        .footer-nav {
+
+        .earn-header {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .earn-header i {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .earn-cards {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        .earn-cards::-webkit-scrollbar {
+            display: none; /* Safari/Chrome */
+        }
+
+        .earn-card {
+            min-width: 140px;
+            background-color: var(--surface-color);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #333;
+        }
+
+        .earn-card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background-color: #333;
+            margin-bottom: 12px;
+        }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background-color: #1a1a1a;
+            border-top: 1px solid #2a2a2a;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 15px 0;
-            background-color: #282828;
-            border-top: 1px solid #333;
-            margin-top: auto; /* Pushes footer to the bottom */
+            padding-bottom: 10px; /* Для iPhone Safe Area */
+            z-index: 100;
+            border-radius: 24px 24px 0 0;
         }
-        .footer-nav .nav-item {
+
+        .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
             cursor: pointer;
-            color: #aaa;
-            font-size: 12px;
-            padding: 5px 10px;
-            border-radius: 8px;
-            transition: background-color 0.2s ease;
+            text-decoration: none;
+            width: 60px;
         }
-        .footer-nav .nav-item.active {
-            background-color: #00c853;
-            color: #fff;
+
+        .nav-item.active {
+            color: var(--accent-green);
         }
-        .footer-nav .nav-item i {
-            font-size: 22px;
-            margin-bottom: 5px;
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Центральная кнопка навигации */
+        .nav-item-center {
+            position: relative;
+            top: -5px;
+        }
+
+        .center-circle {
+            width: 46px;
+            height: 46px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 24px;
+            margin-bottom: 4px;
+            box-shadow: 0 4px 12px rgba(56, 243, 123, 0.3);
         }
     </style>
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="wallet-container">
-        <div class="header">
-            <i class="fas fa-cog settings-icon"></i>
+
+    <div class="app-container">
+        <header class="header">
+            <button class="icon-btn"><i class='bx bx-cog'></i></button>
             <div class="search-bar">
-                <i class="fas fa-search"></i>
+                <i class='bx bx-search'></i>
                 <input type="text" placeholder="Поиск">
             </div>
-            <i class="fas fa-wallet wallet-icon"></i>
+            <button class="icon-btn"><i class='bx bx-scan'></i></button>
+        </header>
+
+        <div class="wallet-info">
+            <div class="wallet-selector">
+                Основной кошелек <i class='bx bx-chevron-right'></i>
+            </div>
+            <div class="main-balance">0,00 $</div>
+            <div class="sub-balance">0,00 $ (0.00%)</div>
         </div>
 
-        <div class="main-balance">
-            <div class="amount">0,00 $</div>
-            <div class="details">0,00 $ (0.00%)</div>
-        </div>
-
-        <div class="actions">
+        <div class="actions-row">
             <div class="action-item">
-                <i class="fas fa-arrow-up-right-from-square"></i>
-                <span>Отпр...</span>
+                <div class="action-btn"><i class='bx bx-up-arrow-alt' style="transform: rotate(45deg);"></i></div>
+                <span class="action-label">Отпр...</span>
             </div>
             <div class="action-item">
-                <i class="fas fa-arrow-down"></i>
-                <span>Полу...</span>
+                <div class="action-btn"><i class='bx bx-down-arrow-alt'></i></div>
+                <span class="action-label">Полу...</span>
             </div>
             <div class="action-item">
-                <i class="fas fa-exchange-alt"></i>
-                <span>Обмен</span>
+                <div class="action-btn"><i class='bx bx-refresh'></i></div>
+                <span class="action-label">Обмен</span>
             </div>
             <div class="action-item">
-                <i class="fas fa-plus"></i>
-                <span>Поку...</span>
+                <div class="action-btn buy"><i class='bx bx-plus'></i></div>
+                <span class="action-label">Поку...</span>
             </div>
         </div>
 
-        <div class="crypto-list-header">
-
-
-<span class="crypto-label">Криптовалюта</span>
-            <div class="tabs">
-                <span class="tab active">Избранное</span>
-                <span class="tab">NFT</span>
-                <span class="tab"><i class="fas fa-clock"></i></span>
-                <span class="tab"><i class="fas fa-filter"></i></span>
+        <div class="tabs-row">
+            <div class="tab">Криптовалюта</div>
+            <div class="tab active">Избранное</div>
+            <div class="tab">NFT</div>
+            <div class="tab-icons">
+                <i class='bx bx-history'></i>
+                <i class='bx bx-slider-alt'></i>
             </div>
         </div>
 
         <div class="crypto-list">
-            <div class="crypto-item sol">
-                <div class="icon">SOL</div>
-                <div class="details">
-                    <div class="name">SOL</div>
-                    <div class="balance">2,74 $B</div>
+            <div class="crypto-item">
+                <div class="crypto-left">
+                    <div class="crypto-icon icon-sol"></div>
+                    <div class="crypto-info">
+                        <span class="crypto-name">SOL</span>
+                        <span class="crypto-vol">2,74 $B</span>
+                    </div>
                 </div>
-                <div class="price">
-                    <div class="current-price">86,45 $</div>
-                    <div class="change negative">-0.12%</div>
-                </div>
-            </div>
-            <div class="crypto-item eth">
-                <div class="icon">ETH</div>
-                <div class="details">
-                    <div class="name">ETH</div>
-                    <div class="balance">7,92 $B</div>
-                </div>
-                <div class="price">
-                    <div class="current-price">2 346,91 $</div>
-                    <div class="change positive">+1.29%</div>
+                <div class="crypto-right">
+                    <span class="crypto-price">86,45 $</span>
+                    <span class="crypto-change change-down">-0.12%</span>
                 </div>
             </div>
-            <div class="crypto-item btc">
-                <div class="icon">BTC</div>
-                <div class="details">
-                    <div class="name">BTC</div>
-                    <div class="balance">17,24 $B</div>
+
+            <div class="crypto-item">
+                <div class="crypto-left">
+                    <div class="crypto-icon icon-eth"><i class='bx bxl-ethereum'></i></div>
+                    <div class="crypto-info">
+                        <span class="crypto-name">ETH</span>
+                        <span class="crypto-vol">7,92 $B</span>
+                    </div>
                 </div>
-                <div class="price">
-                    <div class="current-price">78 101,78 $</div>
-                    <div class="change positive">+0.55%</div>
+                <div class="crypto-right">
+                    <span class="crypto-price">2 346,91 $</span>
+                    <span class="crypto-change change-up">+1.29%</span>
                 </div>
             </div>
-            <div class="crypto-item bnb">
-                <div class="icon">BNB</div>
-                <div class="details">
-                    <div class="name">BNB</div>
-                    <div class="balance">753,22 $M</div>
+
+            <div class="crypto-item">
+                <div class="crypto-left">
+                    <div class="crypto-icon icon-btc"><i class='bx bxl-bitcoin'></i></div>
+                    <div class="crypto-info">
+                        <span class="crypto-name">BTC</span>
+                        <span class="crypto-vol">17,24 $B</span>
+                    </div>
                 </div>
-                <div class="price">
-                    <div class="current-price">631,99 $</div>
-                    <div class="change positive">+0.23%</div>
+                <div class="crypto-right">
+                    <span class="crypto-price">78 101,78 $</span>
+                    <span class="crypto-change change-up">+0.55%</span>
+                </div>
+            </div>
+
+            <div class="crypto-item">
+                <div class="crypto-left">
+                    <div class="crypto-icon icon-bnb"></div>
+                    <div class="crypto-info">
+                        <span class="crypto-name">BNB</span>
+                        <span class="crypto-vol">753,22 $M</span>
+                    </div>
+                </div>
+                <div class="crypto-right">
+                    <span class="crypto-price">631,99 $</span>
+                    <span class="crypto-change change-up">+0.23%</span>
                 </div>
             </div>
         </div>
 
         <div class="view-tokens">
-            Просмотреть токены
+            <a href="#">Просмотреть токены</a>
         </div>
 
-        <div class="footer-nav">
-            <div class="nav-item active">
-                <i class="fas fa-home"></i>
-                <span>Главная</span>
+        <div class="earn-section">
+            <div class="earn-header">
+                Заработок <i class='bx bx-chevron-right'></i>
             </div>
-            <div class="nav-item">
-                <i class="fas fa-chart-line"></i>
-                <span>Популярные</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-exchange-alt"></i>
-                <span>Торговать</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-gift"></i>
-                <span>Награды</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-ellipsis-h"></i>
-                <span>Подробнее</span>
+            <div class="earn-cards">
+                <div class="earn-card">
+                    <div class="earn-card-icon"></div>
+                    <div class="crypto-name">Стейкинг</div>
+                    <div class="crypto-vol">До 8% APY</div>
+                </div>
+                <div class="earn-card">
+                    <div class="earn-card-icon"></div>
+                    <div class="crypto-name">Фарминг</div>
+                    <div class="crypto-vol">До 12% APY</div>
+                </div>
             </div>
         </div>
+
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item">
+                <i class='bx bx-home-alt nav-icon'></i>
+                <span class="nav-label">Главная</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class='bx bx-trending-up nav-icon'></i>
+                <span class="nav-label">Популярные</span>
+            </a>
+            <a href="#" class="nav-item nav-item-center active">
+                <div class="center-circle">
+                    <i class='bx bx-transfer-alt'></i>
+                </div>
+                <span class="nav-label" style="color: var(--accent-green);">Торговать</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class='bx bx-gift nav-icon'></i>
+                <span class="nav-label">Награды</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class='bx bx-grid-alt nav-icon'></i>
+                <span class="nav-label">Подробнее</span>
+            </a>
+        </nav>
     </div>
 
-    <script>
-        // Basic JavaScript for interactivity (e.g., tab switching)
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                // In a real app, you would update the crypto list based on the selected tab
-            });
-        });
-
-        document.querySelectorAll('.footer-nav .nav-item').forEach(item => {
-            item.addEventListener('click', () => {
-                document.querySelectorAll('.footer-nav .nav-item').forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                // In a real app, you would navigate to different sections
-            });
-        });
-    </script>
 </body>
 </html>
