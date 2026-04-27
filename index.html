@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Wallet Crypto</title>
+    <title>Восстановленный кошелек</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <style>
         body { 
             background-color: #0f0f0f; 
@@ -18,22 +18,40 @@
             min-height: 100vh; 
             margin: 0;
             color: white;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
         }
         .app-container {
             width: 390px;
             height: 844px;
-            background-color: #171719;
-            border-radius: 30px;
+            background-color: #1a1a1c;
+            border-radius: 40px; /* Глубокое закругление корпуса */
             overflow: hidden;
             position: relative;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 0 30px rgba(0,0,0,0.7);
         }
         /* Скрываем скроллбар */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Стилизация нижнего меню, чтобы оно плавало и было закругленным */
+        .floating-nav {
+            position: absolute;
+            bottom: 24px;
+            left: 16px;
+            right: 16px;
+            background-color: rgba(30, 30, 32, 0.95);
+            border-radius: 40px; /* Закругление самой панели */
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
@@ -43,17 +61,18 @@
         const { useState, useEffect } = React;
 
         function App() {
+            // Реальная логика баланса
             const [balance, setBalance] = useState(0);
-            const [isDepositMenu, setIsDepositMenu] = useState(false);
+            const [isDepositModal, setIsDepositModal] = useState(false);
             const [depositAmount, setDepositAmount] = useState('');
             const [prices, setPrices] = useState({
-                SOL: { price: 0, change: 0, cap: '0 B' },
-                ETH: { price: 0, change: 0, cap: '0 B' },
-                BTC: { price: 0, change: 0, cap: '0 B' },
-                BNB: { price: 0, change: 0, cap: '0 M' }
+                SOL: { price: 86.45, change: -0.12, cap: '2,74 $B' },
+                ETH: { price: 2346.91, change: 1.29, cap: '7,92 $B' },
+                BTC: { price: 78101.78, change: 0.55, cap: '17,24 $B' },
+                BNB: { price: 631.99, change: 0.23, cap: '753,22 $M' }
             });
 
-            // Функция для получения курсов с Binance API
+            // Функция для получения курсов (для Apple-style обновлений)
             const fetchPrices = async () => {
                 try {
                     const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"]');
@@ -62,9 +81,8 @@
                     const newPrices = { ...prices };
                     data.forEach(coin => {
                         const symbol = coin.symbol.replace('USDT', '');
-                        // Форматируем капитализацию для красоты (примерно)
                         const volume = parseFloat(coin.quoteVolume);
-                        let capStr = volume > 1000000000 ? (volume/1000000000).toFixed(2) + ' $B' : (volume/1000000).toFixed(2) + ' $M';
+                        let capStr = volume > 1000000000 ? (volume/1000000000).toFixed(2).replace('.', ',') + ' $B' : (volume/1000000).toFixed(2).replace('.', ',') + ' $M';
                         
                         newPrices[symbol] = {
                             price: parseFloat(coin.lastPrice),
@@ -73,249 +91,205 @@
                         };
                     });
                     setPrices(newPrices);
-                } catch (error) {
-                    console.error("Ошибка обновления курсов:", error);
-                }
+                } catch (e) { console.error("API error", e); }
             };
 
-            // Обновляем курсы при старте и каждые 5 секунд
             useEffect(() => {
                 fetchPrices();
                 const interval = setInterval(fetchPrices, 5000);
                 return () => clearInterval(interval);
             }, []);
 
+            const formatMoney = (val, dec = 2) => {
+                return val.toLocaleString('ru-RU', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + ' $';
+            };
+
             const handleDeposit = () => {
                 if (depositAmount && !isNaN(depositAmount)) {
                     setBalance(parseFloat(depositAmount));
                     setDepositAmount('');
-                    setIsDepositMenu(false);
+                    setIsDepositModal(false);
                 }
             };
 
-            const formatMoney = (val) => {
-                return val.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
-            };
-
-            // --- Экран пополнения (Подробнее) ---
-            if (isDepositMenu) {
-                return (
-                    <div className="app-container p-6 bg-[#171719] flex flex-col justify-center items-center">
-                        <h2 className="text-2xl font-bold mb-6">Пополнение баланса</h2>
-                        <input 
-                            type="number" 
-                            className="bg-[#242426] text-white text-center text-3xl p-4 rounded-2xl w-full mb-6 outline-none border border-transparent focus:border-[#4ade80]"
-                            placeholder="0.00"
-                            value={depositAmount}
-                            onChange={(e) => setDepositAmount(e.target.value)}
-                        />
-                        <div className="flex gap-4 w-full">
-                            <button 
-                                onClick={() => setIsDepositMenu(false)}
-                                className="flex-1 bg-[#242426] p-4 rounded-xl text-white font-semibold">
-                                Отмена
-                            </button>
-                            <button 
-                                onClick={handleDeposit}
-                                className="flex-1 bg-[#4ade80] p-4 rounded-xl text-black font-bold">
-                                Пополнить
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
-            // --- Главный экран ---
             return (
-                <div className="app-container text-white">
-                    {/* Top Header */}
-                    <div className="flex items-center justify-between px-5 pt-6 pb-4">
-                        <i className="fas fa-cog text-gray-400 text-xl cursor-pointer"></i>
-                        <div className="flex-1 mx-4 bg-[#242426] rounded-full flex items-center px-4 py-2">
-                            <i className="fas fa-search text-gray-500 mr-2 text-sm"></i>
-                            <input type="text" placeholder="Поиск" className="bg-transparent text-sm w-full outline-none text-white placeholder-gray-500" />
-                            <i className="fas fa-expand text-gray-500 ml-2 text-sm"></i>
+                <div className="app-container">
+                    {/* --- Статус-бар (имитация) --- */}
+                    <div className="flex justify-between items-center px-6 pt-1 text-sm text-gray-500 font-medium">
+                        <span>9:41</span>
+                        <div className="flex gap-1.5 items-center">
+                            <span className="material-Icons-outlined text-sm">signal_cellular_alt</span>
+                            <span className="material-icons-outlined text-sm">wifi</span>
+                            <span className="material-icons-outlined text-sm">battery_full</span>
                         </div>
-                        <i className="fas fa-qrcode text-gray-400 text-xl cursor-pointer"></i>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto no-scrollbar pb-24">
-                        {/* Wallet Selector */}
-                        <div className="flex justify-center items-center gap-2 mt-2">
-                            <div className="bg-[#242426] px-4 py-1.5 rounded-full flex items-center gap-2 text-sm font-medium cursor-pointer">
-                                Основной кошелек <i className="fas fa-chevron-right text-xs text-gray-400"></i>
+                    {/* --- Хедер --- */}
+                    <div className="px-5 pt-3 flex items-center justify-between">
+                        {/* Тот самый "розово-сиреневый шарик" */}
+                        <div className="relative">
+                            <div className="w-9 h-9 rounded-full bg-purple-500/80 border border-purple-400 flex items-center justify-center">
+                                <span className="text-white font-bold text-xs">P</span>
                             </div>
-                            <div className="bg-[#242426] w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">
-                                <i className="far fa-copy text-gray-400 text-sm"></i>
+                            <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-[#1a1a1c]"></div>
+                        </div>
+                        <div className="flex-1 mx-4 bg-[#262628] rounded-full flex items-center px-4 py-2.5">
+                            <span className="material-icons-outlined text-gray-500 text-lg mr-2">search</span>
+                            <span className="text-sm text-gray-500 flex-1">Поиск</span>
+                            <span className="material-icons-outlined text-gray-500 text-lg">center_focus_weak</span>
+                        </div>
+                        <span className="material-icons-outlined text-gray-400 text-2xl">qr_code_2</span>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto no-scrollbar pb-36 px-5 pt-4">
+                        {/* --- Селектор кошелька + Красный шарик --- */}
+                        <div className="flex justify-center items-center gap-2.5 mb-8">
+                            <div className="relative">
+                                <div className="bg-[#262628] px-4 py-1.5 rounded-full flex items-center gap-2 text-sm font-medium cursor-pointer">
+                                    Основной кошелек <span className="material-icons-outlined text-sm text-gray-500">expand_more</span>
+                                </div>
+                                {/* ВОТ ОН, КРАСНЫЙ ШАРИК у кошелька */}
+                                <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-red-500 rounded-full border border-[#1a1a1c]"></div>
+                            </div>
+                            <div className="bg-[#262628] w-9 h-9 rounded-full flex items-center justify-center cursor-pointer text-gray-400">
+                                <span className="material-icons-outlined text-xl">content_copy</span>
                             </div>
                         </div>
 
-                        {/* Balance */}
-                        <div className="text-center mt-8 mb-8">
+                        {/* --- Баланс --- */}
+                        <div className="text-center mb-9">
                             <h1 className="text-[44px] font-bold leading-tight">{formatMoney(balance)}</h1>
-                            <p className="text-gray-400 text-sm">{formatMoney(balance)} (0.00%)</p>
+                            <p className="text-gray-500 text-sm">{formatMoney(balance, 2)} (0.00%)</p>
                         </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex justify-center gap-4 px-6 mb-8">
+                        {/* --- 4 Кнопки действий (Точно как на скрине) --- */}
+                        <div className="flex justify-between gap-2.5 mb-8 px-1">
+                            {[
+                                { icon: 'arrow_upward', label: 'Отпр...' },
+                                { icon: 'arrow_downward', label: 'Полу...' },
+                                { icon: 'sync', label: 'Обмен' }
+                            ].map((btn) => (
+                                <div key={btn.label} className="flex flex-col items-center gap-2">
+                                    <button className="w-16 h-16 bg-[#262628] rounded-2xl flex items-center justify-center border border-[#303032] hover:bg-[#303032] transition active:scale-95">
+                                        <span className="material-icons-outlined text-2xl text-white">{btn.icon}</span>
+                                    </button>
+                                    <span className="text-xs text-gray-300">{btn.label}</span>
+                                </div>
+                            ))}
+                            {/* Четвертая кнопка — Зеленая Покупка */}
                             <div className="flex flex-col items-center gap-2">
-                                <button className="w-[60px] h-[60px] bg-[#242426] rounded-2xl flex items-center justify-center hover:bg-[#2c2c2e] transition">
-                                    <i className="fas fa-arrow-up text-xl"></i>
-                                </button>
-                                <span className="text-xs text-gray-300">Отпр...</span>
-                            </div>
-                            <div className="flex flex-col items-center gap-2">
-                                <button className="w-[60px] h-[60px] bg-[#242426] rounded-2xl flex items-center justify-center hover:bg-[#2c2c2e] transition">
-                                    <i className="fas fa-arrow-down text-xl"></i>
-                                </button>
-                                <span className="text-xs text-gray-300">Полу...</span>
-                            </div>
-                            <div className="flex flex-col items-center gap-2">
-                                <button className="w-[60px] h-[60px] bg-[#242426] rounded-2xl flex items-center justify-center hover:bg-[#2c2c2e] transition">
-                                    <i className="fas fa-exchange-alt text-xl"></i>
-                                </button>
-                                <span className="text-xs text-gray-300">Обмен</span>
-                            </div>
-                            <div className="flex flex-col items-center gap-2">
-                                <button className="w-[60px] h-[60px] bg-[#4ade80] rounded-2xl flex items-center justify-center hover:bg-[#3bcf71] transition">
-                                    <i className="fas fa-plus text-black text-xl"></i>
+                                <button className="w-16 h-16 bg-[#4ade80] rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(74,222,128,0.3)] hover:bg-[#3bcf71] transition active:scale-95">
+                                    <span className="material-icons-outlined text-2xl text-black">add</span>
                                 </button>
                                 <span className="text-xs text-gray-300">Поку...</span>
                             </div>
                         </div>
 
-                        {/* Tabs */}
-                        <div className="flex items-center px-6 mb-4 border-b border-[#242426]">
-                            <div className="text-gray-400 text-sm font-medium mr-6 pb-3 cursor-pointer hover:text-white">Криптовалюта</div>
-                            <div className="text-white text-sm font-medium mr-6 pb-3 border-b-2 border-[#4ade80] cursor-pointer">Избранное</div>
-                            <div className="text-gray-400 text-sm font-medium mr-auto pb-3 cursor-pointer hover:text-white">NFT</div>
-                            <div className="flex gap-4 pb-3">
-                                <i className="fas fa-history text-gray-400 cursor-pointer"></i>
-                                <i className="fas fa-sliders-h text-gray-400 cursor-pointer"></i>
+                        {/* --- Табы (С зеленой линией) --- */}
+                        <div className="flex items-center mb-6 border-b border-[#262628]">
+                            <div className="text-gray-400 text-sm font-medium mr-6 pb-3 cursor-pointer">Криптовалюта</div>
+                            <div className="text-white text-sm font-semibold mr-auto pb-3 border-b-2 border-[#4ade80] cursor-pointer">Избранное</div>
+                            <div className="flex gap-4 pb-3 items-center">
+                                <span className="material-icons-outlined text-gray-500 text-xl cursor-pointer">history</span>
+                                <span className="material-icons-outlined text-gray-500 text-xl cursor-pointer">tune</span>
                             </div>
                         </div>
 
-                        {/* Coin List */}
-                        <div className="px-6 flex flex-col gap-5">
-                            {/* SOL */}
-                            <div className="flex justify-between items-center cursor-pointer">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-green-400 flex items-center justify-center">
-                                        <span className="font-bold text-xs">SOL</span>
+                        {/* --- Коины (С точными данными) --- */}
+                        <div className="space-y-6">
+                            {[
+                                { sym: 'SOL', name: 'SOL', img: 'https://cryptologos.cc/logos/solana-sol-logo.png?v=025', color: 'bg-purple-600' },
+                                { sym: 'ETH', name: 'ETH', img: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=025', color: 'bg-blue-500' },
+                                { sym: 'BTC', name: 'BTC', img: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=025', color: 'bg-orange-500' },
+                                { sym: 'BNB', name: 'BNB', img: 'https://cryptologos.cc/logos/binance-coin-bnb-logo.png?v=025', color: 'bg-yellow-500' }
+                            ].map((coin) => {
+                                const data = prices[coin.sym];
+                                const isPos = data.change >= 0;
+                                return (
+                                    <div key={coin.sym} className="flex justify-between items-center cursor-pointer">
+                                        <div className="flex items-center gap-3.5">
+                                            <div className={`w-11 h-11 rounded-full ${coin.color} flex items-center justify-center overflow-hidden`}>
+                                                <img src={coin.img} className="w-6 h-6 object-contain" alt="" />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-lg">{coin.name}</h3>
+                                                <p className="text-[11px] text-gray-500 uppercase">{data.cap}</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <h3 className="font-bold text-lg">{formatMoney(data.price, data.price > 100 ? 2 : 2)}</h3>
+                                            <p className={`text-xs ${isPos ? 'text-[#4ade80]' : 'text-red-500'}`}>
+                                                {isPos ? '+' : ''}{data.change.toFixed(2)}%
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="font-bold text-base">SOL</h3>
-                                        <p className="text-xs text-gray-400">{prices.SOL.cap}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <h3 className="font-bold text-base">{formatMoney(prices.SOL.price)}</h3>
-                                    <p className={`text-xs ${prices.SOL.change >= 0 ? 'text-[#4ade80]' : 'text-red-500'}`}>
-                                        {prices.SOL.change > 0 ? '+' : ''}{prices.SOL.change.toFixed(2)}%
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* ETH */}
-                            <div className="flex justify-between items-center cursor-pointer">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-[#627EEA] flex items-center justify-center">
-                                        <i className="fab fa-ethereum text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-base">ETH</h3>
-                                        <p className="text-xs text-gray-400">{prices.ETH.cap}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <h3 className="font-bold text-base">{formatMoney(prices.ETH.price)}</h3>
-                                    <p className={`text-xs ${prices.ETH.change >= 0 ? 'text-[#4ade80]' : 'text-red-500'}`}>
-                                        {prices.ETH.change > 0 ? '+' : ''}{prices.ETH.change.toFixed(2)}%
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* BTC */}
-                            <div className="flex justify-between items-center cursor-pointer">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-[#F7931A] flex items-center justify-center">
-                                        <i className="fab fa-bitcoin text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-base">BTC</h3>
-                                        <p className="text-xs text-gray-400">{prices.BTC.cap}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <h3 className="font-bold text-base">{formatMoney(prices.BTC.price)}</h3>
-                                    <p className={`text-xs ${prices.BTC.change >= 0 ? 'text-[#4ade80]' : 'text-red-500'}`}>
-                                        {prices.BTC.change > 0 ? '+' : ''}{prices.BTC.change.toFixed(2)}%
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* BNB */}
-                            <div className="flex justify-between items-center cursor-pointer">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-[#F3BA2F] flex items-center justify-center">
-                                        <span className="font-bold text-xs text-black">BNB</span>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-base">BNB</h3>
-                                        <p className="text-xs text-gray-400">{prices.BNB.cap}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <h3 className="font-bold text-base">{formatMoney(prices.BNB.price)}</h3>
-                                    <p className={`text-xs ${prices.BNB.change >= 0 ? 'text-[#4ade80]' : 'text-red-500'}`}>
-                                        {prices.BNB.change > 0 ? '+' : ''}{prices.BNB.change.toFixed(2)}%
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="text-center mt-6">
-                            <a href="#" className="text-[#4ade80] text-sm font-medium hover:underline">Просмотреть токены</a>
+                                );
+                            })}
                         </div>
                         
-                        <div className="mt-8 px-6">
-                            <h2 className="text-lg font-bold mb-4">Заработок <i className="fas fa-chevron-right text-xs ml-1"></i></h2>
-                            {/* Placeholder for Earn cards */}
-                            <div className="h-24 bg-[#242426] rounded-2xl border border-gray-700"></div>
+                        <div className="text-center mt-7">
+                            <span className="text-[#4ade80] text-sm font-medium hover:underline cursor-pointer">Просмотреть токены</span>
                         </div>
                     </div>
 
-                    {/* Bottom Navigation */}
-                    <div className="absolute bottom-0 w-full bg-[#1C1C1E] border-t border-[#2A2A2D] pb-6 pt-3 px-6 flex justify-between items-center z-10 rounded-b-[30px]">
-                        <div className="flex flex-col items-center gap-1 cursor-pointer">
-                            <i className="fas fa-home text-[#4ade80] text-xl"></i>
-                            <span className="text-[10px] text-[#4ade80]">Главная</span>
-                        </div>
-                        <div className="flex flex-col items-center gap-1 cursor-pointer">
-                            <i className="fas fa-chart-line text-gray-500 text-xl"></i>
-                            <span className="text-[10px] text-gray-500">Популярные</span>
-                        </div>
-                        
-                        {/* Center Swap Button */}
-                        <div className="relative -top-4">
-                            <div className="w-14 h-14 bg-[#4ade80] rounded-full flex items-center justify-center shadow-lg border-4 border-[#1C1C1E] cursor-pointer">
-                                <i className="fas fa-exchange-alt text-black text-xl"></i>
-                            </div>
-                            <span className="absolute -bottom-5 w-full text-center text-[10px] text-gray-500">Торговать</span>
-                        </div>
-
-                        <div className="flex flex-col items-center gap-1 cursor-pointer">
-                            <i className="fas fa-gift text-gray-500 text-xl"></i>
-                            <span className="text-[10px] text-gray-500">Награды</span>
-                        </div>
-                        <div 
-                            className="flex flex-col items-center gap-1 cursor-pointer hover:text-white"
-                            onClick={() => setIsDepositMenu(true)}
-                        >
-                            <i className="fas fa-ellipsis-h text-gray-500 text-xl"></i>
-                            <span className="text-[10px] text-gray-500">Подробнее</span>
-                        </div>
+                    {/* --- ТА САМАЯ ПЛАВАЮЩАЯ ЗАКРУГЛЕННАЯ НИЖНЯЯ ПАНЕЛЬ --- */}
+                    <div className="floating-nav shadow-2xl">
+                        {[
+                            { icon: 'home', label: 'Главная', active: true },
+                            { icon: 'trending_up', label: 'Популярные' },
+                            { icon: 'swap_horiz', label: 'Торговать', special: true },
+                            { icon: 'redeem', label: 'Награды' },
+                            { icon: 'more_horiz', label: 'Подробнее', action: () => setIsDepositModal(true) }
+                        ].map((item) => {
+                            if (item.special) {
+                                return (
+                                    <div key="special" className="relative -top-8">
+                                        <div className="w-[60px] h-[60px] bg-[#4ade80] rounded-full flex items-center justify-center border-[6px] border-[#1a1a1c] shadow-[0_0_20px_rgba(74,222,128,0.2)]">
+                                            <span className="material-icons-outlined text-black text-2xl font-bold">swap_horiz</span>
+                                        </div>
+                                        <span className="absolute -bottom-5 w-full text-center text-[10px] text-gray-500 font-medium">Торговать</span>
+                                    </div>
+                                );
+                            }
+                            return (
+                                <div key={item.label} className="flex flex-col items-center gap-1.5 cursor-pointer" onClick={item.action}>
+                                    <span className={`material-icons-outlined text-2xl ${item.active ? 'text-[#4ade80]' : 'text-gray-600'}`}>{item.icon}</span>
+                                    <span className={`text-[10px] ${item.active ? 'text-[#4ade80]' : 'text-gray-500'} font-medium`}>{item.label}</span>
+                                </div>
+                            );
+                        })}
                     </div>
+
+                    {/* --- Реальное меню пополнения (МОДАЛКА как в Apple) --- */}
+                    {isDepositModal && (
+                        <div className="absolute inset-0 bg-black/80 z-[200] flex items-end p-4 backdrop-blur-sm" onClick={() => setIsDepositModal(false)}>
+                            <div className="w-full bg-[#202022] rounded-3xl p-6 pb-12 shadow-2xl space-y-5 transform transition-transform duration-300" onClick={e => e.stopPropagation()}>
+                                <div className="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-2"></div>
+                                <h2 className="text-2xl font-bold text-center">Задать баланс на Главной</h2>
+                                <p className="text-gray-400 text-sm text-center">Введи сумму, которую хочешь видеть на балансе.</p>
+                                <input 
+                                    type="number" 
+                                    autofocus
+                                    className="bg-[#1a1a1c] text-white text-center text-4xl p-5 rounded-2xl w-full outline-none border border-transparent focus:border-[#4ade80]"
+                                    placeholder="0.00 $"
+                                    value={depositAmount}
+                                    onChange={(e) => setDepositAmount(e.target.value)}
+                                />
+                                <div className="flex gap-4 pt-2">
+                                    <button 
+                                        onClick={() => setIsDepositModal(false)}
+                                        className="flex-1 bg-[#262628] p-4.5 rounded-xl text-gray-400 font-semibold active:scale-95 transition">
+                                        Отмена
+                                    </button>
+                                    <button 
+                                        onClick={handleDeposit}
+                                        className="flex-1 bg-[#4ade80] p-4.5 rounded-xl text-black font-bold active:scale-95 transition">
+                                        Установить
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             );
         }
