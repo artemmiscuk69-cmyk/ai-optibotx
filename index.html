@@ -1,908 +1,374 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>OptiBotX PRO | Premium Terminal</title>
-    <script src="https://s3.tradingview.com/tv.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Wallet Mockup</title>
     <style>
-        * {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a1a;
-            color: #ffffff;
-            overflow: hidden;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        /* Light Theme */
-        body.light {
-            background: #f0f2f8;
-            color: #1a1a2e;
-        }
-        body.light .glass-card,
-        body.light .menu-card,
-        body.light .access-card,
-        body.light .bottom-menu,
-        body.light .top-bar,
-        body.light .analysis-widget {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(12px);
-            border-color: rgba(0,0,0,0.1);
-        }
-        body.light .selector,
-        body.light .pair-item,
-        body.light .time-item {
-            background: rgba(0,0,0,0.03);
-            border-color: rgba(0,0,0,0.1);
-        }
-        body.light .user-name {
-            background: linear-gradient(135deg, #1a1a2e, #3a3a6e);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Glassmorphism Base */
-        .glass-card, .menu-card, .access-card, .bottom-menu, .top-bar, .analysis-widget {
-            background: rgba(20, 20, 40, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 28px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-
-        /* Overlays */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(12px);
-            z-index: 10000;
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s, visibility 0.4s;
+            min-height: 100vh;
         }
-        .overlay.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Welcome Screen */
-        .welcome-content {
-            text-align: center;
-            max-width: 340px;
-            width: 85%;
-            animation: fadeUp 0.6s ease;
-        }
-        .logo-glow {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 25px;
-            background: linear-gradient(135deg, #5b4dff, #ff3366);
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 40px rgba(91,77,255,0.5);
-            animation: float 3s infinite;
-        }
-        .logo-glow i { font-size: 48px; color: white; }
-        .welcome-title {
-            font-size: 32px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #aaccff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lang-grid {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 35px 0;
-        }
-        .lang-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.2);
+        .wallet-container {
+            width: 375px; /* Typical mobile width */
+            height: 812px; /* Typical mobile height */
+            background-color: #1e1e1e;
             border-radius: 20px;
-            padding: 12px 20px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-align: center;
-            min-width: 100px;
-        }
-        .lang-card img { width: 40px; height: 40px; border-radius: 50%; margin-bottom: 8px; }
-        .lang-card span { font-size: 14px; font-weight: 500; display: block; }
-        .lang-card.selected {
-            background: linear-gradient(135deg, #5b4dff, #ff3366);
-            border-color: transparent;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(91,77,255,0.4);
-        }
-        .start-btn {
-            background: linear-gradient(135deg, #5b4dff, #ff3366);
-            border: none;
-            padding: 16px;
-            width: 100%;
-            border-radius: 40px;
-            color: white;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: 0.3s;
-            pointer-events: none;
-        }
-        .start-btn.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        /* Menu Screen */
-        .menu-card {
-            width: 85%;
-            max-width: 340px;
-            padding: 30px 25px;
-            text-align: center;
-        }
-        .menu-buttons {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            margin: 30px 0;
         }
-        .menu-action {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 60px;
-            padding: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-        .menu-action:hover {
-            background: rgba(91,77,255,0.3);
-            transform: scale(1.02);
-        }
-
-        /* Access Card */
-        .access-card {
-            width: 90%;
-            max-width: 360px;
-            padding: 24px 20px;
-            text-align: center;
-        }
-        .access-card h3 { font-size: 26px; margin-bottom: 8px; }
-        .access-steps {
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            padding: 12px;
-            margin: 15px 0;
-            text-align: left;
-            font-size: 13px;
-        }
-        .code-input {
-            width: 100%;
-            padding: 14px;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 40px;
-            color: white;
-            text-align: center;
-            margin: 15px 0;
-        }
-        .activate-premium {
-            background: linear-gradient(135deg, #5b4dff, #ff3366);
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 40px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-        }
-        .action-double {
-            display: flex;
-            gap: 12px;
-            margin: 15px 0 10px;
-        }
-        .action-double button {
-            flex: 1;
-            padding: 10px;
-            border-radius: 40px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            cursor: pointer;
-        }
-        .contact-footer {
+        .header {
+            padding: 20px;
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
-            color: #aaa;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 12px;
-            margin-top: 10px;
+            align-items: center;
+            background-color: #282828;
         }
-
-        /* Main App */
-        .app-main {
-            display: none;
+        .header .settings-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .header .search-bar {
+            flex-grow: 1;
+            margin: 0 15px;
+            background-color: #333;
+            border-radius: 25px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+        }
+        .header .search-bar input {
+            background: none;
+            border: none;
+            color: #e0e0e0;
+            outline: none;
+            margin-left: 5px;
+            font-size: 14px;
+        }
+        .header .wallet-icon {
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .main-balance {
+            text-align: center;
+            padding: 30px 0;
+            background-color: #1e1e1e;
+        }
+        .main-balance .amount {
+            font-size: 48px;
+            font-weight: bold;
+        }
+        .main-balance .details {
+            font-size: 14px;
+            color: #aaa;
+        }
+        .actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px 0;
+            background-color: #282828;
+        }
+        .action-item {
+            display: flex;
             flex-direction: column;
-            height: 100vh;
-            background: radial-gradient(circle at 20% 30%, rgba(91,77,255,0.1), transparent);
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: background-color 0.2s ease;
+        }
+        .action-item:hover {
+            background-color: #333;
+        }
+        .action-item i {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #00c853; /* Green accent */
+        }
+        .action-item span {
+            font-size: 12px;
+            color: #ccc;
+        }
+        .crypto-list-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background-color: #282828;
+            border-bottom: 1px solid #333;
+        }
+        .crypto-list-header span {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .crypto-list-header .tabs {
+            display: flex;
+            gap: 15px;
+        }
+        .crypto-list-header .tab {
+            cursor: pointer;
+            padding: 5px 10px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.2s ease;
+        }
+        .crypto-list-header .tab.active {
+            border-bottom-color: #00c853; /* Green accent */
+        }
+        .crypto-list {
+            flex-grow: 1;
             overflow-y: auto;
         }
-        .top-bar-premium {
+        .crypto-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             padding: 15px 20px;
-            /* Динамический отступ сверху для обхода челки iPhone */
-            margin: max(15px, env(safe-area-inset-top)) 12px 12px; 
-            border-radius: 28px;
-        }
-        .user-premium {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .avatar-premium {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #5b4dff, #ff3366);
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-        .user-text {
-            display: flex;
-            flex-direction: column;
-        }
-        .user-name-premium {
-            font-size: 20px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #c0b5ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .icon-glass {
-            width: 44px;
-            height: 44px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-bottom: 1px solid #333;
             cursor: pointer;
-            transition: 0.2s;
-            backdrop-filter: blur(5px);
+            transition: background-color 0.2s ease;
         }
+        .crypto-item:hover {
+            background-color: #282828
 
-        /* Chart Container */
-        .chart-premium {
-            margin: 0 12px 12px;
-            border-radius: 28px;
-            overflow: hidden;
-            height: 38vh;
-            min-height: 260px;
-            background: #0b0b1a;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        #tv_chart_container { width: 100%; height: 100%; }
-        .otc-stub {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-            font-weight: bold;
-            gap: 12px;
-            flex-direction: column;
-            text-align: center;
-        }
 
-        /* Controls Panel */
-        .controls-premium {
-            margin: 0 12px 12px;
-            padding: 16px;
-            border-radius: 28px;
+;
         }
-        .double-selector {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        .premium-select {
-            flex: 1;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 20px;
-            padding: 12px;
-            cursor: pointer;
-            position: relative;
-        }
-        .premium-select .label { font-size: 12px; opacity: 0.7; }
-        .premium-select .value { font-weight: 700; display: flex; justify-content: space-between; margin-top: 4px; }
-        .dropdown-premium {
-            position: absolute;
-            bottom: 100%;
-            left: 0;
-            width: 100%;
-            background: rgba(20,20,40,0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-            z-index: 200;
-            margin-bottom: 8px;
-        }
-        .dropdown-premium div {
-            padding: 12px;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .btn-signal {
-            background: linear-gradient(135deg, #5b4dff, #ff3366);
-            border: none;
-            width: 100%;
-            padding: 16px;
-            border-radius: 40px;
-            font-weight: 800;
-            font-size: 18px;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            transition: 0.2s;
-        }
-        .btn-back {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            width: 100%;
-            padding: 12px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        /* Result Widget Premium */
-        .result-widget {
-            margin: 40px 12px 12px; /* Увеличен отступ сверху, чтобы сигнал был ниже */
-            padding: 20px;
-            border-radius: 28px;
-            display: none;
-            text-align: center;
-            backdrop-filter: blur(20px);
-        }
-        .result-widget.active { display: block; animation: fadeUp 0.4s; }
-        .signal-big {
-            font-size: 56px;
-            font-weight: 800;
-            letter-spacing: 4px;
-            margin: 10px 0;
-        }
-        .signal-buy { color: #00ff88; text-shadow: 0 0 20px #00ff88; }
-        .signal-sell { color: #ff3366; text-shadow: 0 0 20px #ff3366; }
-        .result-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .result-buttons button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-        }
-        .win-premium { background: rgba(0,255,136,0.2); color: #00ff88; border: 1px solid #00ff88; }
-        .loss-premium { background: rgba(255,51,102,0.2); color: #ff3366; border: 1px solid #ff3366; }
-        .close-premium { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
-
-        /* Progress Modal */
-        .progress-modal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(12px);
-            z-index: 10050;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .progress-card {
-            background: rgba(20,20,40,0.9);
-            backdrop-filter: blur(20px);
-            border-radius: 40px;
-            padding: 30px;
-            width: 80%;
-            max-width: 300px;
-            text-align: center;
-        }
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(255,255,255,0.2);
-            border-top-color: #5b4dff;
+        .crypto-item .icon {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin-right: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
         }
-        .bar {
-            height: 6px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
-            margin: 15px 0 5px;
-            overflow: hidden;
-        }
-        .fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #5b4dff, #ff3366);
-            transition: width 0.1s;
-        }
+        .crypto-item.sol .icon { background-color: #f7931a; color: #000; } /* Example colors */
+        .crypto-item.eth .icon { background-color: #627eea; color: #fff; }
+        .crypto-item.btc .icon { background-color: #f7931a; color: #fff; }
+        .crypto-item.bnb .icon { background-color: #f0b90b; color: #000; }
 
-        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .crypto-item .details {
+            flex-grow: 1;
+        }
+        .crypto-item .name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+        .crypto-item .balance {
+            font-size: 12px;
+            color: #aaa;
+        }
+        .crypto-item .price {
+            text-align: right;
+        }
+        .crypto-item .current-price {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+        .crypto-item .change {
+            font-size: 12px;
+            text-align: right;
+        }
+        .crypto-item .change.positive {
+            color: #00c853; /* Green */
+        }
+        .crypto-item .change.negative {
+            color: #ff1744; /* Red */
+        }
+        .view-tokens {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #1e1e1e;
+            cursor: pointer;
+            color: #00c853; /* Green accent */
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+        .view-tokens:hover {
+            background-color: #282828;
+        }
+        .footer-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px 0;
+            background-color: #282828;
+            border-top: 1px solid #333;
+            margin-top: auto; /* Pushes footer to the bottom */
+        }
+        .footer-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            color: #aaa;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+        .footer-nav .nav-item.active {
+            background-color: #00c853;
+            color: #fff;
+        }
+        .footer-nav .nav-item i {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
     </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-
-<div id="welcomeOverlay" class="overlay visible">
-    <div class="welcome-content glass-card" style="padding: 40px 30px;">
-        <div class="logo-glow"><i class="fas fa-brain"></i></div>
-        <h1 class="welcome-title">OptiBotX PRO</h1>
-        <p style="margin: 8px 0 20px; opacity:0.7;">Premium Intelligence</p>
-        <div class="lang-grid">
-            <div class="lang-card" data-lang="ru">
-                <img src="https://flagcdn.com/w80/ru.png" alt="RU">
-                <span>Русский</span>
+    <div class="wallet-container">
+        <div class="header">
+            <i class="fas fa-cog settings-icon"></i>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Поиск">
             </div>
-            <div class="lang-card" data-lang="en">
-                <img src="https://flagcdn.com/w80/gb.png" alt="EN">
-                <span>English</span>
+            <i class="fas fa-wallet wallet-icon"></i>
+        </div>
+
+        <div class="main-balance">
+            <div class="amount">0,00 $</div>
+            <div class="details">0,00 $ (0.00%)</div>
+        </div>
+
+        <div class="actions">
+            <div class="action-item">
+                <i class="fas fa-arrow-up-right-from-square"></i>
+                <span>Отпр...</span>
+            </div>
+            <div class="action-item">
+                <i class="fas fa-arrow-down"></i>
+                <span>Полу...</span>
+            </div>
+            <div class="action-item">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Обмен</span>
+            </div>
+            <div class="action-item">
+                <i class="fas fa-plus"></i>
+                <span>Поку...</span>
             </div>
         </div>
-        <button id="welcomeNext" class="start-btn">Далее →</button>
-    </div>
-</div>
 
-<div id="menuOverlay" class="overlay">
-    <div class="menu-card">
-        <i class="fas fa-crown" style="font-size: 40px; color: #ffcc00; margin-bottom: 15px;"></i>
-        <h3 id="menuTitle" data-i18n="menuTitle">Выберите действие</h3>
-        <div class="menu-buttons">
-            <div class="menu-action" data-action="reviews" id="reviewsBtn"><i class="fas fa-star"></i> <span data-i18n="reviews">Отзывы приложения</span></div>
-            <div class="menu-action" data-action="tutorial" id="tutorialBtn"><i class="fas fa-graduation-cap"></i> <span data-i18n="tutorial">Обучение</span></div>
-            <div class="menu-action" data-action="start" id="startWorkBtn"><i class="fas fa-play"></i> <span data-i18n="startWork">Начать работать</span></div>
-        </div>
-    </div>
-</div>
+        <div class="crypto-list-header">
 
-<div id="accessOverlay" class="overlay">
-    <div class="access-card">
-        <h3 data-i18n="accessTitle">🔐 Активация доступа</h3>
-        <p data-i18n="accessDesc">Для входа в платформу OptiBotX PRO необходим лицензионный код</p>
-        <div class="access-steps">
-            <strong data-i18n="accessStepTitle">Как получить код?</strong><br>
-            <span data-i18n="accessStep1">1. Нажмите кнопку «Написать мне» ниже</span><br>
-            <span data-i18n="accessStep2">2. Напишите слово «КОД» в Telegram</span><br>
-            <span data-i18n="accessStep3">3. Менеджер выдаст вам персональный код активации ✅</span>
-        </div>
-        <input type="text" id="activationCode" class="code-input" placeholder="Введите полученный код" data-i18n-placeholder="accessPlaceholder">
-        <button id="activateAccess" class="activate-premium" data-i18n="activateBtn">Активировать</button>
-        <div class="action-double">
-            <button id="writeToTg"><i class="fab fa-telegram"></i> <span data-i18n="writeTg">Написать мне</span></button>
-            <button id="copyNick"><i class="far fa-copy"></i> <span data-i18n="copyNickBtn">Копировать ник</span></button>
-        </div>
-        
-        <div class="contact-footer">
-            <span>Мой TG: @AuraVey</span>
-            <span>Ник: AuraVey</span>
-        </div>
-        <div id="accessMsg" style="margin-top: 12px; font-size: 13px;"></div>
-    </div>
-</div>
 
-<div id="mainApp" class="app-main">
-    <div class="top-bar-premium glass-card">
-        <div class="user-premium">
-            <div class="avatar-premium"><i class="fas fa-chart-line"></i></div>
-            <div class="user-text">
-                <div class="user-name-premium">OptiBotX PRO</div>
+<span class="crypto-label">Криптовалюта</span>
+            <div class="tabs">
+                <span class="tab active">Избранное</span>
+                <span class="tab">NFT</span>
+                <span class="tab"><i class="fas fa-clock"></i></span>
+                <span class="tab"><i class="fas fa-filter"></i></span>
+            </div>
+        </div>
+
+        <div class="crypto-list">
+            <div class="crypto-item sol">
+                <div class="icon">SOL</div>
+                <div class="details">
+                    <div class="name">SOL</div>
+                    <div class="balance">2,74 $B</div>
                 </div>
-        </div>
-        <div class="icon-glass" id="themePremium"><i class="fas fa-moon"></i></div>
-    </div>
-
-    <div class="chart-premium glass-card" id="chartPremium">
-        <div id="tv_chart_container"></div>
-    </div>
-
-    <div class="controls-premium glass-card">
-        <div class="double-selector">
-            <div class="premium-select" id="pairSelectorPremium">
-                <div class="label" data-i18n="asset">Актив</div>
-                <div class="value"><span id="selectedPairPremium">EUR/USD</span> <i class="fas fa-chevron-down"></i></div>
-                <div class="dropdown-premium" id="pairDropdownPremium">
-                    <input type="text" id="pairSearchPremium" placeholder="Поиск..." data-i18n-placeholder="search" style="width:100%; padding:8px; background:transparent; border:none; color:white;">
-                    <div id="pairsListPremium"></div>
+                <div class="price">
+                    <div class="current-price">86,45 $</div>
+                    <div class="change negative">-0.12%</div>
                 </div>
             </div>
-            <div class="premium-select" id="tfSelectorPremium">
-                <div class="label" data-i18n="tf">Таймфрейм</div>
-                <div class="value"><span id="selectedTFPremium">1m</span> <i class="fas fa-chevron-down"></i></div>
-                <div class="dropdown-premium" id="tfDropdownPremium"></div>
+            <div class="crypto-item eth">
+                <div class="icon">ETH</div>
+                <div class="details">
+                    <div class="name">ETH</div>
+                    <div class="balance">7,92 $B</div>
+                </div>
+                <div class="price">
+                    <div class="current-price">2 346,91 $</div>
+                    <div class="change positive">+1.29%</div>
+                </div>
+            </div>
+            <div class="crypto-item btc">
+                <div class="icon">BTC</div>
+                <div class="details">
+                    <div class="name">BTC</div>
+                    <div class="balance">17,24 $B</div>
+                </div>
+                <div class="price">
+                    <div class="current-price">78 101,78 $</div>
+                    <div class="change positive">+0.55%</div>
+                </div>
+            </div>
+            <div class="crypto-item bnb">
+                <div class="icon">BNB</div>
+                <div class="details">
+                    <div class="name">BNB</div>
+                    <div class="balance">753,22 $M</div>
+                </div>
+                <div class="price">
+                    <div class="current-price">631,99 $</div>
+                    <div class="change positive">+0.23%</div>
+                </div>
             </div>
         </div>
-        <button id="getSignalPremium" class="btn-signal"><i class="fas fa-radar"></i> <span data-i18n="getSignal">Получить сигнал</span></button>
-        <button id="backToMenuPremium" class="btn-back"><i class="fas fa-arrow-left"></i> <span data-i18n="backBtn">Назад в меню</span></button>
-    </div>
 
-    <div id="resultPremium" class="result-widget glass-card">
-        <div class="signal-big" id="signalTextPremium">BUY</div>
-        <div><span data-i18n="confidence">Точность</span>: <span id="confidencePremium">94%</span></div>
-        <div class="result-buttons">
-            <button id="winPremium" class="win-premium"><i class="fas fa-check"></i> Win</button>
-            <button id="lossPremium" class="loss-premium"><i class="fas fa-times"></i> Loss</button>
-            <button id="closeResultPremium" class="close-premium"><i class="fas fa-undo"></i></button>
+        <div class="view-tokens">
+            Просмотреть токены
+        </div>
+
+        <div class="footer-nav">
+            <div class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Популярные</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Торговать</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-gift"></i>
+                <span>Награды</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-ellipsis-h"></i>
+                <span>Подробнее</span>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="progressModal" class="progress-modal">
-    <div class="progress-card">
-        <div class="spinner"></div>
-        <h3 id="progressTitle" data-i18n="analyzing">Анализ рынка...</h3>
-        <div class="bar"><div class="fill" id="progressFill"></div></div>
-        <div id="progressPercent">0%</div>
-    </div>
-</div>
-
-<script>
-    // ======================== FULL TRANSLATIONS ========================
-    const trans = {
-        ru: { 
-            start: "Далее →", asset: "Актив", tf: "Таймфрейм", getSignal: "Получить сигнал", 
-            analyzing: "Анализ рынка...", result: "Результат анализа", confidence: "Точность", 
-            search: "Поиск...", menuTitle: "Выберите действие", reviews: "Отзывы приложения", 
-            tutorial: "Обучение", startWork: "Начать работать", backBtn: "Назад в меню",
-            accessTitle: "🔐 Активация доступа", accessDesc: "Для входа в платформу OptiBotX PRO необходим лицензионный код",
-            accessStepTitle: "Как получить код?", accessStep1: "1. Нажмите кнопку «Написать мне» ниже",
-            accessStep2: "2. Напишите слово «КОД» в Telegram", accessStep3: "3. Менеджер выдаст вам персональный код активации ✅",
-            accessPlaceholder: "Введите полученный код", activateBtn: "Активировать", writeTg: "Написать мне", copyNickBtn: "Копировать ник",
-            alertCopy: "Ник скопирован: @AuraVey", accessSuccess: "✅ Доступ открыт!", accessError: "❌ Неверный или использованный код",
-            otcStub: "OTC график в разработке<br>Сигналы доступны"
-        },
-        en: { 
-            start: "Next →", asset: "Asset", tf: "Timeframe", getSignal: "Get Signal", 
-            analyzing: "Analyzing market...", result: "Analysis Result", confidence: "Accuracy", 
-            search: "Search...", menuTitle: "Choose action", reviews: "App Reviews", 
-            tutorial: "Tutorial", startWork: "Start Trading", backBtn: "Back to Menu",
-            accessTitle: "🔐 Access Activation", accessDesc: "A license code is required to enter OptiBotX PRO",
-            accessStepTitle: "How to get a code?", accessStep1: "1. Click 'Message Me' below",
-            accessStep2: "2. Write the word 'CODE' in Telegram", accessStep3: "3. The manager will give you an activation code ✅",
-            accessPlaceholder: "Enter received code", activateBtn: "Activate", writeTg: "Message Me", copyNickBtn: "Copy Nickname",
-            alertCopy: "Nickname copied: @AuraVey", accessSuccess: "✅ Access granted!", accessError: "❌ Invalid or used code",
-            otcStub: "OTC chart in development<br>Signals are available"
-        }
-    };
-
-    let curLang = 'ru';
-    let isActivated = localStorage.getItem('optibotx_activated') === 'true';
-    let tvWidget = null;
-    let currentPair = "EUR/USD";
-    let currentTF = "1m";
-    let isOTC = false;
-    let usedCodes = JSON.parse(localStorage.getItem('usedCodes')) || {};
-    const validCodes = ['10341638','20451927','30561836','40771345','50881454','60991563','70101672','80211781','90321890','10431909','11542018','12652127','13762236','14872345','15982454','16092563','17102672','18212781','19322890','20432909','21543018','22653127','23763236','24873345','25983454','26093563','27103672','28213781','29323890','30433909','31544018','32654127','33764236','34874345','35984454','36094563','37104672','38214781','39324890','40434909','41545018','42655127','43765236','44875345','45985454','46095563','47105672','48215781','49325890','50435909'];
-    const allPairs = [
-        "EUR/USD","GBP/USD","USD/JPY","AUD/USD","USD/CAD","USD/CHF","NZD/USD",
-        "EUR/GBP","EUR/JPY","GBP/JPY","AUD/JPY","EUR/CAD","AUD/CAD","AUD/NZD",
-        "NZD/JPY","CAD/JPY","CHF/JPY","EUR/AUD","GBP/AUD","EUR/CHF","GBP/CHF",
-        "EUR/NZD","GBP/NZD","USD/RUB","EUR/RUB","USD/TRY","USD/MXN","USD/ZAR",
-        "USD/BRL","USD/INR","USD/IDR","USD/PHP","USD/THB","USD/VND",
-        "EUR/USD OTC","GBP/USD OTC","USD/JPY OTC","AUD/USD OTC","USD/CAD OTC",
-        "USD/CHF OTC","NZD/USD OTC","EUR/GBP OTC","EUR/JPY OTC","GBP/JPY OTC",
-        "AUD/JPY OTC","EUR/CAD OTC","AUD/CAD OTC","AUD/NZD OTC","NZD/JPY OTC",
-        "CAD/JPY OTC","CHF/JPY OTC","EUR/AUD OTC","GBP/AUD OTC","EUR/CHF OTC",
-        "GBP/CHF OTC","EUR/NZD OTC","GBP/NZD OTC"
-    ];
-    const tfNormal = ["10s","15s","30s","1m","5m","15m"];
-    const tfOTC = ["5s","10s","15s","30s"];
-
-    // DOM
-    const welcomeDiv = document.getElementById('welcomeOverlay');
-    const menuDiv = document.getElementById('menuOverlay');
-    const accessDiv = document.getElementById('accessOverlay');
-    const mainApp = document.getElementById('mainApp');
-    const progressModal = document.getElementById('progressModal');
-    const resultWidget = document.getElementById('resultPremium');
-    const selectedPairSpan = document.getElementById('selectedPairPremium');
-    const selectedTFSpan = document.getElementById('selectedTFPremium');
-    const pairsListDiv = document.getElementById('pairsListPremium');
-    const tfDropdownDiv = document.getElementById('tfDropdownPremium');
-    const getSignalBtn = document.getElementById('getSignalPremium');
-    const backBtn = document.getElementById('backToMenuPremium');
-
-    function updateLangUI() {
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if(trans[curLang][key]) el.innerHTML = trans[curLang][key];
-        });
-        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-            const key = el.getAttribute('data-i18n-placeholder');
-            if(trans[curLang][key]) el.placeholder = trans[curLang][key];
-        });
-        document.getElementById('welcomeNext').innerHTML = trans[curLang].start;
-    }
-
-    function initChart(symbol, interval) {
-        if (isOTC) return;
-        
-        const formatted = symbol.replace('/', '');
-        const tvSym = "FX_IDC:" + formatted; 
-        
-        const tfMap = { "1m": "1", "5m": "5", "15m": "15", "1h": "60" };
-        const intv = tfMap[interval] || "1";
-        
-        const isLight = document.body.classList.contains('light');
-        
-        if (tvWidget) {
-            try { tvWidget.remove(); } catch(e) {}
-            tvWidget = null;
-        }
-
-        const container = document.getElementById('tv_chart_container');
-        if (container) container.innerHTML = '';
-
-        tvWidget = new TradingView.widget({
-            autosize: true,
-            symbol: tvSym,
-            interval: intv,
-            timezone: "Etc/UTC",
-            theme: isLight ? "light" : "dark",
-            style: "1",
-            locale: curLang === 'ru' ? 'ru' : 'en',
-            enable_publishing: false,
-            hide_top_toolbar: true,
-            save_image: false,
-            container_id: "tv_chart_container"
-        });
-    }
-
-    function renderPairs(filter='') {
-        const filtered = allPairs.filter(p => p.toLowerCase().includes(filter.toLowerCase()));
-        pairsListDiv.innerHTML = '';
-        
-        filtered.forEach(pair => {
-            const div = document.createElement('div');
-            div.textContent = pair;
-            div.style.padding = '12px';
-            div.style.cursor = 'pointer';
-            div.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
-            
-            div.onclick = () => {
-                currentPair = pair;
-                selectedPairSpan.innerText = pair;
-                document.getElementById('pairDropdownPremium').style.display = 'none';
-                isOTC = pair.toLowerCase().includes('otc');
-                updateTFList();
-                
-                const tfs = isOTC ? tfOTC : tfNormal;
-                currentTF = tfs[0];
-                selectedTFSpan.innerText = currentTF;
-                
-                const container = document.getElementById('tv_chart_container');
-                
-                if (isOTC) {
-                    if (tvWidget) {
-                        try { tvWidget.remove(); } catch(e) {}
-                        tvWidget = null;
-                    }
-                    container.innerHTML = `<div class="otc-stub"><i class="fas fa-chart-simple"></i> ${trans[curLang].otcStub}</div>`;
-                } else {
-                    initChart(currentPair, currentTF);
-                }
-            };
-            pairsListDiv.appendChild(div);
-        });
-    }
-
-    function updateTFList() {
-        const tfs = isOTC ? tfOTC : tfNormal;
-        tfDropdownDiv.innerHTML = '';
-        tfs.forEach(tf => {
-            const div = document.createElement('div');
-            div.textContent = tf;
-            div.style.padding = '12px';
-            div.style.cursor = 'pointer';
-            div.onclick = (e) => {
-                e.stopPropagation();
-                currentTF = tf;
-                selectedTFSpan.innerText = tf;
-                tfDropdownDiv.style.display = 'none';
-                if (!isOTC) initChart(currentPair, currentTF);
-            };
-            tfDropdownDiv.appendChild(div);
-        });
-    }
-
-    function showProgress(callback) {
-        const fill = document.getElementById('progressFill');
-        const percentSpan = document.getElementById('progressPercent');
-        progressModal.style.display = 'flex';
-        let p = 0;
-        fill.style.width = '0%';
-        percentSpan.innerText = '0%';
-        const interval = setInterval(() => {
-            p += Math.floor(Math.random() * 12) + 8;
-            if (p >= 100) { p = 100; clearInterval(interval); setTimeout(() => { progressModal.style.display = 'none'; callback(); }, 400); }
-            fill.style.width = p + '%';
-            percentSpan.innerText = p + '%';
-        }, 200);
-    }
-
-    function showSignal() {
-        const isBuy = Math.random() > 0.5;
-        const sigEl = document.getElementById('signalTextPremium');
-        const confEl = document.getElementById('confidencePremium');
-        sigEl.textContent = isBuy ? 'BUY' : 'SELL';
-        sigEl.className = 'signal-big ' + (isBuy ? 'signal-buy' : 'signal-sell');
-        const conf = Math.floor(Math.random() * 21) + 78;
-        confEl.textContent = conf + '%';
-        resultWidget.classList.add('active');
-        if (window.innerWidth < 768) document.querySelector('.controls-premium').style.display = 'none';
-    }
-
-    function closeResult() {
-        resultWidget.classList.remove('active');
-        if (window.innerWidth < 768) document.querySelector('.controls-premium').style.display = 'block';
-    }
-
-    function activateCode() {
-        const code = document.getElementById('activationCode').value.trim();
-        const msg = document.getElementById('accessMsg');
-        if (validCodes.includes(code) && !usedCodes[code]) {
-            usedCodes[code] = true;
-            localStorage.setItem('usedCodes', JSON.stringify(usedCodes));
-            isActivated = true;
-            localStorage.setItem('optibotx_activated', 'true');
-            msg.innerHTML = trans[curLang].accessSuccess;
-            msg.style.color = '#00ff88';
-            setTimeout(() => { accessDiv.classList.remove('visible'); msg.innerHTML = ''; }, 1500);
-        } else {
-            msg.innerHTML = trans[curLang].accessError;
-            msg.style.color = '#ff4d4d';
-        }
-    }
-
-    function backToMenu() {
-        if (tvWidget) {
-            try { tvWidget.remove(); } catch(e) {}
-            tvWidget = null;
-        }
-        mainApp.style.display = 'none';
-        menuDiv.classList.add('visible');
-    }
-
-    // ----- EVENT LISTENERS -----
-    document.querySelectorAll('.lang-card').forEach(card => {
-        card.addEventListener('click', () => {
-            document.querySelectorAll('.lang-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            curLang = card.dataset.lang;
-            document.getElementById('welcomeNext').classList.add('visible');
-            document.getElementById('welcomeNext').innerHTML = trans[curLang].start;
-        });
-    });
-    
-    document.getElementById('welcomeNext').addEventListener('click', () => {
-        welcomeDiv.classList.remove('visible');
-        updateLangUI();
-        menuDiv.classList.add('visible');
-    });
-    
-    document.getElementById('reviewsBtn').onclick = () => window.open('https://t.me/optibotxx', '_blank');
-    document.getElementById('tutorialBtn').onclick = () => window.open('https://t.me/CieePXj_6AyYWEx', '_blank');
-    
-    document.getElementById('startWorkBtn').onclick = () => {
-        menuDiv.classList.remove('visible');
-        mainApp.style.display = 'flex';
-        currentPair = allPairs[0];
-        selectedPairSpan.innerText = currentPair;
-        isOTC = false;
-        updateTFList();
-        currentTF = tfNormal[0];
-        selectedTFSpan.innerText = currentTF;
-        initChart(currentPair, currentTF);
-        renderPairs('');
-        
-        if (!window._premiumHandlers) {
-            window._premiumHandlers = true;
-            document.getElementById('themePremium').onclick = () => {
-                document.body.classList.toggle('light');
-                const isLight = document.body.classList.contains('light');
-                document.getElementById('themePremium').innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-                if (!isOTC && tvWidget) initChart(currentPair, currentTF);
-            };
-            document.getElementById('pairSelectorPremium').onclick = (e) => {
-                if (e.target.tagName !== 'INPUT') {
-                    const dd = document.getElementById('pairDropdownPremium');
-                    dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
-                    document.getElementById('tfDropdownPremium').style.display = 'none';
-                }
-            };
-            document.getElementById('pairSearchPremium').addEventListener('input', (e) => renderPairs(e.target.value));
-            document.getElementById('tfSelectorPremium').onclick = () => {
-                const dd = document.getElementById('tfDropdownPremium');
-                dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
-                document.getElementById('pairDropdownPremium').style.display = 'none';
-            };
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('#pairSelectorPremium')) document.getElementById('pairDropdownPremium').style.display = 'none';
-                if (!e.target.closest('#tfSelectorPremium')) document.getElementById('tfDropdownPremium').style.display = 'none';
+    <script>
+        // Basic JavaScript for interactivity (e.g., tab switching)
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                // In a real app, you would update the crypto list based on the selected tab
             });
-            getSignalBtn.onclick = () => {
-                if (!isActivated) { 
-                    accessDiv.classList.add('visible');
-                    return; 
-                }
-                showProgress(() => showSignal());
-            };
-            document.getElementById('winPremium').onclick = closeResult;
-            document.getElementById('lossPremium').onclick = closeResult;
-            document.getElementById('closeResultPremium').onclick = closeResult;
-            document.getElementById('activateAccess').onclick = activateCode;
-            document.getElementById('copyNick').onclick = () => { 
-                navigator.clipboard.writeText('@AuraVey');
-                alert(trans[curLang].alertCopy); 
-            };
-            document.getElementById('writeToTg').onclick = () => window.open('https://t.me/AuraVey', '_blank');
-            backBtn.onclick = backToMenu;
-        }
-        if (window.Telegram?.WebApp) window.Telegram.WebApp.expand();
-    };
-</script>
+        });
+
+        document.querySelectorAll('.footer-nav .nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.footer-nav .nav-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                // In a real app, you would navigate to different sections
+            });
+        });
+    </script>
 </body>
 </html>
