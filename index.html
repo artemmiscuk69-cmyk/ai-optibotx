@@ -2,327 +2,326 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Trust Wallet</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Wallet Crypto</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #000000;
-            --surface-color: #1a1a1a;
-            --surface-light: #252525;
-            --accent-green: #38f37b;
-            --text-main: #ffffff;
-            --text-muted: #8e8e8e;
-            --red-down: #ff4d4d;
-            --font-main: 'Inter', sans-serif;
-        }
-
-        * {
+        body { 
+            background-color: #0f0f0f; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-main);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
         .app-container {
-            width: 100%;
-            max-width: 480px;
-            background-color: var(--bg-color);
+            width: 390px;
+            height: 844px;
+            background-color: #171719;
+            border-radius: 30px;
+            overflow: hidden;
             position: relative;
-            padding-bottom: 90px; /* Отступ под закрепленное меню */
-        }
-
-        /* --- Fixed Header --- */
-        .header {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            gap: 12px;
-            position: sticky;
-            top: 0;
-            background: var(--bg-color);
-            z-index: 10;
-        }
-
-        .icon-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-main);
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .search-bar {
-            flex-grow: 1;
-            background-color: var(--surface-color);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            padding: 8px 16px;
-        }
-
-        .search-bar i { color: var(--text-muted); margin-right: 8px; }
-        .search-bar input {
-            background: transparent; border: none; color: #fff; width: 100%; outline: none;
-        }
-
-        /* --- Wallet Info --- */
-        .wallet-info {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 20px 16px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
-
-        .wallet-selector {
-            background-color: var(--surface-color);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
-
-        .main-balance { font-size: 44px; font-weight: 700; }
-        .sub-balance { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
-
-        /* --- Quick Actions --- */
-        .actions-row {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            padding: 10px 0 30px;
-        }
-
-        .action-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .action-btn {
-            width: 54px; height: 54px; border-radius: 18px;
-            background-color: var(--surface-light);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 26px;
-        }
-        .action-btn.plus { background-color: var(--accent-green); color: #000; }
-        .action-label { font-size: 12px; font-weight: 500; }
-
-        /* --- Tabs --- */
-        .tabs-row {
-            display: flex;
-            padding: 0 16px;
-            border-bottom: 1px solid #1a1a1a;
-            margin-bottom: 16px;
-        }
-        .tab { padding: 12px 12px; color: var(--text-muted); font-weight: 600; font-size: 14px; position: relative; }
-        .tab.active { color: #fff; }
-        .tab.active::after {
-            content: ''; position: absolute; bottom: -1px; left: 12px; right: 12px;
-            height: 2px; background: var(--accent-green);
-        }
-
-        /* --- Crypto List --- */
-        .crypto-list { padding: 0 16px; }
-        .crypto-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 0;
-        }
-        .crypto-left { display: flex; align-items: center; gap: 14px; }
-        .coin-icon { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
-        .crypto-info { display: flex; flex-direction: column; }
-        .coin-symbol { font-weight: 700; font-size: 16px; }
-        .coin-cap { font-size: 12px; color: var(--text-muted); }
-        .crypto-right { text-align: right; }
-        .coin-price { font-weight: 600; font-size: 16px; }
-        .coin-change { font-size: 13px; font-weight: 500; }
-
-        /* --- Sticky Bottom Nav --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            height: 75px;
-            background-color: #0c0c0c;
-            border-top: 1px solid #1a1a1a;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding-bottom: 12px;
-            z-index: 100;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: var(--text-muted); text-decoration: none; width: 20%;
-        }
-        .nav-item.active { color: var(--accent-green); }
-        .nav-icon { font-size: 24px; }
-        .nav-label { font-size: 10px; font-weight: 500; }
-        
-        .nav-center-wrap { position: relative; top: -8px; }
-        .nav-center {
-            width: 48px; height: 48px; background: var(--accent-green);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: #000; font-size: 24px; box-shadow: 0 4px 15px rgba(56, 243, 123, 0.2);
-        }
-
-        /* --- Modal (Menu "Подробнее") --- */
-        #modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 200;
-            display: none; justify-content: center; align-items: center;
-        }
-        .modal-content {
-            background: var(--surface-color); width: 85%; max-width: 320px;
-            padding: 24px; border-radius: 24px; border: 1px solid #333;
-            text-align: center;
-        }
-        .modal-content h3 { margin-bottom: 16px; }
-        .modal-content input {
-            width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #444;
-            background: #000; color: #fff; font-size: 18px; margin-bottom: 20px; outline: none;
-        }
-        .modal-btn {
-            background: var(--accent-green); color: #000; border: none;
-            padding: 12px 24px; border-radius: 12px; font-weight: 700; width: 100%;
-            cursor: pointer;
-        }
+        /* Скрываем скроллбар */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body>
+    <div id="root"></div>
 
-    <div class="app-container">
-        <header class="header">
-            <button class="icon-btn"><i class='bx bx-cog'></i></button>
-            <div class="search-bar"><i class='bx bx-search'></i><input type="text" placeholder="Поиск"></div>
-            <button class="icon-btn"><i class='bx bx-scan'></i></button>
-        </header>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-        <div class="wallet-info">
-            <div class="wallet-selector">Основной кошелек <i class='bx bx-chevron-right'></i></div>
-            <div class="main-balance" id="display-balance">0,00 $</div>
-            <div class="sub-balance">0,00 $ (0.00%)</div>
-        </div>
+        function App() {
+            const [balance, setBalance] = useState(0);
+            const [isDepositMenu, setIsDepositMenu] = useState(false);
+            const [depositAmount, setDepositAmount] = useState('');
+            const [prices, setPrices] = useState({
+                SOL: { price: 0, change: 0, cap: '0 B' },
+                ETH: { price: 0, change: 0, cap: '0 B' },
+                BTC: { price: 0, change: 0, cap: '0 B' },
+                BNB: { price: 0, change: 0, cap: '0 M' }
+            });
 
-        <div class="actions-row">
-            <div class="action-item"><div class="action-btn"><i class='bx bx-up-arrow-alt' style="transform: rotate(45deg);"></i></div><span class="action-label">Отправить</span></div>
-            <div class="action-item"><div class="action-btn"><i class='bx bx-down-arrow-alt'></i></div><span class="action-label">Получить</span></div>
-            <div class="action-item"><div class="action-btn"><i class='bx bx-refresh'></i></div><span class="action-label">Обмен</span></div>
-            <div class="action-item"><div class="action-btn plus"><i class='bx bx-plus'></i></div><span class="action-label">Купить</span></div>
-        </div>
+            // Функция для получения курсов с Binance API
+            const fetchPrices = async () => {
+                try {
+                    const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"]');
+                    const data = await res.json();
+                    
+                    const newPrices = { ...prices };
+                    data.forEach(coin => {
+                        const symbol = coin.symbol.replace('USDT', '');
+                        // Форматируем капитализацию для красоты (примерно)
+                        const volume = parseFloat(coin.quoteVolume);
+                        let capStr = volume > 1000000000 ? (volume/1000000000).toFixed(2) + ' $B' : (volume/1000000).toFixed(2) + ' $M';
+                        
+                        newPrices[symbol] = {
+                            price: parseFloat(coin.lastPrice),
+                            change: parseFloat(coin.priceChangePercent),
+                            cap: capStr
+                        };
+                    });
+                    setPrices(newPrices);
+                } catch (error) {
+                    console.error("Ошибка обновления курсов:", error);
+                }
+            };
 
-        <div class="tabs-row">
-            <div class="tab">Криптовалюта</div>
-            <div class="tab active">Избранное</div>
-            <div class="tab">NFT</div>
-        </div>
+            // Обновляем курсы при старте и каждые 5 секунд
+            useEffect(() => {
+                fetchPrices();
+                const interval = setInterval(fetchPrices, 5000);
+                return () => clearInterval(interval);
+            }, []);
 
-        <div class="crypto-list" id="crypto-container">
-            <p style="text-align: center; color: #8e8e8e;">Загрузка курсов...</p>
-        </div>
-    </div>
+            const handleDeposit = () => {
+                if (depositAmount && !isNaN(depositAmount)) {
+                    setBalance(parseFloat(depositAmount));
+                    setDepositAmount('');
+                    setIsDepositMenu(false);
+                }
+            };
 
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item active"><i class='bx bx-home-alt nav-icon'></i><span class="nav-label">Главная</span></a>
-        <a href="#" class="nav-item"><i class='bx bx-trending-up nav-icon'></i><span class="nav-label">Популярные</span></a>
-        <a href="#" class="nav-item nav-center-wrap"><div class="nav-center"><i class='bx bx-transfer-alt'></i></div><span class="nav-label" style="color:var(--accent-green)">Торговать</span></a>
-        <a href="#" class="nav-item"><i class='bx bx-gift nav-icon'></i><span class="nav-label">Награды</span></a>
-        <a href="javascript:void(0)" class="nav-item" onclick="openMenu()"><i class='bx bx-grid-alt nav-icon'></i><span class="nav-label">Подробнее</span></a>
-    </nav>
+            const formatMoney = (val) => {
+                return val.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
+            };
 
-    <div id="modal-overlay" onclick="closeMenu(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <h3>Изменить баланс</h3>
-            <input type="number" id="balance-input" placeholder="Введите сумму">
-            <button class="modal-btn" onclick="updateBalance()">Подтвердить</button>
-        </div>
-    </div>
-
-    <script>
-        // Функция для открытия меню "Подробнее"
-        function openMenu() {
-            document.getElementById('modal-overlay').style.display = 'flex';
-        }
-
-        // Закрыть меню
-        function closeMenu(e) {
-            document.getElementById('modal-overlay').style.display = 'none';
-        }
-
-        // Обновить баланс
-        function updateBalance() {
-            const val = document.getElementById('balance-input').value;
-            if(val !== "") {
-                const formatted = new Intl.NumberFormat('ru-RU').format(val);
-                document.getElementById('display-balance').innerText = formatted + " $";
-                closeMenu();
-            }
-        }
-
-        // Работа с API (CoinGecko)
-        const coins = [
-            { id: 'solana', symbol: 'SOL', icon: 'https://assets.coingecko.com/coins/images/4128/small/solana.png' },
-            { id: 'ethereum', symbol: 'ETH', icon: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png' },
-            { id: 'bitcoin', symbol: 'BTC', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png' },
-            { id: 'binancecoin', symbol: 'BNB', icon: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png' }
-        ];
-
-        async function fetchPrices() {
-            try {
-                const ids = coins.map(c => c.id).join(',');
-                const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true`);
-                const data = await response.json();
-                
-                renderList(data);
-            } catch (error) {
-                console.error("Ошибка API:", error);
-            }
-        }
-
-        function renderList(apiData) {
-            const container = document.getElementById('crypto-container');
-            container.innerHTML = '';
-
-            coins.forEach(coin => {
-                const price = apiData[coin.id].usd;
-                const change = apiData[coin.id].usd_24h_change.toFixed(2);
-                const mCap = (apiData[coin.id].usd_market_cap / 1e9).toFixed(2);
-                const changeClass = change >= 0 ? 'change-up' : 'change-down';
-                const sign = change >= 0 ? '+' : '';
-
-                container.innerHTML += `
-                    <div class="crypto-item">
-                        <div class="crypto-left">
-                            <img src="${coin.icon}" class="coin-icon">
-                            <div class="crypto-info">
-                                <span class="coin-symbol">${coin.symbol}</span>
-                                <span class="coin-cap">${mCap} $B</span>
-                            </div>
-                        </div>
-                        <div class="crypto-right">
-                            <span class="coin-price">${new Intl.NumberFormat('en-US').format(price)} $</span>
-                            <span class="coin-change ${changeClass}">${sign}${change}%</span>
+            // --- Экран пополнения (Подробнее) ---
+            if (isDepositMenu) {
+                return (
+                    <div className="app-container p-6 bg-[#171719] flex flex-col justify-center items-center">
+                        <h2 className="text-2xl font-bold mb-6">Пополнение баланса</h2>
+                        <input 
+                            type="number" 
+                            className="bg-[#242426] text-white text-center text-3xl p-4 rounded-2xl w-full mb-6 outline-none border border-transparent focus:border-[#4ade80]"
+                            placeholder="0.00"
+                            value={depositAmount}
+                            onChange={(e) => setDepositAmount(e.target.value)}
+                        />
+                        <div className="flex gap-4 w-full">
+                            <button 
+                                onClick={() => setIsDepositMenu(false)}
+                                className="flex-1 bg-[#242426] p-4 rounded-xl text-white font-semibold">
+                                Отмена
+                            </button>
+                            <button 
+                                onClick={handleDeposit}
+                                className="flex-1 bg-[#4ade80] p-4 rounded-xl text-black font-bold">
+                                Пополнить
+                            </button>
                         </div>
                     </div>
-                `;
-            });
+                );
+            }
+
+            // --- Главный экран ---
+            return (
+                <div className="app-container text-white">
+                    {/* Top Header */}
+                    <div className="flex items-center justify-between px-5 pt-6 pb-4">
+                        <i className="fas fa-cog text-gray-400 text-xl cursor-pointer"></i>
+                        <div className="flex-1 mx-4 bg-[#242426] rounded-full flex items-center px-4 py-2">
+                            <i className="fas fa-search text-gray-500 mr-2 text-sm"></i>
+                            <input type="text" placeholder="Поиск" className="bg-transparent text-sm w-full outline-none text-white placeholder-gray-500" />
+                            <i className="fas fa-expand text-gray-500 ml-2 text-sm"></i>
+                        </div>
+                        <i className="fas fa-qrcode text-gray-400 text-xl cursor-pointer"></i>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto no-scrollbar pb-24">
+                        {/* Wallet Selector */}
+                        <div className="flex justify-center items-center gap-2 mt-2">
+                            <div className="bg-[#242426] px-4 py-1.5 rounded-full flex items-center gap-2 text-sm font-medium cursor-pointer">
+                                Основной кошелек <i className="fas fa-chevron-right text-xs text-gray-400"></i>
+                            </div>
+                            <div className="bg-[#242426] w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">
+                                <i className="far fa-copy text-gray-400 text-sm"></i>
+                            </div>
+                        </div>
+
+                        {/* Balance */}
+                        <div className="text-center mt-8 mb-8">
+                            <h1 className="text-[44px] font-bold leading-tight">{formatMoney(balance)}</h1>
+                            <p className="text-gray-400 text-sm">{formatMoney(balance)} (0.00%)</p>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex justify-center gap-4 px-6 mb-8">
+                            <div className="flex flex-col items-center gap-2">
+                                <button className="w-[60px] h-[60px] bg-[#242426] rounded-2xl flex items-center justify-center hover:bg-[#2c2c2e] transition">
+                                    <i className="fas fa-arrow-up text-xl"></i>
+                                </button>
+                                <span className="text-xs text-gray-300">Отпр...</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <button className="w-[60px] h-[60px] bg-[#242426] rounded-2xl flex items-center justify-center hover:bg-[#2c2c2e] transition">
+                                    <i className="fas fa-arrow-down text-xl"></i>
+                                </button>
+                                <span className="text-xs text-gray-300">Полу...</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <button className="w-[60px] h-[60px] bg-[#242426] rounded-2xl flex items-center justify-center hover:bg-[#2c2c2e] transition">
+                                    <i className="fas fa-exchange-alt text-xl"></i>
+                                </button>
+                                <span className="text-xs text-gray-300">Обмен</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <button className="w-[60px] h-[60px] bg-[#4ade80] rounded-2xl flex items-center justify-center hover:bg-[#3bcf71] transition">
+                                    <i className="fas fa-plus text-black text-xl"></i>
+                                </button>
+                                <span className="text-xs text-gray-300">Поку...</span>
+                            </div>
+                        </div>
+
+                        {/* Tabs */}
+                        <div className="flex items-center px-6 mb-4 border-b border-[#242426]">
+                            <div className="text-gray-400 text-sm font-medium mr-6 pb-3 cursor-pointer hover:text-white">Криптовалюта</div>
+                            <div className="text-white text-sm font-medium mr-6 pb-3 border-b-2 border-[#4ade80] cursor-pointer">Избранное</div>
+                            <div className="text-gray-400 text-sm font-medium mr-auto pb-3 cursor-pointer hover:text-white">NFT</div>
+                            <div className="flex gap-4 pb-3">
+                                <i className="fas fa-history text-gray-400 cursor-pointer"></i>
+                                <i className="fas fa-sliders-h text-gray-400 cursor-pointer"></i>
+                            </div>
+                        </div>
+
+                        {/* Coin List */}
+                        <div className="px-6 flex flex-col gap-5">
+                            {/* SOL */}
+                            <div className="flex justify-between items-center cursor-pointer">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-green-400 flex items-center justify-center">
+                                        <span className="font-bold text-xs">SOL</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-base">SOL</h3>
+                                        <p className="text-xs text-gray-400">{prices.SOL.cap}</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <h3 className="font-bold text-base">{formatMoney(prices.SOL.price)}</h3>
+                                    <p className={`text-xs ${prices.SOL.change >= 0 ? 'text-[#4ade80]' : 'text-red-500'}`}>
+                                        {prices.SOL.change > 0 ? '+' : ''}{prices.SOL.change.toFixed(2)}%
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* ETH */}
+                            <div className="flex justify-between items-center cursor-pointer">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-[#627EEA] flex items-center justify-center">
+                                        <i className="fab fa-ethereum text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-base">ETH</h3>
+                                        <p className="text-xs text-gray-400">{prices.ETH.cap}</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <h3 className="font-bold text-base">{formatMoney(prices.ETH.price)}</h3>
+                                    <p className={`text-xs ${prices.ETH.change >= 0 ? 'text-[#4ade80]' : 'text-red-500'}`}>
+                                        {prices.ETH.change > 0 ? '+' : ''}{prices.ETH.change.toFixed(2)}%
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* BTC */}
+                            <div className="flex justify-between items-center cursor-pointer">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-[#F7931A] flex items-center justify-center">
+                                        <i className="fab fa-bitcoin text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-base">BTC</h3>
+                                        <p className="text-xs text-gray-400">{prices.BTC.cap}</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <h3 className="font-bold text-base">{formatMoney(prices.BTC.price)}</h3>
+                                    <p className={`text-xs ${prices.BTC.change >= 0 ? 'text-[#4ade80]' : 'text-red-500'}`}>
+                                        {prices.BTC.change > 0 ? '+' : ''}{prices.BTC.change.toFixed(2)}%
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* BNB */}
+                            <div className="flex justify-between items-center cursor-pointer">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-[#F3BA2F] flex items-center justify-center">
+                                        <span className="font-bold text-xs text-black">BNB</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-base">BNB</h3>
+                                        <p className="text-xs text-gray-400">{prices.BNB.cap}</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <h3 className="font-bold text-base">{formatMoney(prices.BNB.price)}</h3>
+                                    <p className={`text-xs ${prices.BNB.change >= 0 ? 'text-[#4ade80]' : 'text-red-500'}`}>
+                                        {prices.BNB.change > 0 ? '+' : ''}{prices.BNB.change.toFixed(2)}%
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="text-center mt-6">
+                            <a href="#" className="text-[#4ade80] text-sm font-medium hover:underline">Просмотреть токены</a>
+                        </div>
+                        
+                        <div className="mt-8 px-6">
+                            <h2 className="text-lg font-bold mb-4">Заработок <i className="fas fa-chevron-right text-xs ml-1"></i></h2>
+                            {/* Placeholder for Earn cards */}
+                            <div className="h-24 bg-[#242426] rounded-2xl border border-gray-700"></div>
+                        </div>
+                    </div>
+
+                    {/* Bottom Navigation */}
+                    <div className="absolute bottom-0 w-full bg-[#1C1C1E] border-t border-[#2A2A2D] pb-6 pt-3 px-6 flex justify-between items-center z-10 rounded-b-[30px]">
+                        <div className="flex flex-col items-center gap-1 cursor-pointer">
+                            <i className="fas fa-home text-[#4ade80] text-xl"></i>
+                            <span className="text-[10px] text-[#4ade80]">Главная</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-1 cursor-pointer">
+                            <i className="fas fa-chart-line text-gray-500 text-xl"></i>
+                            <span className="text-[10px] text-gray-500">Популярные</span>
+                        </div>
+                        
+                        {/* Center Swap Button */}
+                        <div className="relative -top-4">
+                            <div className="w-14 h-14 bg-[#4ade80] rounded-full flex items-center justify-center shadow-lg border-4 border-[#1C1C1E] cursor-pointer">
+                                <i className="fas fa-exchange-alt text-black text-xl"></i>
+                            </div>
+                            <span className="absolute -bottom-5 w-full text-center text-[10px] text-gray-500">Торговать</span>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-1 cursor-pointer">
+                            <i className="fas fa-gift text-gray-500 text-xl"></i>
+                            <span className="text-[10px] text-gray-500">Награды</span>
+                        </div>
+                        <div 
+                            className="flex flex-col items-center gap-1 cursor-pointer hover:text-white"
+                            onClick={() => setIsDepositMenu(true)}
+                        >
+                            <i className="fas fa-ellipsis-h text-gray-500 text-xl"></i>
+                            <span className="text-[10px] text-gray-500">Подробнее</span>
+                        </div>
+                    </div>
+                </div>
+            );
         }
 
-        // Запуск обновления цен при загрузке и каждые 30 сек
-        fetchPrices();
-        setInterval(fetchPrices, 30000);
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
