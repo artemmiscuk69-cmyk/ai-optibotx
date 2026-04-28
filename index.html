@@ -4,644 +4,340 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Crypto Wallet Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #121212;
-            --surface-color: #1c1c1e;
-            --accent-green: #51e47d;
-            --text-main: #ffffff;
-            --text-secondary: #8e8e93;
-            --red-negative: #ff453a;
-        }
-
-        * {
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #161719; /* Точный цвет фона */
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
         }
-
-        body {
-            background-color: #000;
+        ::-webkit-scrollbar { display: none; }
+        
+        /* Сквирклы для кнопок Отпр, Полу, Обмен, Поку */
+        .squircle {
+            background-color: #2b2c2f;
+            border-radius: 20px; 
+            width: 64px;
+            height: 64px;
             display: flex;
-            justify-content: center;
-            color: var(--text-main);
-        }
-
-        /* Контейнер приложения (имитация экрана телефона) */
-        .app-container {
-            width: 100%;
-            max-width: 400px;
-            background-color: var(--bg-color);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-            padding-bottom: 90px; /* Место под нижний навбар */
-        }
-
-        /* Шапка */
-        .header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 16px;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            color: var(--text-main);
+            justify-content: center;
             font-size: 24px;
-            position: relative;
-            cursor: pointer;
         }
-
+        .squircle-green {
+            background-color: #50F485;
+            color: #000;
+        }
+        .nav-icon { color: #8E8E93; font-size: 18px; }
+        .nav-icon.active { color: #50F485; }
+        
+        /* Закругление нижней панели */
+        .bottom-panel {
+            background-color: #1f2023;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+        
+        /* Утопленная центральная кнопка "Торговать" */
+        .trade-btn-container {
+            position: relative;
+            top: -24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .trade-btn {
+            background-color: #50F485;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 6px solid #161719; /* Обводка цвета фона, чтобы сделать "вырез" */
+            color: #000;
+            font-size: 20px;
+            box-sizing: content-box;
+        }
+        
+        /* Красные точки уведомлений */
         .red-dot {
             position: absolute;
             top: 0;
-            right: 0;
+            right: -2px;
             width: 8px;
             height: 8px;
-            background-color: var(--red-negative);
+            background-color: #FF453A;
             border-radius: 50%;
         }
-
-        .search-bar {
-            background-color: var(--surface-color);
-            border-radius: 20px;
-            flex-grow: 1;
-            margin: 0 16px;
-            display: flex;
-            align-items: center;
-            padding: 8px 16px;
-            color: var(--text-secondary);
-            font-size: 15px;
-        }
-
-        .search-bar svg {
-            width: 16px;
-            height: 16px;
-            fill: var(--text-secondary);
-            margin-right: 8px;
-        }
-
-        /* Выбор кошелька */
-        .wallet-selector-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 4px;
-        }
-
-        .wallet-selector {
-            background-color: var(--surface-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            font-size: 15px;
-            font-weight: 500;
+        
+        /* Активная вкладка */
+        .tab-active {
+            color: #fff;
             position: relative;
         }
-
-        .wallet-red-dot {
+        .tab-active::after {
+            content: '';
             position: absolute;
-            top: -2px;
-            right: -4px;
-            width: 8px;
-            height: 8px;
-            background-color: var(--red-negative);
-            border-radius: 50%;
-        }
-
-        .copy-icon {
-            margin-left: 12px;
-            color: var(--text-secondary);
-        }
-
-        /* Баланс */
-        .balance-section {
-            text-align: center;
-            margin-top: 24px;
-        }
-
-        .main-balance {
-            font-size: 42px;
-            font-weight: 700;
-            letter-spacing: -1px;
-        }
-
-        .sub-balance {
-            font-size: 15px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        /* Кнопки действий */
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 32px;
-            padding: 0 16px;
-        }
-
-        .action-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 64px;
-        }
-
-        .action-btn {
-            width: 56px;
-            height: 56px;
-            border-radius: 18px;
-            background-color: var(--surface-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 8px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .action-btn svg {
-            width: 24px;
-            height: 24px;
-            stroke: var(--text-main);
-            stroke-width: 2;
-            fill: none;
-        }
-
-        .action-btn.green {
-            background-color: var(--accent-green);
-        }
-
-        .action-btn.green svg {
-            stroke: #000;
-        }
-
-        .action-text {
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        /* Вкладки */
-        .tabs {
-            display: flex;
-            margin-top: 32px;
-            padding: 0 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            align-items: center;
-        }
-
-        .tab {
-            font-size: 15px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            margin-right: 20px;
-            padding-bottom: 12px;
-            cursor: pointer;
-        }
-
-        .tab.active {
-            color: var(--text-main);
-            border-bottom: 3px solid var(--accent-green);
-        }
-
-        .tab-spacer { flex-grow: 1; }
-        
-        .tab-icon {
-            color: var(--text-secondary);
-            margin-left: 16px;
-            padding-bottom: 12px;
-        }
-
-        /* Список монет */
-        .coin-list {
-            padding: 16px;
-        }
-
-        .coin-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .coin-left {
-            display: flex;
-            align-items: center;
-        }
-
-        .coin-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #2c2c2e;
-        }
-        
-        /* Имитация иконок монет */
-        .icon-sol { background: linear-gradient(45deg, #9945FF, #14F195); color: white; font-weight: bold; font-size: 12px; }
-        .icon-eth { background: #627EEA; color: white; font-weight: bold; }
-        .icon-btc { background: #F7931A; color: white; font-weight: bold; }
-        .icon-bnb { background: #F3BA2F; color: white; font-weight: bold; }
-
-        .coin-name {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .coin-vol {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-
-        .coin-right {
-            text-align: right;
-        }
-
-        .coin-price {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .coin-change {
-            font-size: 13px;
-            margin-top: 2px;
-            font-weight: 500;
-        }
-
-        .change-neg { color: var(--red-negative); }
-        .change-pos { color: var(--accent-green); }
-
-        /* Просмотреть токены */
-        .view-tokens {
-            text-align: center;
-            color: var(--accent-green);
-            font-size: 15px;
-            font-weight: 600;
-            margin-top: 8px;
-            cursor: pointer;
-        }
-
-        /* Секция Заработок */
-        .earn-section {
-            padding: 24px 16px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-        }
-
-        .earn-cards {
-            display: flex;
-            gap: 12px;
-            overflow: hidden;
-        }
-
-        .earn-card {
-            background-color: var(--surface-color);
-            border-radius: 16px;
-            padding: 16px;
-            min-width: 150px;
-            height: 100px;
-            flex: 1;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        /* Нижнее меню навигации */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
+            bottom: -8px;
+            left: 0;
             width: 100%;
-            max-width: 400px;
-            background-color: var(--surface-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-end;
-            padding: 10px 0 20px 0;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-secondary);
-            font-size: 11px;
-            font-weight: 500;
-            cursor: pointer;
-            width: 20%;
-        }
-
-        .nav-item svg {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 4px;
-            stroke: var(--text-secondary);
-            fill: none;
-            stroke-width: 2;
-        }
-
-        .nav-item.active {
-            color: var(--text-main);
-        }
-
-        .nav-item.active .nav-icon-wrapper {
-            background-color: rgba(81, 228, 125, 0.15);
-            padding: 4px 16px;
-            border-radius: 16px;
-            margin-bottom: 4px;
-        }
-
-        .nav-item.active svg {
-            stroke: var(--accent-green);
-            margin-bottom: 0;
-        }
-
-        /* Центральная кнопка Торговать */
-        .nav-center {
-            position: relative;
-            top: -15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .nav-center-btn {
-            width: 50px;
-            height: 50px;
-            background-color: var(--accent-green);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 4px;
-            box-shadow: 0 4px 10px rgba(81, 228, 125, 0.3);
-        }
-
-        .nav-center-btn svg {
-            stroke: #000;
-            width: 24px;
-            height: 24px;
-        }
-
-        .nav-center span {
-            color: var(--text-secondary);
-            font-size: 11px;
+            height: 3px;
+            background-color: #50F485;
+            border-radius: 2px;
         }
     </style>
 </head>
-<body>
+<body class="h-screen flex flex-col pb-24">
 
-<div class="app-container">
-    <div class="header">
-        <button class="icon-btn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            <div class="red-dot"></div>
-        </button>
-        <div class="search-bar">
-            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            Поиск
+    <!-- Top Header -->
+    <div class="flex items-center justify-between px-4 pt-10 pb-2">
+        <div class="relative">
+            <i class="fa-solid fa-gear text-xl text-gray-300"></i>
+            <div class="red-dot" style="right: -4px; top: -2px;"></div>
         </div>
-        <button class="icon-btn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg>
-        </button>
-    </div>
-
-    <div class="wallet-selector-container">
-        <div class="wallet-selector">
-            Основной кошелек &gt;
-            <div class="wallet-red-dot"></div>
-        </div>
-        <svg class="copy-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-    </div>
-
-    <div class="balance-section">
-        <div class="main-balance" id="mainBalance">0,00 $</div>
-        <div class="sub-balance" id="subBalance">0,00 $ (0.00%)</div>
-    </div>
-
-    <div class="action-buttons">
-        <div class="action-item">
-            <button class="action-btn">
-                <svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-            </button>
-            <span class="action-text">Отпр...</span>
-        </div>
-        <div class="action-item">
-            <button class="action-btn">
-                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
-            </button>
-            <span class="action-text">Полу...</span>
-        </div>
-        <div class="action-item">
-            <button class="action-btn">
-                <svg viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
-            </button>
-            <span class="action-text">Обмен</span>
-        </div>
-        <div class="action-item">
-            <button class="action-btn green">
-                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            </button>
-            <span class="action-text">Поку...</span>
-        </div>
-    </div>
-
-    <div class="tabs">
-        <div class="tab">Криптовалюта</div>
-        <div class="tab active">Избранное</div>
-        <div class="tab">NFT</div>
-        <div class="tab-spacer"></div>
-        <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
-    </div>
-
-    <div class="coin-list">
-        <div class="coin-item">
-            <div class="coin-left">
-                <div class="coin-icon icon-sol">Ξ</div>
-                <div>
-                    <div class="coin-name">SOL</div>
-                    <div class="coin-vol">2,74 $B</div>
-                </div>
-            </div>
-            <div class="coin-right">
-                <div class="coin-price" id="price-sol">86,45 $</div>
-                <div class="coin-change change-neg" id="change-sol">-0.12%</div>
-            </div>
-        </div>
-        <div class="coin-item">
-            <div class="coin-left">
-                <div class="coin-icon icon-eth">⟠</div>
-                <div>
-                    <div class="coin-name">ETH</div>
-                    <div class="coin-vol">7,92 $B</div>
-                </div>
-            </div>
-            <div class="coin-right">
-                <div class="coin-price" id="price-eth">2 346,91 $</div>
-                <div class="coin-change change-pos" id="change-eth">+1.29%</div>
-            </div>
-        </div>
-        <div class="coin-item">
-            <div class="coin-left">
-                <div class="coin-icon icon-btc">₿</div>
-                <div>
-                    <div class="coin-name">BTC</div>
-                    <div class="coin-vol">17,24 $B</div>
-                </div>
-            </div>
-            <div class="coin-right">
-                <div class="coin-price" id="price-btc">78 101,78 $</div>
-                <div class="coin-change change-pos" id="change-btc">+0.55%</div>
-            </div>
-        </div>
-        <div class="coin-item">
-            <div class="coin-left">
-                <div class="coin-icon icon-bnb">B</div>
-                <div>
-                    <div class="coin-name">BNB</div>
-                    <div class="coin-vol">753,22 $M</div>
-                </div>
-            </div>
-            <div class="coin-right">
-                <div class="coin-price" id="price-bnb">631,99 $</div>
-                <div class="coin-change change-pos" id="change-bnb">+0.23%</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="view-tokens">Просмотреть токены</div>
-
-    <div class="earn-section">
-        <div class="section-title">Заработок &gt;</div>
-        <div class="earn-cards">
-            <div class="earn-card">
-                </div>
-            <div class="earn-card"></div>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item active">
-            <div class="nav-icon-wrapper">
-                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            </div>
-            Главная
-        </div>
-        <div class="nav-item">
-            <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-            Популярные
-        </div>
-        <div class="nav-center">
-            <div class="nav-center-btn">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
-            </div>
-            <span>Торговать</span>
-        </div>
-        <div class="nav-item">
-            <svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="20"></line><path d="M19 8V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2"></path><circle cx="12" cy="14" r="2"></circle></svg>
-            Награды
-        </div>
-        <div class="nav-item" id="btn-more">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
-            Подробнее
-        </div>
-    </div>
-</div>
-
-<script>
-    // Текущий баланс пользователя
-    let currentBalance = 0.00;
-    const mainBalanceEl = document.getElementById('mainBalance');
-    const subBalanceEl = document.getElementById('subBalance');
-
-    // Функция форматирования чисел (для цен и баланса)
-    function formatMoney(amount) {
-        return amount.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
-    }
-
-    // Обработка кнопки "Подробнее" - пополнение баланса
-    document.getElementById('btn-more').addEventListener('click', () => {
-        const input = prompt("Введите сумму для зачисления на баланс (в $):", "1000");
         
-        if (input !== null) {
-            const amount = parseFloat(input.replace(',', '.')); // Поддержка запятой
-            if (!isNaN(amount) && amount > 0) {
-                currentBalance += amount;
-                
-                // Анимация или мгновенное обновление
-                mainBalanceEl.textContent = formatMoney(currentBalance);
-                subBalanceEl.textContent = formatMoney(currentBalance) + ' (+100%)';
-            } else {
-                alert("Пожалуйста, введите корректное число.");
+        <div class="bg-[#2b2c2f] rounded-full flex items-center px-4 py-2 w-[70%] relative">
+            <i class="fa-solid fa-magnifying-glass text-gray-400 mr-2 text-sm"></i>
+            <input type="text" placeholder="Поиск" class="bg-transparent border-none outline-none text-white w-full text-[15px] placeholder-gray-400">
+            <!-- Иконка сканера внутри поиска -->
+            <i class="fa-solid fa-qrcode text-gray-400 ml-2 text-lg"></i>
+        </div>
+        
+        <div class="relative">
+            <i class="fa-regular fa-clone text-xl text-gray-300"></i>
+            <div class="red-dot" style="right: -4px; top: -2px;"></div>
+        </div>
+    </div>
+
+    <!-- Main Balance -->
+    <div class="flex flex-col items-center mt-3">
+        <div class="flex items-center text-gray-200 text-[14px] font-medium bg-[#2b2c2f] px-3 py-1.5 rounded-full mb-2 cursor-pointer relative">
+            Основной кошелек <i class="fa-solid fa-chevron-right text-[10px] ml-2 text-gray-400"></i>
+            <i class="fa-regular fa-copy text-gray-400 ml-3 text-sm"></i>
+        </div>
+        <h1 id="main-balance" class="text-[44px] font-bold tracking-tight mt-1" style="line-height: 1.1;">0,00 $</h1>
+        <p class="text-gray-400 text-[14px] mt-1">0,00 $ (0.00%)</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-center gap-5 mt-7 px-4">
+        <div class="flex flex-col items-center gap-2">
+            <div class="squircle"><i class="fa-solid fa-arrow-up-right-from-square text-lg text-gray-200"></i></div>
+            <span class="text-[13px] font-medium text-gray-200">Отпр...</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <div class="squircle"><i class="fa-solid fa-arrow-down text-lg text-gray-200"></i></div>
+            <span class="text-[13px] font-medium text-gray-200">Полу...</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <div class="squircle"><i class="fa-solid fa-rotate text-lg text-gray-200"></i></div>
+            <span class="text-[13px] font-medium text-gray-200">Обмен</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <div class="squircle squircle-green"><i class="fa-solid fa-plus text-2xl text-black"></i></div>
+            <span class="text-[13px] font-medium text-gray-200">Поку...</span>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex items-center justify-between px-4 mt-8 border-b border-[#2b2c2f] pb-3">
+        <div class="flex gap-6 text-[16px] font-semibold text-gray-500">
+            <span>Криптовалюта</span>
+            <span class="tab-active">Избранное</span>
+            <span>NFT</span>
+        </div>
+        <div class="flex gap-4 text-gray-400 text-lg">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <i class="fa-solid fa-sliders"></i>
+        </div>
+    </div>
+
+    <!-- Crypto List -->
+    <div class="flex-1 overflow-y-auto mt-2 pb-6">
+        <!-- SOL -->
+        <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex items-center gap-3">
+                <img src="https://cryptologos.cc/logos/solana-sol-logo.png" class="w-10 h-10 rounded-full bg-black border border-gray-800" alt="SOL">
+                <div>
+                    <h3 class="font-bold text-[17px]">SOL</h3>
+                    <p class="text-[13px] text-gray-400">2,74 $B</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h3 class="font-bold text-[17px]" id="price-sol">86,45 $</h3>
+                <p class="text-[13px] text-[#FF453A]" id="change-sol">-0.12%</p>
+            </div>
+        </div>
+        <!-- ETH -->
+        <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-[#627EEA] rounded-full flex items-center justify-center">
+                    <i class="fa-brands fa-ethereum text-white text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-[17px]">ETH</h3>
+                    <p class="text-[13px] text-gray-400">7,92 $B</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h3 class="font-bold text-[17px]" id="price-eth">2 346,91 $</h3>
+                <p class="text-[13px] text-[#50F485]" id="change-eth">+1.29%</p>
+            </div>
+        </div>
+        <!-- BTC -->
+        <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex items-center gap-3">
+                <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="w-10 h-10 rounded-full" alt="BTC">
+                <div>
+                    <h3 class="font-bold text-[17px]">BTC</h3>
+                    <p class="text-[13px] text-gray-400">17,24 $B</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h3 class="font-bold text-[17px]" id="price-btc">78 101,78 $</h3>
+                <p class="text-[13px] text-[#50F485]" id="change-btc">+0.55%</p>
+            </div>
+        </div>
+        <!-- BNB -->
+        <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex items-center gap-3">
+                <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" class="w-10 h-10 rounded-full" alt="BNB">
+                <div>
+                    <h3 class="font-bold text-[17px]">BNB</h3>
+                    <p class="text-[13px] text-gray-400">753,22 $M</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h3 class="font-bold text-[17px]" id="price-bnb">631,99 $</h3>
+                <p class="text-[13px] text-[#50F485]" id="change-bnb">+0.23%</p>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <button class="text-[#50F485] font-semibold text-[14px]">Просмотреть токены</button>
+        </div>
+        
+        <!-- Заработок section -->
+        <div class="px-4 mt-8">
+            <h2 class="font-bold text-[20px] mb-4">Заработок <i class="fa-solid fa-chevron-right text-sm ml-1 text-gray-400"></i></h2>
+            <div class="flex gap-4">
+                <div class="bg-[#1f2023] h-32 w-1/2 rounded-2xl border border-[#2b2c2f] relative overflow-hidden flex flex-col justify-between p-3">
+                    <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center">
+                        <i class="fa-solid fa-star text-yellow-500 text-xs"></i>
+                    </div>
+                </div>
+                <div class="bg-[#1f2023] h-32 w-1/2 rounded-2xl border border-[#2b2c2f] relative overflow-hidden flex flex-col justify-between p-3">
+                    <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center text-red-500">
+                         <i class="fa-solid fa-chart-pie text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 w-full bottom-panel pt-3 px-6 flex justify-between items-start z-50 shadow-[0_-10px_20px_rgba(0,0,0,0.3)]">
+        <div class="flex flex-col items-center gap-1.5 nav-icon active mt-1 w-[20%]">
+            <i class="fa-solid fa-house text-xl"></i>
+            <span class="text-[10px] font-medium">Главная</span>
+        </div>
+        <div class="flex flex-col items-center gap-1.5 nav-icon mt-1 w-[20%]">
+            <i class="fa-solid fa-arrow-trend-up text-xl"></i>
+            <span class="text-[10px] font-medium">Популярные</span>
+        </div>
+        
+        <!-- Центральная кнопка обмена -->
+        <div class="trade-btn-container w-[20%]">
+            <div class="trade-btn shadow-[0_0_15px_rgba(80,244,133,0.2)]">
+                <i class="fa-solid fa-arrow-right-arrow-left rotate-90"></i>
+            </div>
+            <span class="text-[10px] font-medium text-gray-400 mt-1">Торговать</span>
+        </div>
+
+        <div class="flex flex-col items-center gap-1.5 nav-icon mt-1 w-[20%]">
+            <i class="fa-solid fa-gift text-xl"></i>
+            <span class="text-[10px] font-medium">Награды</span>
+        </div>
+        
+        <!-- КНОПКА ПОДРОБНЕЕ (Секретная функция) -->
+        <div class="flex flex-col items-center gap-1.5 nav-icon cursor-pointer mt-1 w-[20%]" onclick="setCustomBalance()">
+            <i class="fa-regular fa-compass text-xl"></i>
+            <span class="text-[10px] font-medium">Подробнее</span>
+        </div>
+    </div>
+
+    <script>
+        // Форматирование чисел под вид (1 000,00 $)
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('ru-RU', { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            }).format(amount) + ' $';
+        }
+
+        // Функция подмены баланса (работает по нажатию на "Подробнее")
+        function setCustomBalance() {
+            let newBalance = prompt("Введите желаемый баланс (например: 150000.50):");
+            if (newBalance !== null && newBalance !== "") {
+                let parsedBalance = parseFloat(newBalance.replace(',', '.').replace(/\s/g, ''));
+                if (!isNaN(parsedBalance)) {
+                    document.getElementById('main-balance').innerText = formatMoney(parsedBalance);
+                } else {
+                    alert("Введите корректное число.");
+                }
             }
         }
-    });
 
-    // Функция обновления данных с CoinGecko API
-    async function updateCryptoPrices() {
-        try {
-            // API запрос. CoinGecko публичный и бесплатный.
-            const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana,ethereum,bitcoin,binancecoin&vs_currencies=usd&include_24hr_change=true');
-            const data = await response.json();
+        // Автообновление курсов через Binance API
+        async function fetchCryptoPrices() {
+            const symbols = {
+                'sol': 'SOLUSDT',
+                'eth': 'ETHUSDT',
+                'btc': 'BTCUSDT',
+                'bnb': 'BNBUSDT'
+            };
 
-            // Маппинг данных
-            updateCoinRow('sol', data.solana);
-            updateCoinRow('eth', data.ethereum);
-            updateCoinRow('btc', data.bitcoin);
-            updateCoinRow('bnb', data.binancecoin);
-            
-        } catch (error) {
-            console.error("Ошибка при получении курсов API:", error);
+            try {
+                const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
+                const data = await response.json();
+
+                for (const [coin, symbol] of Object.entries(symbols)) {
+                    const coinData = data.find(item => item.symbol === symbol);
+                    if (coinData) {
+                        const price = parseFloat(coinData.lastPrice);
+                        const change = parseFloat(coinData.priceChangePercent);
+                        
+                        document.getElementById(`price-${coin}`).innerText = formatMoney(price);
+                        
+                        const changeEl = document.getElementById(`change-${coin}`);
+                        if (change >= 0) {
+                            changeEl.innerText = `+${change.toFixed(2)}%`;
+                            changeEl.style.color = '#50F485';
+                        } else {
+                            changeEl.innerText = `${change.toFixed(2)}%`;
+                            changeEl.style.color = '#FF453A';
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка API Binance. Оставлены начальные данные.', error);
+            }
         }
-    }
 
-    // Вспомогательная функция для обновления конкретной монеты в HTML
-    function updateCoinRow(id, coinData) {
-        if (!coinData) return;
-
-        const priceEl = document.getElementById(`price-${id}`);
-        const changeEl = document.getElementById(`change-${id}`);
-
-        // Обновляем цену
-        priceEl.textContent = formatMoney(coinData.usd);
-
-        // Обновляем процент
-        const change = coinData.usd_24h_change;
-        const changeFormatted = Math.abs(change).toFixed(2) + '%';
-
-        if (change >= 0) {
-            changeEl.textContent = '+' + changeFormatted;
-            changeEl.className = 'coin-change change-pos';
-        } else {
-            changeEl.textContent = '-' + changeFormatted;
-            changeEl.className = 'coin-change change-neg';
-        }
-    }
-
-    // Запускаем обновление цен при загрузке страницы
-    updateCryptoPrices();
-
-    // Автоматическое обновление цен каждую минуту (60000 мс)
-    setInterval(updateCryptoPrices, 60000);
-
-</script>
+        // Через 5 секунд после загрузки страницы запускаем API.
+        // Таким образом при входе у тебя всегда будут сначала точные цифры со скриншота
+        setTimeout(() => {
+            fetchCryptoPrices();
+            setInterval(fetchCryptoPrices, 10000); // далее обновляем каждые 10 сек
+        }, 5000);
+    </script>
 </body>
 </html>
