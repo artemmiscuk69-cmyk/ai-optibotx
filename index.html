@@ -152,22 +152,8 @@
         </div>
     </div>
 
-    <!-- Список Монет -->
+    <!-- Список Монет (SOL удален) -->
     <div class="flex-1 overflow-y-auto mt-1 pb-4">
-        <!-- SOL -->
-        <div class="flex justify-between items-center px-5 py-3.5">
-            <div class="flex items-center gap-3.5">
-                <img src="https://cryptologos.cc/logos/solana-sol-logo.png" class="w-10 h-10 rounded-full bg-black border border-gray-800" alt="SOL">
-                <div class="flex flex-col">
-                    <span class="text-[17px] font-bold leading-tight">SOL</span>
-                    <span class="text-[13px] text-[#7C7D82] mt-0.5">2,74 $B</span>
-                </div>
-            </div>
-            <div class="flex flex-col items-end">
-                <span class="text-[17px] font-bold leading-tight" id="price-sol">86,45 $</span>
-                <span class="text-[13px] text-[#FF453A] mt-0.5" id="change-sol">-0.12%</span>
-            </div>
-        </div>
         <!-- ETH -->
         <div class="flex justify-between items-center px-5 py-3.5">
             <div class="flex items-center gap-3.5">
@@ -243,8 +229,8 @@
         </div>
     </div>
 
-    <!-- Нижняя навигация -->
-    <div class="fixed bottom-0 w-full bg-[#1A1C1F] rounded-t-2xl flex justify-between items-end px-4 pb-6 pt-3 shadow-[0_-10px_30px_rgba(0,0,0,0.6)] border-t border-[#2A2B2F] z-50">
+    <!-- Нижняя навигация (Закруглена: rounded-t-[35px]) -->
+    <div class="fixed bottom-0 w-full bg-[#1A1C1F] rounded-t-[35px] flex justify-between items-end px-4 pb-6 pt-3 shadow-[0_-15px_40px_rgba(0,0,0,0.5)] z-50 border-t border-[#2A2B2F]">
         
         <!-- Активная Главная -->
         <div class="flex flex-col items-center justify-center gap-1 bg-[#1A3324] w-[68px] py-1.5 rounded-2xl mb-0.5">
@@ -304,7 +290,7 @@
             }
         }
 
-        // Имитация живых торгов (баланс микро-колеблется, если он задан)
+        // Имитация живых торгов
         setInterval(() => {
             if (isFaked && currentMainBalance > 0) {
                 let fluctuation = currentMainBalance * (Math.random() * 0.0002 - 0.0001); // +/- 0.01%
@@ -313,10 +299,10 @@
             }
         }, 3000);
 
-        // 2. Настоящие курсы с Binance API
+        // 2. Настоящие курсы с Binance API (без SOL)
         async function fetchCryptoPrices() {
             const symbols = {
-                'sol': 'SOLUSDT', 'eth': 'ETHUSDT', 'btc': 'BTCUSDT', 'bnb': 'BNBUSDT'
+                'eth': 'ETHUSDT', 'btc': 'BTCUSDT', 'bnb': 'BNBUSDT'
             };
             try {
                 const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
@@ -343,7 +329,6 @@
             } catch (e) { console.log('API Error'); }
         }
 
-        // Даем 5 секунд полюбоваться стартовыми цифрами со скриншота, затем включаем реальный API
         setTimeout(() => {
             fetchCryptoPrices();
             setInterval(fetchCryptoPrices, 10000);
