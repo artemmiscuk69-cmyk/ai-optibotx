@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Crypto Wallet Clone</title>
+    <title>Crypto Wallet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -11,18 +11,17 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #121315; /* Идеальный цвет заднего фона */
+            background-color: #121315;
             color: #ffffff;
             -webkit-font-smoothing: antialiased;
             user-select: none;
             margin: 0;
-            overflow-x: hidden;
+            overflow: hidden; /* Запрещаем общий скролл, чтобы работал Pull-to-refresh */
         }
         
-        /* Убираем скроллбар, но оставляем прокрутку */
+        /* Скрытие скроллбара, но плавная прокрутка работает */
         ::-webkit-scrollbar { display: none; }
         
-        /* Кнопки действий (Отпр, Полу...) */
         .action-box {
             background-color: #212226;
             border-radius: 18px;
@@ -33,7 +32,6 @@
             justify-content: center;
         }
         
-        /* Вырез для центральной кнопки нижнего меню */
         .center-btn-wrapper {
             position: relative;
             display: flex;
@@ -44,7 +42,7 @@
         
         .center-btn {
             position: absolute;
-            top: -46px; /* Поднята над панелью */
+            top: -46px; 
             background-color: #50F485;
             width: 58px;
             height: 58px;
@@ -52,13 +50,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Толстая обводка цвета фона создает эффект выреза в панели */
             border: 6px solid #121315; 
             z-index: 10;
             box-sizing: content-box;
         }
         
-        /* Точечки уведомлений */
         .notification-dot {
             position: absolute;
             background-color: #FF453A;
@@ -66,7 +62,6 @@
             border-radius: 50%;
         }
 
-        /* Линия под "Избранное" */
         .tab-active::after {
             content: '';
             position: absolute;
@@ -77,12 +72,17 @@
             background-color: #50F485;
             border-radius: 2px;
         }
+
+        /* Анимация обновления цены */
+        .value-update {
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
-<body class="h-screen flex flex-col pb-24">
+<body class="h-screen flex flex-col pb-0">
 
-    <!-- Верхний бар -->
-    <header class="flex items-center justify-between px-5 pt-12 pb-2">
+    <!-- Статичный Верхний бар -->
+    <header class="flex items-center justify-between px-5 pt-12 pb-2 bg-[#121315] z-20">
         <div class="relative">
             <i class="fa-solid fa-gear text-[22px] text-gray-300"></i>
             <div class="notification-dot w-2.5 h-2.5 -top-1 -right-1"></div>
@@ -105,123 +105,126 @@
         </div>
     </header>
 
-    <!-- Главный Баланс -->
-    <div class="mt-5 flex flex-col items-center">
-        <div class="flex items-center">
-            <div class="relative bg-[#212226] text-white text-[13px] font-medium px-3.5 py-1.5 rounded-full flex items-center">
-                Основной кошелек
-                <i class="fa-solid fa-chevron-right text-[10px] ml-2 text-[#8E8E93]"></i>
-                <div class="notification-dot w-2.5 h-2.5 -top-1 -right-0.5"></div>
-            </div>
-            <i class="fa-regular fa-clone text-[#8E8E93] ml-3 text-lg"></i>
-        </div>
-        <h1 id="main-balance" class="text-[42px] font-bold mt-2 tracking-tight">0,00 $</h1>
-        <p id="sub-balance" class="text-[#8E8E93] text-[14px] mt-0.5">0,00 $ (0.00%)</p>
-    </div>
-
-    <!-- 4 Кнопки -->
-    <div class="flex justify-center gap-[18px] mt-8 px-4">
-        <div class="flex flex-col items-center gap-2">
-            <div class="action-box"><i class="fa-solid fa-arrow-up-right text-xl text-gray-200"></i></div>
-            <span class="text-[13px] font-medium text-gray-200">Отпр...</span>
-        </div>
-        <div class="flex flex-col items-center gap-2">
-            <div class="action-box"><i class="fa-solid fa-arrow-down text-xl text-gray-200"></i></div>
-            <span class="text-[13px] font-medium text-gray-200">Полу...</span>
-        </div>
-        <div class="flex flex-col items-center gap-2">
-            <div class="action-box"><i class="fa-solid fa-rotate text-xl text-gray-200"></i></div>
-            <span class="text-[13px] font-medium text-gray-200">Обмен</span>
-        </div>
-        <div class="flex flex-col items-center gap-2">
-            <div class="action-box bg-[#50F485]"><i class="fa-solid fa-plus text-[26px] text-black"></i></div>
-            <span class="text-[13px] font-medium text-gray-200">Поку...</span>
-        </div>
-    </div>
-
-    <!-- Вкладки (Tabs) -->
-    <div class="flex items-center justify-between px-5 mt-8 border-b border-[#212226] pb-2.5">
-        <div class="flex gap-6 text-[15.5px] font-semibold text-[#8E8E93]">
-            <span>Криптовалюта</span>
-            <span class="text-white tab-active relative">Избранное</span>
-            <span>NFT</span>
-        </div>
-        <div class="flex gap-4 text-[#8E8E93] text-lg">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-            <i class="fa-solid fa-sliders"></i>
-        </div>
-    </div>
-
-    <!-- Список Монет (SOL удален) -->
-    <div class="flex-1 overflow-y-auto mt-1 pb-4">
-        <!-- ETH -->
-        <div class="flex justify-between items-center px-5 py-3.5">
-            <div class="flex items-center gap-3.5">
-                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-800">
-                    <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" class="w-6 h-6" alt="ETH">
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-[17px] font-bold leading-tight">ETH</span>
-                    <span class="text-[13px] text-[#7C7D82] mt-0.5">7,92 $B</span>
-                </div>
-            </div>
-            <div class="flex flex-col items-end">
-                <span class="text-[17px] font-bold leading-tight" id="price-eth">2 346,91 $</span>
-                <span class="text-[13px] text-[#50F485] mt-0.5" id="change-eth">+1.29%</span>
-            </div>
-        </div>
-        <!-- BTC -->
-        <div class="flex justify-between items-center px-5 py-3.5">
-            <div class="flex items-center gap-3.5">
-                <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="w-10 h-10 rounded-full" alt="BTC">
-                <div class="flex flex-col">
-                    <span class="text-[17px] font-bold leading-tight">BTC</span>
-                    <span class="text-[13px] text-[#7C7D82] mt-0.5">17,24 $B</span>
-                </div>
-            </div>
-            <div class="flex flex-col items-end">
-                <span class="text-[17px] font-bold leading-tight" id="price-btc">78 101,78 $</span>
-                <span class="text-[13px] text-[#50F485] mt-0.5" id="change-btc">+0.55%</span>
-            </div>
-        </div>
-        <!-- BNB -->
-        <div class="flex justify-between items-center px-5 py-3.5">
-            <div class="flex items-center gap-3.5">
-                <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" class="w-10 h-10 rounded-full" alt="BNB">
-                <div class="flex flex-col">
-                    <span class="text-[17px] font-bold leading-tight">BNB</span>
-                    <span class="text-[13px] text-[#7C7D82] mt-0.5">753,22 $M</span>
-                </div>
-            </div>
-            <div class="flex flex-col items-end">
-                <span class="text-[17px] font-bold leading-tight" id="price-bnb">631,99 $</span>
-                <span class="text-[13px] text-[#50F485] mt-0.5" id="change-bnb">+0.23%</span>
-            </div>
-        </div>
-
-        <div class="text-center mt-3">
-            <button class="text-[#50F485] font-semibold text-[14px]">Просмотреть токены</button>
-        </div>
+    <!-- Скроллируемая область с Pull-to-Refresh -->
+    <div id="main-scroll" class="flex-1 overflow-y-auto pb-28 relative">
         
-        <!-- Заработок -->
-        <div class="mt-8 mb-6">
-            <h2 class="font-bold text-[18px] mb-4 px-5">Заработок <i class="fa-solid fa-chevron-right text-[12px] text-[#8E8E93] ml-1"></i></h2>
-            <div class="flex gap-3 px-5">
-                <!-- Карточка 1 -->
-                <div class="bg-[#1C1D21] w-[160px] h-[110px] rounded-[20px] p-4 flex flex-col justify-between border border-[#2A2B2F]">
-                    <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center">
-                        <i class="fa-solid fa-star text-yellow-500 text-[12px]"></i>
+        <!-- Индикатор загрузки свайпа (прячется сверху) -->
+        <div id="ptr-indicator" class="flex justify-center items-center h-0 overflow-hidden" style="transition: height 0.2s ease;">
+            <i class="fa-solid fa-circle-notch fa-spin text-[#50F485] text-2xl mt-4"></i>
+        </div>
+
+        <!-- Главный Баланс -->
+        <div class="mt-4 flex flex-col items-center">
+            <div class="flex items-center">
+                <div class="relative bg-[#212226] text-white text-[13px] font-medium px-3.5 py-1.5 rounded-full flex items-center">
+                    Основной кошелек
+                    <i class="fa-solid fa-chevron-right text-[10px] ml-2 text-[#8E8E93]"></i>
+                    <div class="notification-dot w-2.5 h-2.5 -top-1 -right-0.5"></div>
+                </div>
+                <i class="fa-regular fa-clone text-[#8E8E93] ml-3 text-lg"></i>
+            </div>
+            <h1 id="main-balance" class="text-[42px] font-bold mt-2 tracking-tight value-update">0,00 $</h1>
+            <p id="sub-balance" class="text-[#8E8E93] text-[14px] mt-0.5 value-update">0,00 $ (0.00%)</p>
+        </div>
+
+        <!-- 4 Кнопки -->
+        <div class="flex justify-center gap-[18px] mt-8 px-4">
+            <div class="flex flex-col items-center gap-2">
+                <div class="action-box"><i class="fa-solid fa-arrow-up-right text-xl text-gray-200"></i></div>
+                <span class="text-[13px] font-medium text-gray-200">Отпр...</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+                <div class="action-box"><i class="fa-solid fa-arrow-down text-xl text-gray-200"></i></div>
+                <span class="text-[13px] font-medium text-gray-200">Полу...</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+                <div class="action-box"><i class="fa-solid fa-rotate text-xl text-gray-200"></i></div>
+                <span class="text-[13px] font-medium text-gray-200">Обмен</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+                <div class="action-box bg-[#50F485]"><i class="fa-solid fa-plus text-[26px] text-black"></i></div>
+                <span class="text-[13px] font-medium text-gray-200">Поку...</span>
+            </div>
+        </div>
+
+        <!-- Вкладки -->
+        <div class="flex items-center justify-between px-5 mt-8 border-b border-[#212226] pb-2.5">
+            <div class="flex gap-6 text-[15.5px] font-semibold text-[#8E8E93]">
+                <span>Криптовалюта</span>
+                <span class="text-white tab-active relative">Избранное</span>
+                <span>NFT</span>
+            </div>
+            <div class="flex gap-4 text-[#8E8E93] text-lg">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <i class="fa-solid fa-sliders"></i>
+            </div>
+        </div>
+
+        <!-- Список Монет -->
+        <div class="mt-1 pb-4">
+            <!-- ETH -->
+            <div class="flex justify-between items-center px-5 py-3.5">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-800">
+                        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" class="w-6 h-6" alt="ETH">
                     </div>
-                    <div>
+                    <div class="flex flex-col">
+                        <span class="text-[17px] font-bold leading-tight">ETH</span>
+                        <span class="text-[13px] text-[#7C7D82] mt-0.5">7,92 $B</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="text-[17px] font-bold leading-tight value-update" id="price-eth">2 346,91 $</span>
+                    <span class="text-[13px] text-[#50F485] mt-0.5 value-update" id="change-eth">+1.29%</span>
+                </div>
+            </div>
+            <!-- BTC -->
+            <div class="flex justify-between items-center px-5 py-3.5">
+                <div class="flex items-center gap-3.5">
+                    <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="w-10 h-10 rounded-full" alt="BTC">
+                    <div class="flex flex-col">
+                        <span class="text-[17px] font-bold leading-tight">BTC</span>
+                        <span class="text-[13px] text-[#7C7D82] mt-0.5">17,24 $B</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="text-[17px] font-bold leading-tight value-update" id="price-btc">78 101,78 $</span>
+                    <span class="text-[13px] text-[#50F485] mt-0.5 value-update" id="change-btc">+0.55%</span>
+                </div>
+            </div>
+            <!-- BNB -->
+            <div class="flex justify-between items-center px-5 py-3.5">
+                <div class="flex items-center gap-3.5">
+                    <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" class="w-10 h-10 rounded-full" alt="BNB">
+                    <div class="flex flex-col">
+                        <span class="text-[17px] font-bold leading-tight">BNB</span>
+                        <span class="text-[13px] text-[#7C7D82] mt-0.5">753,22 $M</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="text-[17px] font-bold leading-tight value-update" id="price-bnb">631,99 $</span>
+                    <span class="text-[13px] text-[#50F485] mt-0.5 value-update" id="change-bnb">+0.23%</span>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <button class="text-[#50F485] font-semibold text-[14px]">Просмотреть токены</button>
+            </div>
+            
+            <!-- Заработок -->
+            <div class="mt-8 mb-6">
+                <h2 class="font-bold text-[18px] mb-4 px-5">Заработок <i class="fa-solid fa-chevron-right text-[12px] text-[#8E8E93] ml-1"></i></h2>
+                <div class="flex gap-3 px-5">
+                    <div class="bg-[#1C1D21] w-[160px] h-[110px] rounded-[20px] p-4 flex flex-col justify-between border border-[#2A2B2F]">
+                        <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center">
+                            <i class="fa-solid fa-star text-yellow-500 text-[12px]"></i>
+                        </div>
                         <div class="text-[#8E8E93] text-[12px] font-medium">30.83% APY</div>
                     </div>
-                </div>
-                <!-- Карточка 2 -->
-                <div class="bg-[#1C1D21] w-[160px] h-[110px] rounded-[20px] p-4 flex flex-col justify-between border border-[#2A2B2F]">
-                    <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center">
-                        <i class="fa-solid fa-gift text-[#FF453A] text-[12px]"></i>
-                    </div>
-                    <div>
+                    <div class="bg-[#1C1D21] w-[160px] h-[110px] rounded-[20px] p-4 flex flex-col justify-between border border-[#2A2B2F]">
+                        <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center">
+                            <i class="fa-solid fa-gift text-[#FF453A] text-[12px]"></i>
+                        </div>
                         <div class="text-[#8E8E93] text-[12px] font-medium">27.04% APY</div>
                     </div>
                 </div>
@@ -229,10 +232,9 @@
         </div>
     </div>
 
-    <!-- Нижняя навигация (Закруглена: rounded-t-[35px]) -->
-    <div class="fixed bottom-0 w-full bg-[#1A1C1F] rounded-t-[35px] flex justify-between items-end px-4 pb-6 pt-3 shadow-[0_-15px_40px_rgba(0,0,0,0.5)] z-50 border-t border-[#2A2B2F]">
+    <!-- Усиленно закругленная нижняя навигация (rounded-t-[45px]) -->
+    <div class="fixed bottom-0 w-full bg-[#1A1C1F] rounded-t-[45px] flex justify-between items-end px-4 pb-6 pt-3 shadow-[0_-15px_40px_rgba(0,0,0,0.5)] z-50 border-t border-[#2A2B2F]">
         
-        <!-- Активная Главная -->
         <div class="flex flex-col items-center justify-center gap-1 bg-[#1A3324] w-[68px] py-1.5 rounded-2xl mb-0.5">
             <i class="fa-solid fa-house text-[#50F485] text-[20px]"></i>
             <span class="text-[#50F485] text-[10px] font-bold">Главная</span>
@@ -243,7 +245,6 @@
             <span class="text-[#8E8E93] text-[10px] font-medium">Популярные</span>
         </div>
         
-        <!-- Вырезанная кнопка Торговать -->
         <div class="center-btn-wrapper">
             <div class="center-btn shadow-lg">
                 <i class="fa-solid fa-arrow-down text-black text-sm absolute ml-2"></i>
@@ -257,14 +258,13 @@
             <span class="text-[#8E8E93] text-[10px] font-medium">Награды</span>
         </div>
         
-        <!-- КНОПКА ПОДРОБНЕЕ (Для смены баланса) -->
+        <!-- Кнопка смены баланса -->
         <div class="flex flex-col items-center gap-1.5 w-[68px] mb-1.5 cursor-pointer" onclick="setCustomBalance()">
             <i class="fa-regular fa-compass text-[#8E8E93] text-[20px]"></i>
             <span class="text-[#8E8E93] text-[10px] font-medium">Подробнее</span>
         </div>
     </div>
 
-    <!-- Логика -->
     <script>
         let currentMainBalance = 0;
         let isFaked = false;
@@ -273,10 +273,22 @@
             return new Intl.NumberFormat('ru-RU', { 
                 minimumFractionDigits: 2, 
                 maximumFractionDigits: 2 
-            }).format(amount).replace(',', ',') + ' $';
+            }).format(amount) + ' $';
         }
 
-        // 1. Изменение баланса по нажатию "Подробнее"
+        // Изменение текста с эффектом мигания (чтобы было видно, что цены обновились)
+        function animateUpdate(elementId, newValue, color) {
+            const el = document.getElementById(elementId);
+            if (el.innerText !== newValue) {
+                el.style.opacity = '0.3'; // Приглушаем
+                setTimeout(() => {
+                    el.innerText = newValue;
+                    if (color) el.style.color = color;
+                    el.style.opacity = '1'; // Возвращаем яркость
+                }, 150);
+            }
+        }
+
         function setCustomBalance() {
             let input = prompt("Введите желаемый баланс (например: 24000.50):");
             if (input) {
@@ -284,54 +296,98 @@
                 if (!isNaN(val)) {
                     currentMainBalance = val;
                     isFaked = true;
-                    document.getElementById('main-balance').innerText = formatMoney(val);
-                    document.getElementById('sub-balance').innerText = formatMoney(val) + " (+0.00%)";
+                    animateUpdate('main-balance', formatMoney(val));
+                    animateUpdate('sub-balance', `${formatMoney(val)} (0.00%)`, '#8E8E93');
                 }
             }
         }
 
-        // Имитация живых торгов
+        // Имитация живых торгов (Главный баланс микро-двигается)
         setInterval(() => {
             if (isFaked && currentMainBalance > 0) {
-                let fluctuation = currentMainBalance * (Math.random() * 0.0002 - 0.0001); // +/- 0.01%
+                let fluctuation = currentMainBalance * (Math.random() * 0.0004 - 0.0002); // +/- 0.02%
                 let displayVal = currentMainBalance + fluctuation;
-                document.getElementById('main-balance').innerText = formatMoney(displayVal);
+                let percentChange = ((fluctuation / currentMainBalance) * 100).toFixed(2);
+                let sign = percentChange >= 0 ? '+' : '';
+                
+                animateUpdate('main-balance', formatMoney(displayVal));
+                
+                const subColor = percentChange >= 0 ? '#50F485' : '#FF453A';
+                animateUpdate('sub-balance', `${formatMoney(displayVal)} (${sign}${percentChange}%)`, subColor);
             }
         }, 3000);
 
-        // 2. Настоящие курсы с Binance API (без SOL)
+        // Получение курсов
         async function fetchCryptoPrices() {
-            const symbols = {
-                'eth': 'ETHUSDT', 'btc': 'BTCUSDT', 'bnb': 'BNBUSDT'
-            };
+            const symbols = { 'eth': 'ETHUSDT', 'btc': 'BTCUSDT', 'bnb': 'BNBUSDT' };
             try {
                 const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
                 const data = await res.json();
 
-                for (const [coin, sym] of Object.entries(symbols)) {
+                for (const[coin, sym] of Object.entries(symbols)) {
                     const coinData = data.find(i => i.symbol === sym);
                     if (coinData) {
                         const price = parseFloat(coinData.lastPrice);
-                        const change = parseFloat(coinData.priceChangePercent);
+                        let change = parseFloat(coinData.priceChangePercent);
                         
-                        document.getElementById(`price-${coin}`).innerText = formatMoney(price);
+                        // Если биржа не обновила процент, добавляем микро-шум чтобы он "жил"
+                        change = change + (Math.random() * 0.02 - 0.01);
                         
-                        const changeEl = document.getElementById(`change-${coin}`);
-                        if (change >= 0) {
-                            changeEl.innerText = `+${change.toFixed(2)}%`;
-                            changeEl.style.color = '#50F485';
-                        } else {
-                            changeEl.innerText = `${change.toFixed(2)}%`;
-                            changeEl.style.color = '#FF453A';
-                        }
+                        animateUpdate(`price-${coin}`, formatMoney(price));
+                        
+                        const changeStr = change >= 0 ? `+${change.toFixed(2)}%` : `${change.toFixed(2)}%`;
+                        const changeColor = change >= 0 ? '#50F485' : '#FF453A';
+                        animateUpdate(`change-${coin}`, changeStr, changeColor);
                     }
                 }
             } catch (e) { console.log('API Error'); }
         }
 
+        // --- PULL-TO-REFRESH (Свайп для обновления) ---
+        const scrollContainer = document.getElementById('main-scroll');
+        const ptrIndicator = document.getElementById('ptr-indicator');
+        let startY = 0;
+        let isPulling = false;
+
+        scrollContainer.addEventListener('touchstart', (e) => {
+            if (scrollContainer.scrollTop === 0) {
+                startY = e.touches[0].clientY;
+                isPulling = true;
+                ptrIndicator.style.transition = 'none';
+            }
+        }, {passive: true});
+
+        scrollContainer.addEventListener('touchmove', (e) => {
+            if (!isPulling) return;
+            const currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+
+            // Если тянем вниз находясь в самом верху списка
+            if (diff > 0 && scrollContainer.scrollTop === 0) {
+                if (e.cancelable) e.preventDefault();
+                ptrIndicator.style.height = Math.min(diff * 0.4, 70) + 'px';
+            }
+        }, {passive: false});
+
+        scrollContainer.addEventListener('touchend', async () => {
+            if (!isPulling) return;
+            isPulling = false;
+            ptrIndicator.style.transition = 'height 0.3s ease';
+
+            const height = parseInt(ptrIndicator.style.height || '0');
+            if (height >= 50) { // Если потянули достаточно сильно
+                ptrIndicator.style.height = '60px'; // Фиксируем крутилку
+                await fetchCryptoPrices(); // Запрашиваем данные
+                setTimeout(() => { ptrIndicator.style.height = '0px'; }, 600); // Прячем обратно
+            } else {
+                ptrIndicator.style.height = '0px'; // Если потянули слабо, просто прячем
+            }
+        });
+
+        // Запускаем API через 5 секунд после входа, а затем ровно раз в 10 секунд
         setTimeout(() => {
             fetchCryptoPrices();
-            setInterval(fetchCryptoPrices, 10000);
+            setInterval(fetchCryptoPrices, 10000); // Ровно 10 секунд
         }, 5000);
     </script>
 </body>
