@@ -71,11 +71,10 @@
 </head>
 <body class="h-screen flex flex-col pb-0">
 
-    <!-- Верхний бар (Подняли выше, убрали лишние отступы) -->
+    <!-- Верхний бар -->
     <header class="flex items-center justify-between px-5 pb-3 z-20 bg-transparent" style="padding-top: calc(env(safe-area-inset-top) + 4px);">
         <div class="relative">
             <i class="fa-solid fa-gear text-[22px] text-gray-300"></i>
-            <!-- Точка увеличена (w-3.5 h-3.5) -->
             <div class="notification-dot w-3.5 h-3.5 -top-1 -right-1"></div>
         </div>
         
@@ -107,13 +106,12 @@
             </svg>
         </div>
 
-        <!-- Главный Баланс (Подняли выше) -->
+        <!-- Главный Баланс -->
         <div class="mt-0 flex flex-col items-center">
             <div class="flex items-center">
                 <div class="relative bg-[#26282E] text-white text-[13px] font-medium px-3.5 py-1.5 rounded-full flex items-center">
                     Основной кошелек
                     <i class="fa-solid fa-chevron-right text-[10px] ml-2 text-[#8E8E93]"></i>
-                    <!-- Точка увеличена -->
                     <div class="notification-dot w-3.5 h-3.5 -top-1 -right-1"></div>
                 </div>
                 <i class="fa-regular fa-clone text-[#8E8E93] ml-3 text-lg tap-effect"></i>
@@ -181,9 +179,26 @@
             </div>
         </div>
 
-        <!-- Список Монет -->
+        <!-- Список Монет строго по скриншоту -->
         <div class="mt-1 pb-4">
-            <!-- ETH -->
+            <!-- 1. SOL -->
+            <div class="flex justify-between items-center px-5 py-3.5 tap-effect">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 bg-[#26282E] rounded-full flex items-center justify-center p-1 border border-[#33353C]">
+                        <img src="https://cryptologos.cc/logos/solana-sol-logo.png" class="w-full h-full object-contain" alt="SOL">
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[17px] font-bold leading-tight">SOL</span>
+                        <span class="text-[13px] text-[#7C7D82] mt-0.5">2,74 $B</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="text-[17px] font-bold leading-tight value-update" id="price-sol">86,45 $</span>
+                    <span class="text-[13px] text-[#FF453A] mt-0.5 value-update font-medium" id="change-sol">-0.12%</span>
+                </div>
+            </div>
+            
+            <!-- 2. ETH -->
             <div class="flex justify-between items-center px-5 py-3.5 tap-effect">
                 <div class="flex items-center gap-3.5">
                     <div class="w-10 h-10 bg-[#26282E] rounded-full flex items-center justify-center p-1 border border-[#33353C]">
@@ -199,7 +214,8 @@
                     <span class="text-[13px] text-[#50F485] mt-0.5 value-update font-medium" id="change-eth">+1.29%</span>
                 </div>
             </div>
-            <!-- BTC -->
+            
+            <!-- 3. BTC -->
             <div class="flex justify-between items-center px-5 py-3.5 tap-effect">
                 <div class="flex items-center gap-3.5">
                     <div class="w-10 h-10 bg-[#26282E] rounded-full flex items-center justify-center p-1 border border-[#33353C]">
@@ -215,7 +231,8 @@
                     <span class="text-[13px] text-[#50F485] mt-0.5 value-update font-medium" id="change-btc">+0.55%</span>
                 </div>
             </div>
-            <!-- BNB -->
+            
+            <!-- 4. BNB -->
             <div class="flex justify-between items-center px-5 py-3.5 tap-effect">
                 <div class="flex items-center gap-3.5">
                     <div class="w-10 h-10 bg-[#26282E] rounded-full flex items-center justify-center p-1 border border-[#33353C]">
@@ -257,8 +274,7 @@
         </div>
     </div>
 
-    <!-- НИЖНЯЯ ПАНЕЛЬ КАК "ОСТРОВОК" 
-         Сделано закругление 40px, опущено вниз, но безопасно отделено от края экрана (calc 14px + safe-area) -->
+    <!-- НИЖНЯЯ ПАНЕЛЬ -->
     <div class="fixed left-4 right-4 bg-[#23252A] rounded-[40px] flex justify-between items-center px-2 py-3 z-50 border border-[#33353C] shadow-2xl pb-2 pt-3" style="bottom: calc(max(14px, env(safe-area-inset-bottom) + 10px));">
         
         <!-- 1. Главная -->
@@ -272,7 +288,7 @@
             </div>
         </div>
 
-        <!-- 2. Популярные (Текст заменен) -->
+        <!-- 2. Популярные -->
         <div class="flex flex-col items-center justify-center w-[60px] gap-1 mb-1 tap-effect">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
@@ -281,10 +297,9 @@
             <span class="text-[#8E8E93] text-[10px] font-medium mt-0.5">Популярные</span>
         </div>
         
-        <!-- 3. Торговать (Стрелки изменены на ВЛЕВО/ВПРАВО, тонкие. Текст Торговать) -->
+        <!-- 3. Торговать -->
         <div class="relative flex flex-col items-center w-[70px] tap-effect">
             <div class="absolute -top-[44px] bg-[#50F485] w-[54px] h-[54px] rounded-full flex items-center justify-center border-[5px] border-[var(--bg-main)] z-10 box-content shadow-lg">
-                <!-- Тонкие стрелки (stroke-width="1") Вправо и Влево -->
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 9h15"></path>
                     <path d="M15 5l4 4-4 4"></path>
@@ -307,7 +322,7 @@
             <span class="text-[#8E8E93] text-[10px] font-medium mt-0.5">Награды</span>
         </div>
         
-        <!-- 5. Подробнее (Текст заменен) -->
+        <!-- 5. Подробнее -->
         <button onclick="setCustomBalance()" class="flex flex-col items-center justify-center w-[60px] gap-1 mb-1 bg-transparent border-none outline-none tap-effect">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -335,7 +350,7 @@
 
         function animateUpdate(elementId, newValue, color) {
             const el = document.getElementById(elementId);
-            if (el.innerText !== newValue) {
+            if (el && el.innerText !== newValue) {
                 el.style.opacity = '0.3'; 
                 setTimeout(() => {
                     el.innerText = newValue;
@@ -373,7 +388,8 @@
         }, 3000);
 
         async function fetchCryptoPrices() {
-            const symbols = { 'eth': 'ETHUSDT', 'btc': 'BTCUSDT', 'bnb': 'BNBUSDT' };
+            // Добавили SOLUSDT в парсинг
+            const symbols = { 'sol': 'SOLUSDT', 'eth': 'ETHUSDT', 'btc': 'BTCUSDT', 'bnb': 'BNBUSDT' };
             try {
                 const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
                 const data = await res.json();
