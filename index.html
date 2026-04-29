@@ -16,10 +16,9 @@
             -webkit-font-smoothing: antialiased;
             user-select: none;
             margin: 0;
-            overflow: hidden; /* Запрещаем общий скролл, чтобы работал Pull-to-refresh */
+            overflow: hidden;
         }
         
-        /* Скрытие скроллбара, но плавная прокрутка работает */
         ::-webkit-scrollbar { display: none; }
         
         .action-box {
@@ -30,29 +29,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        
-        .center-btn-wrapper {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 70px;
-        }
-        
-        .center-btn {
-            position: absolute;
-            top: -46px; 
-            background-color: #50F485;
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 6px solid #121315; 
-            z-index: 10;
-            box-sizing: content-box;
         }
         
         .notification-dot {
@@ -73,7 +49,6 @@
             border-radius: 2px;
         }
 
-        /* Анимация обновления цены */
         .value-update {
             transition: opacity 0.3s ease;
         }
@@ -81,7 +56,7 @@
 </head>
 <body class="h-screen flex flex-col pb-0">
 
-    <!-- Статичный Верхний бар -->
+    <!-- Верхний бар -->
     <header class="flex items-center justify-between px-5 pt-12 pb-2 bg-[#121315] z-20">
         <div class="relative">
             <i class="fa-solid fa-gear text-[22px] text-gray-300"></i>
@@ -105,12 +80,15 @@
         </div>
     </header>
 
-    <!-- Скроллируемая область с Pull-to-Refresh -->
+    <!-- Скроллируемая область -->
     <div id="main-scroll" class="flex-1 overflow-y-auto pb-28 relative">
         
-        <!-- Индикатор загрузки свайпа (прячется сверху) -->
+        <!-- Индикатор загрузки свайпа (КРУТИЛКА) -->
         <div id="ptr-indicator" class="flex justify-center items-center h-0 overflow-hidden" style="transition: height 0.2s ease;">
-            <i class="fa-solid fa-circle-notch fa-spin text-[#50F485] text-2xl mt-4"></i>
+            <svg class="animate-spin text-[#50F485] mt-4 w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
         </div>
 
         <!-- Главный Баланс -->
@@ -127,22 +105,46 @@
             <p id="sub-balance" class="text-[#8E8E93] text-[14px] mt-0.5 value-update">0,00 $ (0.00%)</p>
         </div>
 
-        <!-- 4 Кнопки -->
+        <!-- 4 ВЕРХНИЕ КНОПКИ -->
         <div class="flex justify-center gap-[18px] mt-8 px-4">
             <div class="flex flex-col items-center gap-2">
-                <div class="action-box"><i class="fa-solid fa-arrow-up-right text-xl text-gray-200"></i></div>
+                <div class="action-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </div>
                 <span class="text-[13px] font-medium text-gray-200">Отпр...</span>
             </div>
+            
             <div class="flex flex-col items-center gap-2">
-                <div class="action-box"><i class="fa-solid fa-arrow-down text-xl text-gray-200"></i></div>
+                <div class="action-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <polyline points="19 12 12 19 5 12"></polyline>
+                    </svg>
+                </div>
                 <span class="text-[13px] font-medium text-gray-200">Полу...</span>
             </div>
+            
             <div class="flex flex-col items-center gap-2">
-                <div class="action-box"><i class="fa-solid fa-rotate text-xl text-gray-200"></i></div>
+                <div class="action-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                </div>
                 <span class="text-[13px] font-medium text-gray-200">Обмен</span>
             </div>
+            
             <div class="flex flex-col items-center gap-2">
-                <div class="action-box bg-[#50F485]"><i class="fa-solid fa-plus text-[26px] text-black"></i></div>
+                <div class="action-box bg-[#50F485]">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </div>
                 <span class="text-[13px] font-medium text-gray-200">Поку...</span>
             </div>
         </div>
@@ -232,37 +234,62 @@
         </div>
     </div>
 
-    <!-- Усиленно закругленная нижняя навигация (rounded-t-[45px]) -->
-    <div class="fixed bottom-0 w-full bg-[#1A1C1F] rounded-t-[45px] flex justify-between items-end px-4 pb-6 pt-3 shadow-[0_-15px_40px_rgba(0,0,0,0.5)] z-50 border-t border-[#2A2B2F]">
+    <!-- НИЖНЯЯ ПАНЕЛЬ -->
+    <div class="fixed bottom-0 w-full bg-[#1A1C1F] rounded-t-[30px] flex justify-between items-end px-3 pb-6 pt-3 z-50 border-t border-[#2A2B2F]">
         
-        <div class="flex flex-col items-center justify-center gap-1 bg-[#1A3324] w-[68px] py-1.5 rounded-2xl mb-0.5">
-            <i class="fa-solid fa-house text-[#50F485] text-[20px]"></i>
-            <span class="text-[#50F485] text-[10px] font-bold">Главная</span>
+        <!-- 1. Главная -->
+        <div class="flex flex-col items-center justify-center w-[68px]">
+            <div class="flex flex-col items-center justify-center bg-[#173021] rounded-[18px] w-full py-[6px] gap-1">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#50F485" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span class="text-[#50F485] text-[10px] font-bold tracking-wide">Главная</span>
+            </div>
         </div>
 
-        <div class="flex flex-col items-center gap-1.5 w-[68px] mb-1.5">
-            <i class="fa-solid fa-arrow-trend-up text-[#8E8E93] text-[20px]"></i>
+        <!-- 2. Популярные -->
+        <div class="flex flex-col items-center justify-center w-[64px] gap-1.5 mb-1.5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
             <span class="text-[#8E8E93] text-[10px] font-medium">Популярные</span>
         </div>
         
-        <div class="center-btn-wrapper">
-            <div class="center-btn shadow-lg">
-                <i class="fa-solid fa-arrow-down text-black text-sm absolute ml-2"></i>
-                <i class="fa-solid fa-arrow-up text-black text-sm absolute mr-2"></i>
+        <!-- 3. Торговать -->
+        <div class="relative flex flex-col items-center w-[70px]">
+            <div class="absolute -top-[42px] bg-[#50F485] w-[52px] h-[52px] rounded-full flex items-center justify-center border-[5px] border-[#121315] z-10 box-content">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 3v14"></path>
+                    <path d="M19 14l-3 3-3-3"></path>
+                    <path d="M8 21V7"></path>
+                    <path d="M5 10l3-3 3 3"></path>
+                </svg>
             </div>
-            <span class="text-[#8E8E93] text-[10px] font-medium mb-1.5 mt-4 z-0">Торговать</span>
+            <span class="text-[#8E8E93] text-[10px] font-medium mt-[14px] mb-1.5">Торговать</span>
         </div>
 
-        <div class="flex flex-col items-center gap-1.5 w-[68px] mb-1.5">
-            <i class="fa-solid fa-gift text-[#8E8E93] text-[20px]"></i>
+        <!-- 4. Награды -->
+        <div class="flex flex-col items-center justify-center w-[64px] gap-1.5 mb-1.5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                <rect x="2" y="7" width="20" height="5"></rect>
+                <line x1="12" y1="22" x2="12" y2="7"></line>
+                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+            </svg>
             <span class="text-[#8E8E93] text-[10px] font-medium">Награды</span>
         </div>
         
-        <!-- Кнопка смены баланса -->
-        <div class="flex flex-col items-center gap-1.5 w-[68px] mb-1.5 cursor-pointer" onclick="setCustomBalance()">
-            <i class="fa-regular fa-compass text-[#8E8E93] text-[20px]"></i>
+        <!-- 5. Подробнее (ТЕПЕРЬ ЭТО BUTTON - КЛИК СРАБОТАЕТ НА 100%) -->
+        <button onclick="setCustomBalance()" class="flex flex-col items-center justify-center w-[64px] gap-1.5 mb-1.5 bg-transparent border-none outline-none focus:outline-none touch-manipulation">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+            </svg>
             <span class="text-[#8E8E93] text-[10px] font-medium">Подробнее</span>
-        </div>
+        </button>
     </div>
 
     <script>
@@ -276,15 +303,14 @@
             }).format(amount) + ' $';
         }
 
-        // Изменение текста с эффектом мигания (чтобы было видно, что цены обновились)
         function animateUpdate(elementId, newValue, color) {
             const el = document.getElementById(elementId);
             if (el.innerText !== newValue) {
-                el.style.opacity = '0.3'; // Приглушаем
+                el.style.opacity = '0.3'; 
                 setTimeout(() => {
                     el.innerText = newValue;
                     if (color) el.style.color = color;
-                    el.style.opacity = '1'; // Возвращаем яркость
+                    el.style.opacity = '1'; 
                 }, 150);
             }
         }
@@ -302,10 +328,9 @@
             }
         }
 
-        // Имитация живых торгов (Главный баланс микро-двигается)
         setInterval(() => {
             if (isFaked && currentMainBalance > 0) {
-                let fluctuation = currentMainBalance * (Math.random() * 0.0004 - 0.0002); // +/- 0.02%
+                let fluctuation = currentMainBalance * (Math.random() * 0.0004 - 0.0002); 
                 let displayVal = currentMainBalance + fluctuation;
                 let percentChange = ((fluctuation / currentMainBalance) * 100).toFixed(2);
                 let sign = percentChange >= 0 ? '+' : '';
@@ -317,7 +342,6 @@
             }
         }, 3000);
 
-        // Получение курсов
         async function fetchCryptoPrices() {
             const symbols = { 'eth': 'ETHUSDT', 'btc': 'BTCUSDT', 'bnb': 'BNBUSDT' };
             try {
@@ -330,7 +354,6 @@
                         const price = parseFloat(coinData.lastPrice);
                         let change = parseFloat(coinData.priceChangePercent);
                         
-                        // Если биржа не обновила процент, добавляем микро-шум чтобы он "жил"
                         change = change + (Math.random() * 0.02 - 0.01);
                         
                         animateUpdate(`price-${coin}`, formatMoney(price));
@@ -343,7 +366,7 @@
             } catch (e) { console.log('API Error'); }
         }
 
-        // --- PULL-TO-REFRESH (Свайп для обновления) ---
+        // Логика свайпа (Pull to refresh)
         const scrollContainer = document.getElementById('main-scroll');
         const ptrIndicator = document.getElementById('ptr-indicator');
         let startY = 0;
@@ -362,7 +385,6 @@
             const currentY = e.touches[0].clientY;
             const diff = currentY - startY;
 
-            // Если тянем вниз находясь в самом верху списка
             if (diff > 0 && scrollContainer.scrollTop === 0) {
                 if (e.cancelable) e.preventDefault();
                 ptrIndicator.style.height = Math.min(diff * 0.4, 70) + 'px';
@@ -375,19 +397,33 @@
             ptrIndicator.style.transition = 'height 0.3s ease';
 
             const height = parseInt(ptrIndicator.style.height || '0');
-            if (height >= 50) { // Если потянули достаточно сильно
-                ptrIndicator.style.height = '60px'; // Фиксируем крутилку
-                await fetchCryptoPrices(); // Запрашиваем данные
-                setTimeout(() => { ptrIndicator.style.height = '0px'; }, 600); // Прячем обратно
+            if (height >= 50) { 
+                ptrIndicator.style.height = '60px'; 
+                
+                // 1. Запрашиваем новые курсы монет
+                await fetchCryptoPrices(); 
+                
+                // 2. ИСПРАВЛЕНИЕ: Теперь при свайпе принудительно "моргает" и пересчитывается главный баланс!
+                if (isFaked && currentMainBalance > 0) {
+                    let fluctuation = currentMainBalance * (Math.random() * 0.0004 - 0.0002); 
+                    let displayVal = currentMainBalance + fluctuation;
+                    let percentChange = ((fluctuation / currentMainBalance) * 100).toFixed(2);
+                    let sign = percentChange >= 0 ? '+' : '';
+                    
+                    animateUpdate('main-balance', formatMoney(displayVal));
+                    const subColor = percentChange >= 0 ? '#50F485' : '#FF453A';
+                    animateUpdate('sub-balance', `${formatMoney(displayVal)} (${sign}${percentChange}%)`, subColor);
+                }
+
+                setTimeout(() => { ptrIndicator.style.height = '0px'; }, 600); 
             } else {
-                ptrIndicator.style.height = '0px'; // Если потянули слабо, просто прячем
+                ptrIndicator.style.height = '0px'; 
             }
         });
 
-        // Запускаем API через 5 секунд после входа, а затем ровно раз в 10 секунд
         setTimeout(() => {
             fetchCryptoPrices();
-            setInterval(fetchCryptoPrices, 10000); // Ровно 10 секунд
+            setInterval(fetchCryptoPrices, 10000);
         }, 5000);
     </script>
 </body>
