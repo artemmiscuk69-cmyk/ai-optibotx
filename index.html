@@ -2,7 +2,6 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <!-- Добавлен viewport-fit=cover для правильной работы с челкой iPhone -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Crypto Wallet</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -10,9 +9,15 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         
+        :root {
+            --bg-main: #191B1F; /* Сделали светлее, не чисто черный */
+            --bg-card: #26282E; /* Более светлые плашки */
+            --border-color: #33353C;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #121315;
+            background-color: var(--bg-main);
             color: #ffffff;
             -webkit-font-smoothing: antialiased;
             user-select: none;
@@ -20,7 +25,6 @@
             overflow: hidden;
         }
         
-        /* Скрываем скроллбар */
         ::-webkit-scrollbar { display: none; }
         .hide-scrollbar {
             -ms-overflow-style: none;
@@ -28,7 +32,7 @@
         }
         
         .action-box {
-            background-color: #212226;
+            background-color: var(--bg-card);
             border-radius: 18px;
             width: 62px;
             height: 62px;
@@ -40,7 +44,7 @@
         .notification-dot {
             position: absolute;
             background-color: #FF453A;
-            border: 2px solid #121315;
+            border: 2px solid var(--bg-main);
             border-radius: 50%;
         }
 
@@ -58,26 +62,32 @@
         .value-update {
             transition: opacity 0.3s ease;
         }
+
+        /* Анимация нажатия */
+        .tap-effect:active {
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col pb-0">
 
-    <!-- Верхний бар (Оптимизирован под челку iPhone) -->
-    <header class="flex items-center justify-between px-5 pb-2 bg-[#121315] z-20" style="padding-top: max(3rem, env(safe-area-inset-top));">
+    <!-- Верхний бар (Идеальная оптимизация под чёлку + убрали лишний сдвиг вниз) -->
+    <header class="flex items-center justify-between px-5 pb-3 z-20 bg-transparent" style="padding-top: calc(env(safe-area-inset-top) + 12px);">
         <div class="relative">
             <i class="fa-solid fa-gear text-[22px] text-gray-300"></i>
             <div class="notification-dot w-2.5 h-2.5 -top-1 -right-1"></div>
         </div>
         
         <div class="flex-1 mx-4">
-            <div class="bg-[#212226] rounded-full h-10 flex items-center px-4">
-                <i class="fa-solid fa-magnifying-glass text-[#8E8E93] text-sm mr-2.5"></i>
-                <input type="text" placeholder="Поиск" class="bg-transparent border-none outline-none text-white w-full text-[15px] placeholder-[#8E8E93]" disabled>
+            <div class="bg-[#26282E] rounded-full h-[38px] flex items-center px-4">
+                <i class="fa-solid fa-magnifying-glass text-[#8E8E93] text-[13px] mr-2.5"></i>
+                <input type="text" placeholder="Поиск" class="bg-transparent border-none outline-none text-white w-full text-[14px] placeholder-[#8E8E93] font-medium" disabled>
             </div>
         </div>
         
         <div class="relative">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
                 <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
                 <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
@@ -87,9 +97,9 @@
     </header>
 
     <!-- Скроллируемая область -->
-    <div id="main-scroll" class="flex-1 overflow-y-auto pb-28 relative">
+    <div id="main-scroll" class="flex-1 overflow-y-auto pb-32 relative">
         
-        <!-- Индикатор загрузки свайпа -->
+        <!-- Индикатор загрузки -->
         <div id="ptr-indicator" class="flex justify-center items-center h-0 overflow-hidden" style="transition: height 0.2s ease;">
             <svg class="animate-spin text-[#50F485] mt-4 w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -97,43 +107,43 @@
             </svg>
         </div>
 
-        <!-- Главный Баланс -->
-        <div class="mt-4 flex flex-col items-center">
+        <!-- Главный Баланс (Подняли выше) -->
+        <div class="mt-2 flex flex-col items-center">
             <div class="flex items-center">
-                <div class="relative bg-[#212226] text-white text-[13px] font-medium px-3.5 py-1.5 rounded-full flex items-center">
+                <div class="relative bg-[#26282E] text-white text-[13px] font-medium px-3.5 py-1.5 rounded-full flex items-center">
                     Основной кошелек
                     <i class="fa-solid fa-chevron-right text-[10px] ml-2 text-[#8E8E93]"></i>
-                    <div class="notification-dot w-2.5 h-2.5 -top-1 -right-0.5"></div>
+                    <div class="notification-dot w-2.5 h-2.5 -top-0.5 -right-0.5"></div>
                 </div>
-                <i class="fa-regular fa-clone text-[#8E8E93] ml-3 text-lg"></i>
+                <i class="fa-regular fa-clone text-[#8E8E93] ml-3 text-lg tap-effect"></i>
             </div>
-            <h1 id="main-balance" class="text-[42px] font-bold mt-2 tracking-tight value-update">0,00 $</h1>
-            <p id="sub-balance" class="text-[#8E8E93] text-[14px] mt-0.5 value-update">0,00 $ (0.00%)</p>
+            <h1 id="main-balance" class="text-[44px] font-bold mt-1.5 tracking-tight value-update">0,00 $</h1>
+            <p id="sub-balance" class="text-[#8E8E93] text-[14px] mt-0.5 value-update font-medium">0,00 $ (0.00%)</p>
         </div>
 
-        <!-- 4 Кнопки -->
-        <div class="flex justify-center gap-[18px] mt-8 px-4">
-            <div class="flex flex-col items-center gap-2">
+        <!-- 4 Кнопки действий -->
+        <div class="flex justify-center gap-[18px] mt-7 px-4">
+            <div class="flex flex-col items-center gap-2 tap-effect">
                 <div class="action-box">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="7" y1="17" x2="17" y2="7"></line>
                         <polyline points="7 7 17 7 17 17"></polyline>
                     </svg>
                 </div>
                 <span class="text-[13px] font-medium text-gray-200">Отпр...</span>
             </div>
-            <div class="flex flex-col items-center gap-2">
+            <div class="flex flex-col items-center gap-2 tap-effect">
                 <div class="action-box">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <polyline points="19 12 12 19 5 12"></polyline>
                     </svg>
                 </div>
                 <span class="text-[13px] font-medium text-gray-200">Полу...</span>
             </div>
-            <div class="flex flex-col items-center gap-2">
+            <div class="flex flex-col items-center gap-2 tap-effect">
                 <div class="action-box">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="23 4 23 10 17 10"></polyline>
                         <polyline points="1 20 1 14 7 14"></polyline>
                         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
@@ -141,9 +151,9 @@
                 </div>
                 <span class="text-[13px] font-medium text-gray-200">Обмен</span>
             </div>
-            <div class="flex flex-col items-center gap-2">
+            <div class="flex flex-col items-center gap-2 tap-effect">
                 <div class="action-box bg-[#50F485]">
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
@@ -152,21 +162,15 @@
             </div>
         </div>
 
-        <!-- Вкладки (Со скроллом и 2 полосками настроек) -->
-        <div class="flex items-center mt-8 border-b border-[#212226] pb-2.5 relative">
-            
-            <!-- Скроллируемая часть слов -->
+        <!-- Вкладки (Крипта / Избранное) -->
+        <div class="flex items-center mt-8 border-b border-[var(--border-color)] pb-2.5 relative">
             <div id="tabs-scroll" class="flex gap-6 text-[15.5px] font-semibold text-[#8E8E93] overflow-x-auto hide-scrollbar flex-nowrap flex-1 px-5 scroll-smooth">
                 <span class="whitespace-nowrap">Криптовалюта</span>
                 <span class="text-white tab-active relative whitespace-nowrap">Избранное</span>
-                <span class="whitespace-nowrap pr-24">NFT</span> <!-- pr-24 чтобы скролл не упирался в иконки -->
+                <span class="whitespace-nowrap pr-24">NFT</span>
             </div>
-
-            <!-- Иконки поверх скролла (Справа) -->
-            <div class="flex gap-4 text-[#8E8E93] text-lg absolute right-0 bg-gradient-to-l from-[#121315] via-[#121315] to-transparent pl-8 pr-5 py-1">
+            <div class="flex gap-4 text-[#8E8E93] text-lg absolute right-0 bg-gradient-to-l from-[var(--bg-main)] via-[var(--bg-main)] to-transparent pl-8 pr-5 py-1">
                 <i class="fa-solid fa-clock-rotate-left"></i>
-                
-                <!-- Новая иконка настроек: 2 полоски вместо 3 -->
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="4" y1="14" x2="20" y2="14"></line>
                     <circle cx="8" cy="14" r="2.5"></circle>
@@ -179,10 +183,10 @@
         <!-- Список Монет -->
         <div class="mt-1 pb-4">
             <!-- ETH -->
-            <div class="flex justify-between items-center px-5 py-3.5">
+            <div class="flex justify-between items-center px-5 py-3.5 tap-effect">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-800">
-                        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" class="w-6 h-6" alt="ETH">
+                    <div class="w-10 h-10 bg-[#26282E] rounded-full flex items-center justify-center p-1 border border-[#33353C]">
+                        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" class="w-full h-full object-contain" alt="ETH">
                     </div>
                     <div class="flex flex-col">
                         <span class="text-[17px] font-bold leading-tight">ETH</span>
@@ -191,13 +195,15 @@
                 </div>
                 <div class="flex flex-col items-end">
                     <span class="text-[17px] font-bold leading-tight value-update" id="price-eth">2 346,91 $</span>
-                    <span class="text-[13px] text-[#50F485] mt-0.5 value-update" id="change-eth">+1.29%</span>
+                    <span class="text-[13px] text-[#50F485] mt-0.5 value-update font-medium" id="change-eth">+1.29%</span>
                 </div>
             </div>
             <!-- BTC -->
-            <div class="flex justify-between items-center px-5 py-3.5">
+            <div class="flex justify-between items-center px-5 py-3.5 tap-effect">
                 <div class="flex items-center gap-3.5">
-                    <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="w-10 h-10 rounded-full" alt="BTC">
+                    <div class="w-10 h-10 bg-[#26282E] rounded-full flex items-center justify-center p-1 border border-[#33353C]">
+                        <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="w-full h-full object-contain" alt="BTC">
+                    </div>
                     <div class="flex flex-col">
                         <span class="text-[17px] font-bold leading-tight">BTC</span>
                         <span class="text-[13px] text-[#7C7D82] mt-0.5">17,24 $B</span>
@@ -205,13 +211,15 @@
                 </div>
                 <div class="flex flex-col items-end">
                     <span class="text-[17px] font-bold leading-tight value-update" id="price-btc">78 101,78 $</span>
-                    <span class="text-[13px] text-[#50F485] mt-0.5 value-update" id="change-btc">+0.55%</span>
+                    <span class="text-[13px] text-[#50F485] mt-0.5 value-update font-medium" id="change-btc">+0.55%</span>
                 </div>
             </div>
             <!-- BNB -->
-            <div class="flex justify-between items-center px-5 py-3.5">
+            <div class="flex justify-between items-center px-5 py-3.5 tap-effect">
                 <div class="flex items-center gap-3.5">
-                    <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" class="w-10 h-10 rounded-full" alt="BNB">
+                    <div class="w-10 h-10 bg-[#26282E] rounded-full flex items-center justify-center p-1 border border-[#33353C]">
+                        <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" class="w-full h-full object-contain" alt="BNB">
+                    </div>
                     <div class="flex flex-col">
                         <span class="text-[17px] font-bold leading-tight">BNB</span>
                         <span class="text-[13px] text-[#7C7D82] mt-0.5">753,22 $M</span>
@@ -219,90 +227,91 @@
                 </div>
                 <div class="flex flex-col items-end">
                     <span class="text-[17px] font-bold leading-tight value-update" id="price-bnb">631,99 $</span>
-                    <span class="text-[13px] text-[#50F485] mt-0.5 value-update" id="change-bnb">+0.23%</span>
+                    <span class="text-[13px] text-[#50F485] mt-0.5 value-update font-medium" id="change-bnb">+0.23%</span>
                 </div>
             </div>
 
-            <div class="text-center mt-3">
+            <div class="text-center mt-3 mb-6">
                 <button class="text-[#50F485] font-semibold text-[14px]">Просмотреть токены</button>
             </div>
             
             <!-- Заработок -->
-            <div class="mt-8 mb-6">
+            <div class="mt-4 mb-6">
                 <h2 class="font-bold text-[18px] mb-4 px-5">Заработок <i class="fa-solid fa-chevron-right text-[12px] text-[#8E8E93] ml-1"></i></h2>
                 <div class="flex gap-3 px-5">
-                    <div class="bg-[#1C1D21] w-[160px] h-[110px] rounded-[20px] p-4 flex flex-col justify-between border border-[#2A2B2F]">
-                        <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center">
+                    <div class="bg-[var(--bg-card)] w-[160px] h-[110px] rounded-[22px] p-4 flex flex-col justify-between border border-[var(--border-color)] tap-effect">
+                        <div class="w-8 h-8 rounded-full bg-[#191B1F] flex items-center justify-center">
                             <i class="fa-solid fa-star text-yellow-500 text-[12px]"></i>
                         </div>
-                        <div class="text-[#8E8E93] text-[12px] font-medium">30.83% APY</div>
+                        <div class="text-[#8E8E93] text-[13px] font-medium">30.83% APY</div>
                     </div>
-                    <div class="bg-[#1C1D21] w-[160px] h-[110px] rounded-[20px] p-4 flex flex-col justify-between border border-[#2A2B2F]">
-                        <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center">
+                    <div class="bg-[var(--bg-card)] w-[160px] h-[110px] rounded-[22px] p-4 flex flex-col justify-between border border-[var(--border-color)] tap-effect">
+                        <div class="w-8 h-8 rounded-full bg-[#191B1F] flex items-center justify-center">
                             <i class="fa-solid fa-gift text-[#FF453A] text-[12px]"></i>
                         </div>
-                        <div class="text-[#8E8E93] text-[12px] font-medium">27.04% APY</div>
+                        <div class="text-[#8E8E93] text-[13px] font-medium">27.04% APY</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- НИЖНЯЯ ПАНЕЛЬ (Закругленная под 40px + Оптимизация под полоску iPhone) -->
-    <div class="fixed bottom-0 w-full bg-[#1A1C1F] rounded-t-[40px] flex justify-between items-end px-3 pt-3 z-50 border-t border-[#2A2B2F]" style="padding-bottom: max(1.5rem, env(safe-area-inset-bottom));">
+    <!-- НИЖНЯЯ ПАНЕЛЬ КАК "ОСТРОВОК" -->
+    <div class="fixed bottom-6 left-4 right-4 bg-[#23252A] rounded-[32px] flex justify-between items-center px-2 py-3 z-50 border border-[#33353C] shadow-2xl pb-2 pt-3" style="margin-bottom: env(safe-area-inset-bottom);">
         
         <!-- 1. Главная -->
-        <div class="flex flex-col items-center justify-center w-[68px]">
-            <div class="flex flex-col items-center justify-center bg-[#173021] rounded-[18px] w-full py-[6px] gap-1">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#50F485" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="flex flex-col items-center justify-center w-[64px] tap-effect">
+            <div class="flex flex-col items-center justify-center bg-[#173021] rounded-2xl w-full py-1.5 gap-0.5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#50F485" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                <span class="text-[#50F485] text-[10px] font-bold tracking-wide">Главная</span>
+                <span class="text-[#50F485] text-[10px] font-bold tracking-wide mt-1">Главная</span>
             </div>
         </div>
 
         <!-- 2. Популярные -->
-        <div class="flex flex-col items-center justify-center w-[64px] gap-1.5 mb-1.5">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="flex flex-col items-center justify-center w-[60px] gap-1 mb-1 tap-effect">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
                 <polyline points="17 6 23 6 23 12"></polyline>
             </svg>
-            <span class="text-[#8E8E93] text-[10px] font-medium">Популярные</span>
+            <span class="text-[#8E8E93] text-[10px] font-medium mt-0.5">Рынки</span>
         </div>
         
-        <!-- 3. Торговать (ТЕПЕРЬ СТРЕЛКИ ВЛЕВО-ВПРАВО) -->
-        <div class="relative flex flex-col items-center w-[70px]">
-            <div class="absolute -top-[42px] bg-[#50F485] w-[52px] h-[52px] rounded-full flex items-center justify-center border-[5px] border-[#121315] z-10 box-content">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="9" x2="19" y2="9"></line>
-                    <polyline points="14 4 19 9 14 14"></polyline>
-                    <line x1="19" y1="15" x2="5" y2="15"></line>
-                    <polyline points="10 20 5 15 10 10"></polyline>
+        <!-- 3. Торговать (ЦЕНТРАЛЬНАЯ КНОПКА С ТОНКИМИ СТРЕЛКАМИ) -->
+        <div class="relative flex flex-col items-center w-[70px] tap-effect">
+            <div class="absolute -top-[44px] bg-[#50F485] w-[54px] h-[54px] rounded-full flex items-center justify-center border-[5px] border-[var(--bg-main)] z-10 box-content shadow-lg">
+                <!-- Тонкие стрелки (stroke-width="1.2") как на скриншоте -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 3v14"></path>
+                    <path d="M19 14l-3 3-3-3"></path>
+                    <path d="M8 21V7"></path>
+                    <path d="M5 10l3-3 3 3"></path>
                 </svg>
             </div>
-            <span class="text-[#8E8E93] text-[10px] font-medium mt-[14px] mb-1.5">Торговать</span>
+            <span class="text-[#8E8E93] text-[10px] font-medium mt-[16px]">Торговля</span>
         </div>
 
         <!-- 4. Награды -->
-        <div class="flex flex-col items-center justify-center w-[64px] gap-1.5 mb-1.5">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="flex flex-col items-center justify-center w-[60px] gap-1 mb-1 tap-effect">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 12 20 22 4 22 4 12"></polyline>
                 <rect x="2" y="7" width="20" height="5"></rect>
                 <line x1="12" y1="22" x2="12" y2="7"></line>
                 <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
                 <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
             </svg>
-            <span class="text-[#8E8E93] text-[10px] font-medium">Награды</span>
+            <span class="text-[#8E8E93] text-[10px] font-medium mt-0.5">Награды</span>
         </div>
         
         <!-- 5. Подробнее -->
-        <button onclick="setCustomBalance()" class="flex flex-col items-center justify-center w-[64px] gap-1.5 mb-1.5 bg-transparent border-none outline-none focus:outline-none touch-manipulation">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button onclick="setCustomBalance()" class="flex flex-col items-center justify-center w-[60px] gap-1 mb-1 bg-transparent border-none outline-none tap-effect">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
             </svg>
-            <span class="text-[#8E8E93] text-[10px] font-medium">Подробнее</span>
+            <span class="text-[#8E8E93] text-[10px] font-medium mt-0.5">Ещё</span>
         </button>
     </div>
 
@@ -310,7 +319,6 @@
         let currentMainBalance = 0;
         let isFaked = false;
 
-        // Сдвигаем табы при загрузке, чтобы обрезать слово "Криптовалюта"
         window.addEventListener('load', () => {
             const tabs = document.getElementById('tabs-scroll');
             if(tabs) tabs.scrollLeft = 14; 
